@@ -1,0 +1,67 @@
+import React from 'react';
+import { NavLink } from 'react-router-dom';
+import { BookOpen, Video, FileText, HelpCircle, ArrowRight } from 'lucide-react';
+
+export const ResourcesPage: React.FC = () => {
+  const articles = [
+    {
+      type: 'Guide',
+      title: 'How to scale your appointment & booking workflow in 2026',
+      desc: 'Learn automated scheduling strategies that cut no-shows by 80% and save 15+ hours weekly.',
+    },
+    {
+      type: 'Case Study',
+      title: 'How Apex Salon grew revenue by 42% using Business OS POS',
+      desc: 'A deep dive into integrated inventory, staff commission tracking, and online store sync.',
+    },
+    {
+      type: 'Documentation',
+      title: 'Setting up custom PDF invoice templates & automatic tax receipts',
+      desc: 'Step-by-step tutorial on customizing invoice designs, currency, and multi-branch details.',
+    },
+  ];
+
+  return (
+    <div className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+      <div className="text-center max-w-3xl mx-auto space-y-4">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-50 dark:bg-violet-950/60 border border-violet-200/80 dark:border-violet-800 text-xs font-bold text-violet-700 dark:text-violet-300">
+          <span>Knowledge & Guides</span>
+        </div>
+        <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+          Resources & Guides
+        </h1>
+        <p className="text-base sm:text-lg text-slate-600 dark:text-slate-300">
+          Everything you need to master your operations and grow your business.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {articles.map((art, idx) => (
+          <div
+            key={idx}
+            className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-md hover:shadow-xl transition-all flex flex-col justify-between"
+          >
+            <div>
+              <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-violet-100 dark:bg-violet-950 text-violet-600 dark:text-violet-400 mb-4">
+                {art.type}
+              </span>
+              <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 leading-snug">
+                {art.title}
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed mb-6">
+                {art.desc}
+              </p>
+            </div>
+            <a
+              href="#"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-violet-600 dark:text-violet-400 hover:gap-2 transition-all"
+            >
+              <span>Read article</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};

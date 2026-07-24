@@ -1,0 +1,8 @@
+{
+  "name": "Remix: My Grafix OS",
+  "description": "A modern business OS \u0026 dashboard for small product and service businesses.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
