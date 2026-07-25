@@ -138,6 +138,7 @@ export const InvoicesPage: React.FC = () => {
         addButtonLabel="Create Invoice"
         isLoading={isLoading}
         exportFilename="invoices_export"
+        exportTable="invoices"
       />
 
       {/* Create Invoice Modal */}

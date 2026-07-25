@@ -6,76 +6,22 @@ import { Booking, BookingStatus } from '../types';
 import { Calendar as CalendarIcon, List, CheckCircle, XCircle, Eye, X, Phone, User, Clock, Plus, Search } from 'lucide-react';
 
 export const BookingsPage: React.FC = () => {
-  const { bookings, isLoading } = useData();
+  const { bookings, isLoading, updateResource } = useData();
   const { addToast } = useToast();
   const [viewMode, setViewMode] = useState<'calendar' | 'list'>('list');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
 
-  // Local state for bookings management (TODO: Cloudflare Worker sync)
-  const [bookingsList, setBookingsList] = useState<Booking[]>(bookings.length > 0 ? bookings : [
-    {
-      id: 'bk-101',
-      bookingCode: '#BK-101',
-      clientName: 'John Smith',
-      clientPhone: '+27 82 123 4567',
-      serviceName: 'Signature Haircut & Beard Trim',
-      staffName: 'David K.',
-      date: '2026-07-24',
-      time: '14:30',
-      status: 'upcoming',
-      amount: 350,
-    },
-    {
-      id: 'bk-102',
-      bookingCode: '#BK-102',
-      clientName: 'Thabo Molefe',
-      clientPhone: '+27 71 987 6543',
-      serviceName: 'Hydrating Scalp Treatment',
-      staffName: 'Lerato M.',
-      date: '2026-07-24',
-      time: '11:00',
-      status: 'completed',
-      amount: 520,
-    },
-    {
-      id: 'bk-103',
-      bookingCode: '#BK-103',
-      clientName: 'Chloe Bennett',
-      clientPhone: '+27 83 444 5555',
-      serviceName: 'Color Gloss & Blowout',
-      staffName: 'Lerato M.',
-      date: '2026-07-25',
-      time: '09:00',
-      status: 'upcoming',
-      amount: 850,
-    },
-    {
-      id: 'bk-104',
-      bookingCode: '#BK-104',
-      clientName: 'Sipho Dlamini',
-      clientPhone: '+27 82 555 0192',
-      serviceName: 'Express Beard Grooming',
-      staffName: 'David K.',
-      date: '2026-07-22',
-      time: '15:00',
-      status: 'cancelled',
-      amount: 180,
-    }
-  ]);
-
-  const handleMarkComplete = (id: string, e?: React.MouseEvent) => {
+  const handleMarkComplete = async (id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    // TODO: Cloudflare Worker API call PATCH /api/bookings/:id/complete
-    setBookingsList(prev => prev.map(b => b.id === id ? { ...b, status: 'completed' as BookingStatus } : b));
+    await updateResource('bookings', id, { status: 'completed' });
     addToast('Booking marked as completed', 'success');
   };
 
-  const handleCancelBooking = (id: string, e?: React.MouseEvent) => {
+  const handleCancelBooking = async (id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    // TODO: Cloudflare Worker API call PATCH /api/bookings/:id/cancel
-    setBookingsList(prev => prev.map(b => b.id === id ? { ...b, status: 'cancelled' as BookingStatus } : b));
+    await updateResource('bookings', id, { status: 'cancelled' });
     addToast('Booking cancelled', 'info');
   };
 
@@ -93,7 +39,7 @@ export const BookingsPage: React.FC = () => {
     }
   };
 
-  const filteredBookings = bookingsList.filter(b => {
+  const filteredBookings = bookings.filter(b => {
     const matchesSearch = 
       b.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       b.serviceName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -406,12 +352,6 @@ export const BookingsPage: React.FC = () => {
         </div>
       )}
 
-      {/* TODO: Cloudflare Worker Backend Integration Note
-          - GET /api/bookings: Fetch calendar bookings list
-          - PATCH /api/bookings/:id: Update booking details or status
-          - POST /api/bookings/:id/complete: Mark booking as completed
-          - POST /api/bookings/:id/cancel: Cancel booking
-      */}
     </div>
   );
 };

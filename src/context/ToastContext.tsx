@@ -11,11 +11,17 @@ export interface ToastItem {
   type: ToastType;
 }
 
+type AddToastFn = {
+  (toast: { title: string; message?: string; type?: ToastType }): void;
+  (title: string, message?: string, type?: ToastType): void;
+};
+
 interface ToastContextType {
   showToast: (title: string, message?: string, type?: ToastType) => void;
   success: (title: string, message?: string) => void;
   error: (title: string, message?: string) => void;
   info: (title: string, message?: string) => void;
+  addToast: AddToastFn;
 }
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -40,8 +46,16 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
   const error = useCallback((title: string, message?: string) => showToast(title, message, 'error'), [showToast]);
   const info = useCallback((title: string, message?: string) => showToast(title, message, 'info'), [showToast]);
 
+  const addToast = useCallback(((titleOrToast: string | { title: string; message?: string; type?: ToastType }, message?: string, type?: ToastType) => {
+    if (typeof titleOrToast === 'string') {
+      showToast(titleOrToast, message, type || 'success');
+    } else {
+      showToast(titleOrToast.title, titleOrToast.message, titleOrToast.type || 'success');
+    }
+  }) as AddToastFn, [showToast]);
+
   return (
-    <ToastContext.Provider value={{ showToast, success, error, info }}>
+    <ToastContext.Provider value={{ showToast, success, error, info, addToast }}>
       {children}
       
       {/* Toast Overlay Container */}

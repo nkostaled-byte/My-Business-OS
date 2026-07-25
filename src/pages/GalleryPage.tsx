@@ -15,7 +15,6 @@ export const GalleryPage: React.FC = () => {
 
   const handleUpload = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: connect to Worker upload API (e.g. POST /api/gallery/upload)
     addGalleryItem({
       title,
       category,

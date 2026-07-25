@@ -24,6 +24,7 @@ interface DataTableProps<T> {
   addButtonLabel?: string;
   isLoading?: boolean;
   exportFilename?: string;
+  exportTable?: string;
 }
 
 export function DataTable<T extends { id: string }>({
@@ -38,6 +39,7 @@ export function DataTable<T extends { id: string }>({
   addButtonLabel = 'Add New',
   isLoading = false,
   exportFilename = 'records',
+  exportTable,
 }: DataTableProps<T>) {
   const [search, setSearch] = useState('');
 
@@ -66,7 +68,7 @@ export function DataTable<T extends { id: string }>({
         </div>
 
         <div className="flex items-center gap-2 self-end sm:self-auto">
-          <ExportDropdown filename={exportFilename} />
+          <ExportDropdown filename={exportFilename} table={exportTable} />
           {onAddClick && (
             <motion.button
               whileHover={{ scale: 1.02 }}

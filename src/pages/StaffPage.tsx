@@ -18,7 +18,6 @@ export const StaffPage: React.FC = () => {
 
   const handleAddStaff = (e: React.FormEvent) => {
     e.preventDefault();
-    // TODO: connect to Worker API (e.g. POST /api/staff)
     addStaff({
       name,
       role,

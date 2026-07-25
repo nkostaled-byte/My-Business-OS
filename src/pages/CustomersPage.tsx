@@ -120,6 +120,7 @@ export const CustomersPage: React.FC = () => {
         addButtonLabel="New Customer"
         isLoading={isLoading}
         exportFilename="customers_export"
+        exportTable="customers"
       />
 
       {/* Add Customer Modal */}

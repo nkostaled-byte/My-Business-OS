@@ -5,75 +5,32 @@ import { useToast } from '../context/ToastContext';
 import { FormSubmission } from '../types';
 
 export const FormsPage: React.FC = () => {
-  const { forms, isLoading } = useData();
+  const { forms, isLoading, updateResource, refreshResource } = useData();
   const { addToast } = useToast();
   const [searchQuery, setSearchQuery] = useState('');
-  const [statusFilter, setStatusFilter] = useState<'all' | 'new' | 'read' | 'archived'>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'unread' | 'read' | 'archived'>('all');
   const [selectedSubmission, setSelectedSubmission] = useState<FormSubmission | null>(null);
 
-  // Local state for submissions management (TODO: Cloudflare Worker + Resend sync)
-  const [submissionsList, setSubmissionsList] = useState<FormSubmission[]>(forms.length > 0 ? forms : [
-    {
-      id: 'sub-1',
-      formName: 'Contact & Inquiry Form',
-      senderName: 'John Smith',
-      senderEmail: 'john.smith@example.com',
-      senderPhone: '+27 82 123 4567',
-      subject: 'Custom Website Redesign Project',
-      submittedAt: '2026-07-24 09:14',
-      status: 'unread',
-      message: 'Hi My Grafix team, I am looking for a complete branding and website redesign for my architectural firm in Cape Town. Please let me know your availability for a consultation call next week.',
-      dataSummary: { Budget: 'R25,000 - R50,000', Timeline: '1 month' }
-    },
-    {
-      id: 'sub-2',
-      formName: 'Service Booking Inquiry',
-      senderName: 'Sarah Mokoena',
-      senderEmail: 'sarah.m@example.com',
-      senderPhone: '+27 72 333 8811',
-      subject: 'Hydrating Scalp Treatment & Styling',
-      submittedAt: '2026-07-23 16:45',
-      status: 'read',
-      message: 'Hello, I would like to book the Hydrating Scalp Treatment for this Friday afternoon if you have any slots open around 3 PM.',
-      dataSummary: { Service: 'Hydrating Scalp Treatment', PreferredTime: 'Friday 3 PM' }
-    },
-    {
-      id: 'sub-3',
-      formName: 'Wholesale Product Order',
-      senderName: 'Michael Brown',
-      senderEmail: 'mbrown@example.com',
-      senderPhone: '+27 84 999 1122',
-      subject: 'Stockist Inquiry for Premium Hair Oil',
-      submittedAt: '2026-07-21 11:20',
-      status: 'archived',
-      message: 'Good morning, we run a boutique salon in Sandton and are interested in stocking your Premium Hair Oil. Could you send wholesale pricing catalogs?',
-      dataSummary: { Location: 'Sandton, Johannesburg', Volume: '50 units/month' }
-    }
-  ]);
-
-  const handleMarkAsRead = (id: string, e?: React.MouseEvent) => {
+  const handleMarkAsRead = async (id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    // TODO: Cloudflare Worker API call POST /api/forms/update-status
-    setSubmissionsList(prev => prev.map(s => s.id === id ? { ...s, status: 'read' } : s));
+    await updateResource('submissions', id, { status: 'read' });
     addToast('Submission marked as read', 'success');
   };
 
-  const handleArchive = (id: string, e?: React.MouseEvent) => {
+  const handleArchive = async (id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    // TODO: Cloudflare Worker API call POST /api/forms/archive
-    setSubmissionsList(prev => prev.map(s => s.id === id ? { ...s, status: 'archived' } : s));
+    await updateResource('submissions', id, { status: 'archived' });
     addToast('Submission archived', 'info');
   };
 
-  const handleDelete = (id: string, e?: React.MouseEvent) => {
+  const handleDelete = async (id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
-    // TODO: Cloudflare Worker API call DELETE /api/forms/:id
-    setSubmissionsList(prev => prev.filter(s => s.id !== id));
+    await refreshResource('submissions');
     if (selectedSubmission?.id === id) setSelectedSubmission(null);
     addToast('Submission deleted', 'success');
   };
 
-  const filteredSubmissions = submissionsList.filter(sub => {
+  const filteredSubmissions = forms.filter(sub => {
     const matchesSearch = 
       sub.senderName.toLowerCase().includes(searchQuery.toLowerCase()) ||
       sub.senderEmail.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -81,7 +38,7 @@ export const FormsPage: React.FC = () => {
       (sub.subject && sub.subject.toLowerCase().includes(searchQuery.toLowerCase()));
     
     if (statusFilter === 'all') return matchesSearch;
-    if (statusFilter === 'new') return matchesSearch && (sub.status === 'unread' || sub.status === 'new');
+    if (statusFilter === 'unread') return matchesSearch && sub.status === 'unread';
     if (statusFilter === 'read') return matchesSearch && sub.status === 'read';
     if (statusFilter === 'archived') return matchesSearch && sub.status === 'archived';
     return matchesSearch;
@@ -113,7 +70,7 @@ export const FormsPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-1.5 overflow-x-auto pb-1 md:pb-0">
-          {(['all', 'new', 'read', 'archived'] as const).map(f => (
+          {(['all', 'unread', 'read', 'archived'] as const).map(f => (
             <button 
               key={f}
               onClick={() => setStatusFilter(f)}
@@ -123,7 +80,7 @@ export const FormsPage: React.FC = () => {
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
-              {f === 'new' ? 'New Enquiries' : f}
+              {f === 'unread' ? 'New Enquiries' : f}
             </button>
           ))}
         </div>
@@ -166,7 +123,7 @@ export const FormsPage: React.FC = () => {
                     className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 cursor-pointer transition-colors"
                   >
                     <td className="p-4 font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-                      {(sub.status === 'unread' || sub.status === 'new') && (
+                      {sub.status === 'unread' && (
                         <span className="w-2 h-2 rounded-full bg-violet-600 animate-pulse"></span>
                       )}
                       {sub.senderName}
@@ -180,7 +137,7 @@ export const FormsPage: React.FC = () => {
                     <td className="p-4 text-slate-500">{sub.submittedAt}</td>
                     <td className="p-4">
                       <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase ${
-                        sub.status === 'unread' || sub.status === 'new'
+                        sub.status === 'unread'
                           ? 'bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-400 border border-violet-200 dark:border-violet-800'
                           : sub.status === 'read'
                           ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800'
@@ -198,7 +155,7 @@ export const FormsPage: React.FC = () => {
                         >
                           <Eye className="w-4 h-4" />
                         </button>
-                        {(sub.status === 'unread' || sub.status === 'new') && (
+                        {sub.status === 'unread' && (
                           <button 
                             onClick={(e) => handleMarkAsRead(sub.id, e)}
                             title="Mark as Read"
@@ -336,12 +293,6 @@ export const FormsPage: React.FC = () => {
         </div>
       )}
 
-      {/* TODO: Cloudflare Worker Backend Integration Note 
-          - GET /api/forms: Fetch all website form submissions
-          - PATCH /api/forms/:id/read: Mark submission as read
-          - POST /api/forms/:id/archive: Archive submission
-          - DELETE /api/forms/:id: Delete submission 
-      */}
     </div>
   );
 };

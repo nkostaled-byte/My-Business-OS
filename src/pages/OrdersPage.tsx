@@ -131,6 +131,7 @@ export const OrdersPage: React.FC = () => {
         addButtonLabel="Create Order"
         isLoading={isLoading}
         exportFilename="orders_export"
+        exportTable="orders"
       />
 
       {/* Create Order Modal */}

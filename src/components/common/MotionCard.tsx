@@ -5,19 +5,21 @@ interface MotionCardProps extends HTMLMotionProps<'div'> {
   children: React.ReactNode;
   className?: string;
   enableHover?: boolean;
+  delay?: number;
 }
 
 export const MotionCard: React.FC<MotionCardProps> = ({
   children,
   className = '',
   enableHover = true,
+  delay = 0,
   ...props
 }) => {
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      transition={{ duration: 0.25, delay, ease: [0.16, 1, 0.3, 1] }}
       whileHover={
         enableHover
           ? {

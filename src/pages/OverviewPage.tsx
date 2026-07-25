@@ -12,7 +12,6 @@ import {
   ShoppingBag,
   Calendar,
   Users,
-  Database,
 } from 'lucide-react';
 
 export const OverviewPage: React.FC = () => {
@@ -25,8 +24,6 @@ export const OverviewPage: React.FC = () => {
     products,
     businessHealth,
     isLoading,
-    demoMode,
-    toggleDemoMode,
   } = useData();
 
   const [dateRange, setDateRange] = useState('This Month');
@@ -45,15 +42,6 @@ export const OverviewPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
-          {!demoMode && (
-            <button
-              onClick={toggleDemoMode}
-              className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800 hover:bg-violet-200/80 transition-colors cursor-pointer"
-            >
-              <Database className="w-3.5 h-3.5" />
-              <span>Load Demo Data</span>
-            </button>
-          )}
 
           <div className="relative">
             <select

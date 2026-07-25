@@ -1,4 +1,21 @@
-import React, { createContext, useContext, useState } from 'react';
+/**
+ * DataContext — Single Source of Truth for Dashboard Data
+ * =========================================================
+ *
+ * All dashboard pages consume data through this context.
+ * No page makes independent API calls for CRUD operations.
+ *
+ * Responsibilities:
+ *   - Loading state management
+ *   - Data refresh / revalidation
+ *   - CRUD operations via api-client
+ *   - Error handling
+ *   - Profile/business metadata from localStorage (UI prefs only)
+ */
+
+import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
+import api from '../lib/api-client';
+import { DashboardResource } from '../config/api';
 import {
   DashboardStats,
   RevenueDataPoint,
@@ -8,7 +25,6 @@ import {
   Product,
   Service,
   Customer,
-  InventoryItem,
   StaffMember,
   GalleryItem,
   Review,
@@ -17,48 +33,72 @@ import {
   ActivityItem,
   BusinessHealth,
 } from '../types';
-import {
-  sampleStats,
-  sampleRevenueData,
-  sampleBookingsOverview,
-  sampleActivities,
-  sampleProducts,
-  sampleServices,
-  sampleOrders,
-  sampleBookings,
-  sampleCustomers,
-  sampleInventory,
-  sampleStaff,
-  sampleGallery,
-  sampleReviews,
-  sampleForms,
-  sampleInvoices,
-  sampleBusinessHealth,
-} from '../data/sampleData';
+
+// ─── Context Type ─────────────────────────────────────────────────
 
 interface DataContextType {
-  demoMode: boolean;
-  toggleDemoMode: () => void;
+  // Loading & Refresh
   isLoading: boolean;
-  setIsLoading: (loading: boolean) => void;
-  
+  refreshAll: () => Promise<void>;
+  refreshResource: (resource: DashboardResource) => Promise<void>;
+
+  // Dashboard Metrics
   stats: DashboardStats | null;
+  metricsLoading: boolean;
   revenueData: RevenueDataPoint[];
   bookingsOverview: BookingOverviewData | null;
   activities: ActivityItem[];
-  products: Product[];
-  services: Service[];
-  orders: Order[];
-  bookings: Booking[];
-  customers: Customer[];
-  inventory: InventoryItem[];
-  staff: StaffMember[];
-  gallery: GalleryItem[];
-  reviews: Review[];
-  forms: FormSubmission[];
-  invoices: Invoice[];
+  todayBookings: Booking[];
   businessHealth: BusinessHealth | null;
 
+  // Resource Data & Loading States
+  products: Product[];
+  productsLoading: boolean;
+  services: Service[];
+  servicesLoading: boolean;
+  orders: Order[];
+  ordersLoading: boolean;
+  bookings: Booking[];
+  bookingsLoading: boolean;
+  customers: Customer[];
+  customersLoading: boolean;
+  staff: StaffMember[];
+  staffLoading: boolean;
+  gallery: GalleryItem[];
+  galleryLoading: boolean;
+  reviews: Review[];
+  reviewsLoading: boolean;
+  forms: FormSubmission[];
+  formsLoading: boolean;
+  invoices: Invoice[];
+  invoicesLoading: boolean;
+  inventory: Array<{
+    id: string;
+    sku: string;
+    productName: string;
+    category: string;
+    currentStock: number;
+    minThreshold: number;
+    unit: string;
+    unitCost: number;
+    status: 'normal' | 'low' | 'critical';
+  }>;
+
+  // CRUD Operations
+  createResource: <T extends Record<string, unknown>>(resource: DashboardResource, data: Partial<T>) => Promise<T | null>;
+  updateResource: <T extends Record<string, unknown>>(resource: DashboardResource, id: string, data: Partial<T>) => Promise<boolean>;
+  deleteResource: (resource: DashboardResource, id: string) => Promise<boolean>;
+
+  // Convenience Wrappers
+  addProduct: (data: Partial<Product>) => Promise<Product | null>;
+  addOrder: (data: Partial<Order>) => Promise<Order | null>;
+  addCustomer: (data: Partial<Customer>) => Promise<Customer | null>;
+  addInvoice: (data: Partial<Invoice>) => Promise<Invoice | null>;
+  addService: (data: Partial<Service>) => Promise<Service | null>;
+  addStaff: (data: Partial<StaffMember>) => Promise<StaffMember | null>;
+  addGalleryItem: (data: Partial<GalleryItem>) => Promise<GalleryItem | null>;
+
+  // Profile / Business metadata (localStorage only for UI)
   businessName: string;
   setBusinessName: (name: string) => void;
   businessLogo: string;
@@ -69,58 +109,98 @@ interface DataContextType {
   setProfileEmail: (email: string) => void;
   profileAvatar: string;
   setProfileAvatar: (avatar: string) => void;
-
-  // Actions with TODO API comments
-  addOrder: (order: Partial<Order>) => void;
-  addProduct: (product: Partial<Product>) => void;
-  addBooking: (booking: Partial<Booking>) => void;
-  addService: (service: Partial<Service>) => void;
-  addCustomer: (customer: Partial<Customer>) => void;
-  addInvoice: (invoice: Partial<Invoice>) => void;
-  addStaff: (staff: Partial<StaffMember>) => void;
-  addGalleryItem: (item: Partial<GalleryItem>) => void;
-  addReview: (review: Partial<Review>) => void;
-  clearAllData: () => void;
 }
+
+// ─── Resource Fetch Helpers ───────────────────────────────────────
+
+async function fetchResource<T>(resource: DashboardResource, signal?: AbortSignal): Promise<T[]> {
+  const result = await api.get<T[]>(`/api/dashboard/${resource}`, { signal });
+  if (result.success && result.data) {
+    return result.data;
+  }
+  if (result.error) {
+    console.warn(`[DataContext] fetch ${resource}: ${result.error}`);
+  }
+  return [];
+}
+
+async function fetchMetrics(signal?: AbortSignal) {
+  const result = await api.get<Record<string, unknown>>('/api/dashboard/metrics', { signal });
+  if (result.success && result.data) {
+    return result.data;
+  }
+  return null;
+}
+
+// ─── Context ──────────────────────────────────────────────────────
 
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  // STRICT REQUIREMENT: Default state starts as empty/null/0
-  const [demoMode, setDemoMode] = useState<boolean>(false);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // Global loading state
+  const [isLoading, setIsLoading] = useState(true);
+  const abortRef = useRef<AbortController | null>(null);
+  const initialFetchDone = useRef(false);
 
+  // Dashboard Metrics
   const [stats, setStats] = useState<DashboardStats | null>(null);
+  const [metricsLoading, setMetricsLoading] = useState(false);
   const [revenueData, setRevenueData] = useState<RevenueDataPoint[]>([]);
   const [bookingsOverview, setBookingsOverview] = useState<BookingOverviewData | null>(null);
   const [activities, setActivities] = useState<ActivityItem[]>([]);
-  const [products, setProducts] = useState<Product[]>([]);
-  const [services, setServices] = useState<Service[]>([]);
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [bookings, setBookings] = useState<Booking[]>([]);
-  const [customers, setCustomers] = useState<Customer[]>([]);
-  const [inventory, setInventory] = useState<InventoryItem[]>([]);
-  const [staff, setStaff] = useState<StaffMember[]>([]);
-  const [gallery, setGallery] = useState<GalleryItem[]>([]);
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [forms, setForms] = useState<FormSubmission[]>([]);
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [todayBookings, setTodayBookings] = useState<Booking[]>([]);
   const [businessHealth, setBusinessHealth] = useState<BusinessHealth | null>(null);
 
+  // Resource States
+  const [products, setProducts] = useState<Product[]>([]);
+  const [productsLoading, setProductsLoading] = useState(false);
+  const [services, setServices] = useState<Service[]>([]);
+  const [servicesLoading, setServicesLoading] = useState(false);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [bookingsLoading, setBookingsLoading] = useState(false);
+  const [customers, setCustomers] = useState<Customer[]>([]);
+  const [customersLoading, setCustomersLoading] = useState(false);
+  const [staff, setStaff] = useState<StaffMember[]>([]);
+  const [staffLoading, setStaffLoading] = useState(false);
+  const [gallery, setGallery] = useState<GalleryItem[]>([]);
+  const [galleryLoading, setGalleryLoading] = useState(false);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviewsLoading, setReviewsLoading] = useState(false);
+  const [forms, setForms] = useState<FormSubmission[]>([]);
+  const [formsLoading, setFormsLoading] = useState(false);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [invoicesLoading, setInvoicesLoading] = useState(false);
+
+  // Derived inventory from products
+  const inventory = products.map((p) => ({
+    id: p.id,
+    sku: p.sku,
+    productName: p.name,
+    category: p.category,
+    currentStock: p.stock,
+    minThreshold: 10,
+    unit: 'units',
+    unitCost: p.costPrice || 0,
+    status: (p.stock > 10 ? 'normal' : p.stock > 0 ? 'low' : 'critical') as 'normal' | 'low' | 'critical',
+  }));
+
+  // Profile / Business metadata (localStorage only)
   const [businessName, setBusinessNameState] = useState<string>(
     localStorage.getItem('my_business_name') || 'My Business OS'
   );
   const [businessLogo, setBusinessLogoState] = useState<string>(
-    localStorage.getItem('my_business_logo') || 'https://res.cloudinary.com/dvvugpu04/image/upload/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png'
+    localStorage.getItem('my_business_logo') || ''
   );
   const [profileName, setProfileNameState] = useState<string>(
-    localStorage.getItem('my_profile_name') || 'Nkosinathi Gumede'
+    localStorage.getItem('my_profile_name') || 'Business Owner'
   );
   const [profileEmail, setProfileEmailState] = useState<string>(
-    localStorage.getItem('my_profile_email') || 'owner@mybusiness.com'
+    localStorage.getItem('my_profile_email') || ''
   );
   const [profileAvatar, setProfileAvatarState] = useState<string>(
-    localStorage.getItem('my_profile_avatar') || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'
+    localStorage.getItem('my_profile_avatar') || ''
   );
 
   const setBusinessName = (val: string) => {
@@ -144,233 +224,313 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     localStorage.setItem('my_profile_avatar', val);
   };
 
-  const toggleDemoMode = () => {
-    const nextMode = !demoMode;
-    setDemoMode(nextMode);
-    if (nextMode) {
-      // Populate demo data
-      setStats(sampleStats);
-      setRevenueData(sampleRevenueData);
-      setBookingsOverview(sampleBookingsOverview);
-      setActivities(sampleActivities);
-      setProducts(sampleProducts);
-      setServices(sampleServices);
-      setOrders(sampleOrders);
-      setBookings(sampleBookings);
-      setCustomers(sampleCustomers);
-      setInventory(sampleInventory);
-      setStaff(sampleStaff);
-      setGallery(sampleGallery);
-      setReviews(sampleReviews);
-      setForms(sampleForms);
-      setInvoices(sampleInvoices);
-      setBusinessHealth(sampleBusinessHealth);
-    } else {
-      clearAllData();
+  // ─── Fetch All Dashboard Data ─────────────────────────────────
+
+  const fetchAllData = useCallback(async () => {
+    if (abortRef.current) {
+      abortRef.current.abort();
     }
-  };
+    const controller = new AbortController();
+    abortRef.current = controller;
+    const signal = controller.signal;
 
-  const clearAllData = () => {
-    setStats(null);
-    setRevenueData([]);
-    setBookingsOverview(null);
-    setActivities([]);
-    setProducts([]);
-    setServices([]);
-    setOrders([]);
-    setBookings([]);
-    setCustomers([]);
-    setInventory([]);
-    setStaff([]);
-    setGallery([]);
-    setReviews([]);
-    setForms([]);
-    setInvoices([]);
-    setBusinessHealth(null);
-  };
+    setIsLoading(true);
 
-  // Handlers for adding local state items
-  const addOrder = (newOrder: Partial<Order>) => {
-    // TODO: connect to API (e.g. Cloudflare Worker POST /api/orders)
-    const order: Order = {
-      id: `ord-${Date.now()}`,
-      orderNumber: newOrder.orderNumber || `#ORD-${Math.floor(1000 + Math.random() * 9000)}`,
-      customerName: newOrder.customerName || 'Walk-in Customer',
-      customerEmail: newOrder.customerEmail || '',
-      status: newOrder.status || 'completed',
-      totalAmount: newOrder.totalAmount || 0,
-      itemsCount: newOrder.itemsCount || 1,
-      items: newOrder.items || [],
-      createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16),
-      paymentMethod: newOrder.paymentMethod || 'card',
-      isPos: newOrder.isPos ?? true,
-    };
-    setOrders((prev) => [order, ...prev]);
-  };
+    try {
+      const [
+        metricsData,
+        productsData,
+        servicesData,
+        ordersData,
+        bookingsData,
+        customersData,
+        staffData,
+        galleryData,
+        reviewsData,
+        formsData,
+        invoicesData,
+      ] = await Promise.all([
+        fetchMetrics(signal),
+        fetchResource<Product>('products', signal),
+        fetchResource<Service>('services', signal),
+        fetchResource<Order>('orders', signal),
+        fetchResource<Booking>('bookings', signal),
+        fetchResource<Customer>('customers', signal),
+        fetchResource<StaffMember>('staff', signal),
+        fetchResource<GalleryItem>('gallery', signal),
+        fetchResource<Review>('reviews', signal),
+        fetchResource<FormSubmission>('submissions', signal),
+        fetchResource<Invoice>('invoices', signal),
+      ]);
 
-  const addProduct = (newProd: Partial<Product>) => {
-    // TODO: connect to API (e.g. Cloudflare Worker POST /api/products)
-    const product: Product = {
-      id: `prod-${Date.now()}`,
-      sku: newProd.sku || `SKU-${Math.floor(100 + Math.random() * 900)}`,
-      name: newProd.name || 'New Product',
-      category: newProd.category || 'General',
-      price: newProd.price || 0,
-      stock: newProd.stock || 0,
-      soldCount: 0,
-      status: (newProd.stock || 0) > 10 ? 'in-stock' : (newProd.stock || 0) > 0 ? 'low-stock' : 'out-of-stock',
-      imageUrl: newProd.imageUrl || 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&auto=format&fit=crop&q=80',
-    };
-    setProducts((prev) => [product, ...prev]);
-  };
+      if (signal.aborted) return;
 
-  const addBooking = (newBk: Partial<Booking>) => {
-    // TODO: connect to API (e.g. Cloudflare Worker POST /api/bookings)
-    const booking: Booking = {
-      id: `bk-${Date.now()}`,
-      bookingCode: `#BK-${Math.floor(100 + Math.random() * 900)}`,
-      clientName: newBk.clientName || 'Guest Client',
-      clientPhone: newBk.clientPhone || '',
-      serviceName: newBk.serviceName || 'Consultation',
-      staffName: newBk.staffName || 'Staff Member',
-      date: newBk.date || new Date().toISOString().substring(0, 10),
-      time: newBk.time || '10:00',
-      status: 'upcoming',
-      amount: newBk.amount || 0,
-    };
-    setBookings((prev) => [booking, ...prev]);
-  };
+      // Set metrics
+      if (metricsData) {
+        setStats({
+          totalRevenue: (metricsData.totalRevenue as number) || 0,
+          totalRevenueChangePercent: 0,
+          totalOrders: (metricsData.totalOrders as number) || 0,
+          totalOrdersChangePercent: 0,
+          totalBookings: (metricsData.totalBookings as number) || 0,
+          totalBookingsChangePercent: 0,
+          newCustomers: (metricsData.totalCustomers as number) || 0,
+          newCustomersChangePercent: 0,
+        });
 
-  const addService = (newServ: Partial<Service>) => {
-    // TODO: connect to API (e.g. Cloudflare Worker POST /api/services)
-    const service: Service = {
-      id: `serv-${Date.now()}`,
-      name: newServ.name || 'New Service',
-      category: newServ.category || 'General',
-      durationMinutes: newServ.durationMinutes || 30,
-      price: newServ.price || 0,
-      description: newServ.description || '',
-      isActive: true,
-      imageUrl: newServ.imageUrl || undefined,
-    };
-    setServices((prev) => [service, ...prev]);
-  };
+        setRevenueData((metricsData.dailySales as RevenueDataPoint[]) || []);
+        setTodayBookings((metricsData.todayBookings as Booking[]) || []);
+        setBusinessHealth({
+          profileCompleteness: 0,
+          setupChecklist: 0,
+          customerSatisfaction: 0,
+          responseRate: 0,
+        });
+      }
 
-  const addCustomer = (newCust: Partial<Customer>) => {
-    // TODO: connect to API (e.g. Cloudflare Worker POST /api/customers)
-    const customer: Customer = {
-      id: `cust-${Date.now()}`,
-      name: newCust.name || 'New Client',
-      email: newCust.email || '',
-      phone: newCust.phone || '',
-      tier: 'New',
-      totalSpent: 0,
-      ordersCount: 0,
-      lastVisit: new Date().toISOString().substring(0, 10),
-    };
-    setCustomers((prev) => [customer, ...prev]);
-  };
+      // Set all resources
+      setProducts(productsData);
+      setServices(servicesData);
+      setOrders(ordersData);
+      setBookings(
+        bookingsData.map((b) => {
+          const ts = (b as any).startTime;
+          if (ts && !(b as any).date) {
+            const d = new Date(ts);
+            return {
+              ...b,
+              date: d.toISOString().split('T')[0],
+              time: d.toTimeString().slice(0, 5),
+            } as any;
+          }
+          return b;
+        }) as Booking[]
+      );
+      setCustomers(customersData);
+      setStaff(staffData);
+      setGallery(galleryData);
+      setReviews(reviewsData);
+      setForms(formsData);
+      setInvoices(invoicesData);
 
-  const addInvoice = (newInv: Partial<Invoice>) => {
-    // TODO: connect to API (e.g. Cloudflare Worker POST /api/invoices)
-    const invoice: Invoice = {
-      id: `inv-${Date.now()}`,
-      invoiceNumber: `#INV-2026-${Math.floor(100 + Math.random() * 900)}`,
-      clientName: newInv.clientName || 'Client Name',
-      clientEmail: newInv.clientEmail || '',
-      amount: newInv.amount || 0,
-      dueDate: newInv.dueDate || new Date().toISOString().substring(0, 10),
-      issuedDate: new Date().toISOString().substring(0, 10),
-      status: newInv.status || 'draft',
-    };
-    setInvoices((prev) => [invoice, ...prev]);
-  };
+      // Build bookings overview
+      const completed = bookingsData.filter((b) => b.status === 'completed').length;
+      const upcoming = bookingsData.filter((b) => b.status === 'upcoming').length;
+      const cancelled = bookingsData.filter((b) => b.status === 'cancelled').length;
+      setBookingsOverview({ completed, upcoming, cancelled, total: bookingsData.length });
 
-  const addStaff = (newStaff: Partial<StaffMember>) => {
-    // TODO: connect to API (e.g. Cloudflare Worker POST /api/staff)
-    const staffMember: StaffMember = {
-      id: `staff-${Date.now()}`,
-      name: newStaff.name || 'Team Member',
-      role: newStaff.role || 'Staff',
-      email: newStaff.email || '',
-      phone: newStaff.phone || '',
-      status: 'active',
-      specialties: newStaff.specialties || ['General'],
-    };
-    setStaff((prev) => [staffMember, ...prev]);
-  };
+      // Build activities from recent orders and bookings
+      const recentOrders = ordersData.slice(0, 3).map((o) => ({
+        id: `act-order-${o.id}`,
+        title: 'New order received',
+        description: o.orderNumber || `Order #${o.id}`,
+        timestamp: o.createdAt || new Date().toISOString(),
+        type: 'order' as const,
+      }));
+      const recentBookings = bookingsData.slice(0, 2).map((b) => ({
+        id: `act-booking-${b.id}`,
+        title: 'Booking confirmed',
+        description: `${b.clientName} - ${b.serviceName}`,
+        timestamp: b.date || new Date().toISOString(),
+        type: 'booking' as const,
+      }));
+      setActivities([...recentOrders, ...recentBookings]);
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === 'AbortError') return;
+      console.error('[DataContext] fetchAllData error:', err);
+    } finally {
+      if (!signal.aborted) {
+        setIsLoading(false);
+      }
+    }
+  }, []);
 
-  const addGalleryItem = (item: Partial<GalleryItem>) => {
-    // TODO: connect to API (e.g. Cloudflare Worker POST /api/gallery/upload)
-    const galleryItem: GalleryItem = {
-      id: `gal-${Date.now()}`,
-      title: item.title || 'Uploaded Image',
-      category: item.category || 'Portfolio',
-      imageUrl: item.imageUrl || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&auto=format&fit=crop&q=80',
-      uploadedAt: new Date().toISOString().substring(0, 10),
-    };
-    setGallery((prev) => [galleryItem, ...prev]);
-  };
+  // ─── Refresh ──────────────────────────────────────────────────
 
-  const addReview = (rev: Partial<Review>) => {
-    // TODO: connect to API (e.g. Cloudflare Worker POST /api/reviews)
-    const review: Review = {
-      id: `rev-${Date.now()}`,
-      customerName: rev.customerName || 'Anonymous Customer',
-      rating: rev.rating || 5,
-      comment: rev.comment || '',
-      serviceOrProduct: rev.serviceOrProduct || 'Service',
-      date: new Date().toISOString().substring(0, 10),
-      status: 'published',
-    };
-    setReviews((prev) => [review, ...prev]);
+  const refreshAll = useCallback(async () => {
+    await fetchAllData();
+  }, [fetchAllData]);
+
+  const refreshResource = useCallback(async (resource: DashboardResource) => {
+    const data = await fetchResource<Record<string, unknown>>(resource);
+    switch (resource) {
+      case 'products': setProducts(data as unknown as Product[]); break;
+      case 'services': setServices(data as unknown as Service[]); break;
+      case 'orders': setOrders(data as unknown as Order[]); break;
+      case 'bookings': setBookings(data as unknown as Booking[]); break;
+      case 'customers': setCustomers(data as unknown as Customer[]); break;
+      case 'staff': setStaff(data as unknown as StaffMember[]); break;
+      case 'gallery': setGallery(data as unknown as GalleryItem[]); break;
+      case 'reviews': setReviews(data as unknown as Review[]); break;
+      case 'submissions': setForms(data as unknown as FormSubmission[]); break;
+      case 'invoices': setInvoices(data as unknown as Invoice[]); break;
+      default: break;
+    }
+  }, []);
+
+  // ─── CRUD Operations ──────────────────────────────────────────
+
+  const createResource = useCallback(async <T extends Record<string, unknown>>(
+    resource: DashboardResource,
+    data: Partial<T>
+  ): Promise<T | null> => {
+    const result = await api.post<T>(`/api/dashboard/${resource}`, data);
+    if (result.success && result.data) {
+      // Optimistic update: add to local state
+      switch (resource) {
+        case 'products': setProducts((prev) => [result.data as unknown as Product, ...prev]); break;
+        case 'services': setServices((prev) => [result.data as unknown as Service, ...prev]); break;
+        case 'orders': setOrders((prev) => [result.data as unknown as Order, ...prev]); break;
+        case 'bookings': setBookings((prev) => [result.data as unknown as Booking, ...prev]); break;
+        case 'customers': setCustomers((prev) => [result.data as unknown as Customer, ...prev]); break;
+        case 'staff': setStaff((prev) => [result.data as unknown as StaffMember, ...prev]); break;
+        case 'gallery': setGallery((prev) => [result.data as unknown as GalleryItem, ...prev]); break;
+        case 'reviews': setReviews((prev) => [result.data as unknown as Review, ...prev]); break;
+        case 'submissions': setForms((prev) => [result.data as unknown as FormSubmission, ...prev]); break;
+        case 'invoices': setInvoices((prev) => [result.data as unknown as Invoice, ...prev]); break;
+        default: break;
+      }
+      return result.data;
+    }
+    return null;
+  }, []);
+
+  const updateResource = useCallback(async <T extends Record<string, unknown>>(
+    resource: DashboardResource,
+    id: string,
+    data: Partial<T>
+  ): Promise<boolean> => {
+    const result = await api.put(`/api/dashboard/${resource}/${id}`, data);
+    if (result.success) {
+      // Refresh the resource to get updated data
+      await refreshResource(resource);
+      return true;
+    }
+    return false;
+  }, [refreshResource]);
+
+  const deleteResource = useCallback(async (
+    resource: DashboardResource,
+    id: string
+  ): Promise<boolean> => {
+    const result = await api.del(`/api/dashboard/${resource}/${id}`);
+    if (result.success) {
+      // Optimistic update: remove from local state
+      switch (resource) {
+        case 'products': setProducts((prev) => prev.filter((item) => item.id !== id)); break;
+        case 'services': setServices((prev) => prev.filter((item) => item.id !== id)); break;
+        case 'orders': setOrders((prev) => prev.filter((item) => item.id !== id)); break;
+        case 'bookings': setBookings((prev) => prev.filter((item) => item.id !== id)); break;
+        case 'customers': setCustomers((prev) => prev.filter((item) => item.id !== id)); break;
+        case 'staff': setStaff((prev) => prev.filter((item) => item.id !== id)); break;
+        case 'gallery': setGallery((prev) => prev.filter((item) => item.id !== id)); break;
+        case 'reviews': setReviews((prev) => prev.filter((item) => item.id !== id)); break;
+        case 'submissions': setForms((prev) => prev.filter((item) => item.id !== id)); break;
+        case 'invoices': setInvoices((prev) => prev.filter((item) => item.id !== id)); break;
+        default: break;
+      }
+      return true;
+    }
+    return false;
+  }, []);
+
+  // ─── Convenience Wrappers ────────────────────────────────────
+
+  const addProduct = useCallback(async (data: Partial<Product>) => {
+    return createResource('products', data as unknown as Record<string, unknown>) as unknown as Product | null;
+  }, [createResource]);
+
+  const addOrder = useCallback(async (data: Partial<Order>) => {
+    return createResource('orders', data as unknown as Record<string, unknown>) as unknown as Order | null;
+  }, [createResource]);
+
+  const addCustomer = useCallback(async (data: Partial<Customer>) => {
+    return createResource('customers', data as unknown as Record<string, unknown>) as unknown as Customer | null;
+  }, [createResource]);
+
+  const addInvoice = useCallback(async (data: Partial<Invoice>) => {
+    return createResource('invoices', data as unknown as Record<string, unknown>) as unknown as Invoice | null;
+  }, [createResource]);
+
+  const addService = useCallback(async (data: Partial<Service>) => {
+    return createResource('services', data as unknown as Record<string, unknown>) as unknown as Service | null;
+  }, [createResource]);
+
+  const addStaff = useCallback(async (data: Partial<StaffMember>) => {
+    return createResource('staff', data as unknown as Record<string, unknown>) as unknown as StaffMember | null;
+  }, [createResource]);
+
+  const addGalleryItem = useCallback(async (data: Partial<GalleryItem>) => {
+    return createResource('gallery', data as unknown as Record<string, unknown>) as unknown as GalleryItem | null;
+  }, [createResource]);
+
+  // ─── Initial Fetch on Mount ───────────────────────────────────
+
+  useEffect(() => {
+    if (!initialFetchDone.current) {
+      initialFetchDone.current = true;
+      fetchAllData();
+    }
+  }, [fetchAllData]);
+
+  // ─── Context Value ────────────────────────────────────────────
+
+  const value: DataContextType = {
+    isLoading,
+    refreshAll,
+    refreshResource,
+    stats,
+    metricsLoading,
+    revenueData,
+    bookingsOverview,
+    activities,
+    todayBookings,
+    businessHealth,
+    products,
+    productsLoading,
+    services,
+    servicesLoading,
+    orders,
+    ordersLoading,
+    bookings,
+    bookingsLoading,
+    customers,
+    customersLoading,
+    staff,
+    staffLoading,
+    gallery,
+    galleryLoading,
+    reviews,
+    reviewsLoading,
+    forms,
+    formsLoading,
+    invoices,
+    invoicesLoading,
+    inventory,
+    createResource,
+    updateResource,
+    deleteResource,
+    addProduct,
+    addOrder,
+    addCustomer,
+    addInvoice,
+    addService,
+    addStaff,
+    addGalleryItem,
+    businessName,
+    setBusinessName,
+    businessLogo,
+    setBusinessLogo,
+    profileName,
+    setProfileName,
+    profileEmail,
+    setProfileEmail,
+    profileAvatar,
+    setProfileAvatar,
   };
 
   return (
-    <DataContext.Provider
-      value={{
-        demoMode,
-        toggleDemoMode,
-        isLoading,
-        setIsLoading,
-        stats,
-        revenueData,
-        bookingsOverview,
-        activities,
-        products,
-        services,
-        orders,
-        bookings,
-        customers,
-        inventory,
-        staff,
-        gallery,
-        reviews,
-        forms,
-        invoices,
-        businessHealth,
-        businessName,
-        setBusinessName,
-        businessLogo,
-        setBusinessLogo,
-        profileName,
-        setProfileName,
-        profileEmail,
-        setProfileEmail,
-        profileAvatar,
-        setProfileAvatar,
-        addOrder,
-        addProduct,
-        addBooking,
-        addService,
-        addCustomer,
-        addInvoice,
-        addStaff,
-        addGalleryItem,
-        addReview,
-        clearAllData,
-      }}
-    >
+    <DataContext.Provider value={value}>
       {children}
     </DataContext.Provider>
   );

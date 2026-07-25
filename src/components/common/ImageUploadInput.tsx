@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Image as ImageIcon, Link, X, Check, Sparkles } from 'lucide-react';
+import { Upload, Image as ImageIcon, Link, X, Check, Sparkles, Loader2 } from 'lucide-react';
+import api from '../../lib/api-client';
 
 interface ImagePreset {
   label: string;
@@ -12,6 +13,7 @@ interface ImageUploadInputProps {
   label?: string;
   presets?: ImagePreset[];
   placeholder?: string;
+  folder?: 'logos' | 'profile' | 'products';
 }
 
 export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
@@ -20,28 +22,38 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
   label = 'Product / Service Image',
   presets = [],
   placeholder = 'Upload image or enter image URL...',
+  folder = 'products',
 }) => {
   const [tab, setTab] = useState<'upload' | 'url'>('upload');
   const [urlInput, setUrlInput] = useState(value);
   const [isDragging, setIsDragging] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const handleFileChange = (file: File | undefined) => {
+  const handleFileChange = async (file: File | undefined) => {
     if (!file) return;
     if (!file.type.startsWith('image/')) {
       alert('Please select a valid image file (PNG, JPG, WEBP, etc.).');
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const dataUrl = e.target?.result as string;
-      if (dataUrl) {
-        onChange(dataUrl);
-        setUrlInput(dataUrl);
+    setIsUploading(true);
+    setUploadError(null);
+
+    try {
+      const result = await api.upload(file, folder);
+      if (result.success && result.data?.url) {
+        onChange(result.data.url);
+        setUrlInput(result.data.url);
+      } else {
+        setUploadError(result.error || 'Upload failed. Please try again or use a URL instead.');
       }
-    };
-    reader.readAsDataURL(file);
+    } catch (err: any) {
+      setUploadError(err?.message || 'Upload failed. Please try again or use a URL instead.');
+    } finally {
+      setIsUploading(false);
+    }
   };
 
   const handleDrop = (e: React.DragEvent) => {
@@ -131,9 +143,11 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
               }}
               onDragLeave={() => setIsDragging(false)}
               onDrop={handleDrop}
-              onClick={() => fileInputRef.current?.click()}
+              onClick={() => !isUploading && fileInputRef.current?.click()}
               className={`border-2 border-dashed rounded-2xl p-4 text-center cursor-pointer transition-all ${
-                isDragging
+                isUploading
+                  ? 'border-violet-300 bg-violet-50/50 dark:bg-violet-950/20 cursor-wait'
+                  : isDragging
                   ? 'border-violet-500 bg-violet-50 dark:bg-violet-950/40'
                   : 'border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 bg-slate-50/50 dark:bg-slate-800/40'
               }`}
@@ -144,16 +158,43 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
                 accept="image/*"
                 onChange={(e) => handleFileChange(e.target.files?.[0])}
                 className="hidden"
+                disabled={isUploading}
               />
-              <div className="w-10 h-10 rounded-xl bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center mx-auto mb-2">
-                <Upload className="w-5 h-5" />
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2 ${
+                isUploading
+                  ? 'bg-violet-100 dark:bg-violet-900/60 text-violet-500 dark:text-violet-300'
+                  : 'bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400'
+              }`}>
+                {isUploading ? (
+                  <Loader2 className="w-5 h-5 animate-spin" />
+                ) : (
+                  <Upload className="w-5 h-5" />
+                )}
               </div>
-              <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
-                Click or Drag & Drop photo here
-              </p>
-              <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
-                Supports PNG, JPG, WEBP or GIF
-              </p>
+              {isUploading ? (
+                <>
+                  <p className="text-xs font-bold text-violet-600 dark:text-violet-400">
+                    Uploading to server...
+                  </p>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
+                    Please wait while your image is uploaded
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p className="text-xs font-bold text-slate-800 dark:text-slate-200">
+                    Click or Drag & Drop photo here
+                  </p>
+                  <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
+                    Supports PNG, JPG, WEBP or GIF
+                  </p>
+                </>
+              )}
+              {uploadError && (
+                <p className="text-[11px] text-rose-500 dark:text-rose-400 mt-2">
+                  {uploadError}
+                </p>
+              )}
             </div>
           ) : (
             <div className="flex gap-2">

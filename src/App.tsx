@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { DataProvider } from './context/DataContext';
 import { ToastProvider } from './context/ToastContext';
+import { initializeAuth, subscribeToAuth, AuthState, DEFAULT_AUTH_STATE } from './lib/auth-client';
 
 import { PublicLayout } from './components/layout/PublicLayout';
 import { DashboardLayout } from './components/layout/DashboardLayout';
@@ -37,7 +38,36 @@ import { InvoicesPage } from './pages/InvoicesPage';
 import { BillingPage } from './pages/BillingPage';
 import { SettingsPage } from './pages/SettingsPage';
 
+// Protected Route wrapper
+function ProtectedRoute({ children, authState }: { children: React.ReactNode; authState: AuthState }) {
+  if (authState.isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+        <div className="flex flex-col items-center gap-3">
+          <div className="w-8 h-8 border-2 border-violet-600 border-t-transparent rounded-full animate-spin" />
+          <p className="text-sm text-slate-500 dark:text-slate-400">Restoring session...</p>
+        </div>
+      </div>
+    );
+  }
+  if (!authState.isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  return <>{children}</>;
+}
+
 export default function App() {
+  const [authState, setAuthState] = useState<AuthState>(DEFAULT_AUTH_STATE);
+
+  useEffect(() => {
+    // Initialize auth session restore
+    initializeAuth().then(setAuthState);
+
+    // Subscribe to auth changes
+    const unsubscribe = subscribeToAuth(setAuthState);
+    return unsubscribe;
+  }, []);
+
   return (
     <ThemeProvider>
       <DataProvider>
@@ -62,7 +92,14 @@ export default function App() {
               <Route path="/login" element={<LoginPage />} />
 
               {/* Authenticated Dashboard Shell */}
-              <Route path="/app" element={<DashboardLayout />}>
+              <Route
+                path="/app"
+                element={
+                  <ProtectedRoute authState={authState}>
+                    <DashboardLayout />
+                  </ProtectedRoute>
+                }
+              >
                 <Route index element={<OverviewPage />} />
                 <Route path="analytics" element={<AnalyticsPage />} />
                 <Route path="orders" element={<OrdersPage />} />

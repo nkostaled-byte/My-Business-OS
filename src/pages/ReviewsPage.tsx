@@ -35,7 +35,7 @@ export const ReviewsPage: React.FC = () => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <span className="font-bold text-slate-900 dark:text-slate-100 text-sm">
-                    {rev.clientName}
+                    {rev.customerName}
                   </span>
                   <span className="text-[10px] text-slate-400">• {rev.date}</span>
                 </div>
@@ -56,15 +56,12 @@ export const ReviewsPage: React.FC = () => {
                 "{rev.comment}"
               </p>
 
-              {rev.serviceName && (
+              {rev.serviceOrProduct && (
                 <div className="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400">
-                  <span>Service: {rev.serviceName}</span>
-                  <button
-                    onClick={() => alert('Respond to review flow placeholder')}
-                    className="text-violet-600 dark:text-violet-400 hover:underline flex items-center gap-1 font-semibold cursor-pointer"
-                  >
+                  <span>Service: {rev.serviceOrProduct}</span>
+                  <span className="text-violet-600 dark:text-violet-400 flex items-center gap-1 font-semibold">
                     <MessageSquare className="w-3 h-3" /> Reply
-                  </button>
+                  </span>
                 </div>
               )}
             </div>

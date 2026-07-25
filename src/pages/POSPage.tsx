@@ -575,7 +575,7 @@ export const POSPage: React.FC = () => {
                   ))}
                 </div>
 
-                <ExportDropdown data={posOrders} filename="pos-history-export.csv" />
+                <ExportDropdown filename="pos-history-export.csv" />
               </div>
             </div>
 

@@ -327,7 +327,6 @@ export const WebsiteManagerPage: React.FC = () => {
         </div>
       </div>
 
-      {/* TODO: Cloudflare Worker live sync integration note for Website Manager */}
     </div>
   );
 };
