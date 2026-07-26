@@ -3,6 +3,8 @@
 ## Phase 3: Auth & Routing
 - [x] Update `src/App.tsx` — Auth-aware routing with session restore
 - [x] Rewrite `src/pages/LoginPage.tsx` — Real Supabase OAuth + email login
+- [x] Complete `src/pages/OnboardingPage.tsx` — Business setup wizard with create/claim flows
+- [x] Update `src/App.tsx` — Add onboarding route + BusinessGuard for client_id check
 
 ## Phase 4: Dashboard Pages
 - [x] OverviewPage — Connected via DataContext, real Worker API

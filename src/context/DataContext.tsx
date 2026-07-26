@@ -89,7 +89,7 @@ interface DataContextType {
   updateResource: <T extends Record<string, unknown>>(resource: DashboardResource, id: string, data: Partial<T>) => Promise<boolean>;
   deleteResource: (resource: DashboardResource, id: string) => Promise<boolean>;
 
-  // Convenience Wrappers
+  // Convenience Wrappers (return null on failure — caller checks)
   addProduct: (data: Partial<Product>) => Promise<Product | null>;
   addOrder: (data: Partial<Order>) => Promise<Order | null>;
   addCustomer: (data: Partial<Customer>) => Promise<Customer | null>;
@@ -374,25 +374,33 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     resource: DashboardResource,
     data: Partial<T>
   ): Promise<T | null> => {
-    const result = await api.post<T>(`/api/dashboard/${resource}`, data);
-    if (result.success && result.data) {
-      // Optimistic update: add to local state
-      switch (resource) {
-        case 'products': setProducts((prev) => [result.data as unknown as Product, ...prev]); break;
-        case 'services': setServices((prev) => [result.data as unknown as Service, ...prev]); break;
-        case 'orders': setOrders((prev) => [result.data as unknown as Order, ...prev]); break;
-        case 'bookings': setBookings((prev) => [result.data as unknown as Booking, ...prev]); break;
-        case 'customers': setCustomers((prev) => [result.data as unknown as Customer, ...prev]); break;
-        case 'staff': setStaff((prev) => [result.data as unknown as StaffMember, ...prev]); break;
-        case 'gallery': setGallery((prev) => [result.data as unknown as GalleryItem, ...prev]); break;
-        case 'reviews': setReviews((prev) => [result.data as unknown as Review, ...prev]); break;
-        case 'submissions': setForms((prev) => [result.data as unknown as FormSubmission, ...prev]); break;
-        case 'invoices': setInvoices((prev) => [result.data as unknown as Invoice, ...prev]); break;
-        default: break;
+    try {
+      const result = await api.post<T>(`/api/dashboard/${resource}`, data);
+      if (result.success && result.data) {
+        // Optimistic update: add to local state
+        switch (resource) {
+          case 'products': setProducts((prev) => [result.data as unknown as Product, ...prev]); break;
+          case 'services': setServices((prev) => [result.data as unknown as Service, ...prev]); break;
+          case 'orders': setOrders((prev) => [result.data as unknown as Order, ...prev]); break;
+          case 'bookings': setBookings((prev) => [result.data as unknown as Booking, ...prev]); break;
+          case 'customers': setCustomers((prev) => [result.data as unknown as Customer, ...prev]); break;
+          case 'staff': setStaff((prev) => [result.data as unknown as StaffMember, ...prev]); break;
+          case 'gallery': setGallery((prev) => [result.data as unknown as GalleryItem, ...prev]); break;
+          case 'reviews': setReviews((prev) => [result.data as unknown as Review, ...prev]); break;
+          case 'submissions': setForms((prev) => [result.data as unknown as FormSubmission, ...prev]); break;
+          case 'invoices': setInvoices((prev) => [result.data as unknown as Invoice, ...prev]); break;
+          default: break;
+        }
+        return result.data;
       }
-      return result.data;
+      // Log API errors to console for debugging
+      console.error(`[DataContext] createResource failed for ${resource}:`, result.error || 'Unknown error');
+      return null;
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : 'Network error';
+      console.error(`[DataContext] createResource exception for ${resource}:`, message);
+      return null;
     }
-    return null;
   }, []);
 
   const updateResource = useCallback(async <T extends Record<string, unknown>>(

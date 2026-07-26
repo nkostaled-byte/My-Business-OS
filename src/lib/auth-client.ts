@@ -5,9 +5,13 @@
  * Manages Supabase Auth lifecycle for the dashboard:
  * - Google OAuth sign-in
  * - Email/password sign-in and sign-up
- * - Account claiming (POST /api/claim-account)
+ * - Business linking (create or claim)
  * - Session persistence and auto-restore after refresh
  * - Logout
+ *
+ * Important: Authentication and business-linking are DECOUPLED.
+ * A user can be authenticated without having a business (client_id).
+ * The onboarding flow handles business creation/claiming.
  */
 
 import { createClient, SupabaseClient, Session, AuthResponse, User } from '@supabase/supabase-js';
@@ -87,19 +91,46 @@ function syncTokenFromSession(session: Session | null) {
   }
 }
 
-// ─── Account Claiming ─────────────────────────────────────────────
+// ─── Business Linking ─────────────────────────────────────────────
 
-async function claimAccount(token: string, businessName?: string): Promise<{ status: string; client?: any }> {
-  const result = await api.post('/api/claim-account', {
-    businessName: businessName || 'My Business',
-  });
+/**
+ * Check if the authenticated user is already linked to a business.
+ * Uses a lightweight GET endpoint — does NOT create anything.
+ */
+export async function checkClientLink(): Promise<{ linked: boolean; clientId: string | null; businessName: string | null }> {
+  const result = await api.get<{ linked: boolean; clientId: string | null; businessName: string | null }>('/api/claim-account/status');
+  if (result.success && result.data) {
+    return result.data;
+  }
+  return { linked: false, clientId: null, businessName: null };
+}
+
+/**
+ * Create a new business (client) and link it to the authenticated user.
+ * POST /api/claim-account with full business details.
+ */
+export async function createBusiness(data: {
+  businessName: string;
+  businessType?: string;
+  country?: string;
+  currency?: string;
+  timezone?: string;
+  phone?: string;
+  primaryColor?: string;
+  logoUrl?: string;
+}): Promise<{ status: string; client?: any }> {
+  const result = await api.post('/api/claim-account', data);
   if (!result.success) {
-    throw new Error(result.error || 'Failed to claim account.');
+    throw new Error(result.error || 'Failed to create business.');
   }
   return result.data as { status: string; client?: any };
 }
 
-async function claimWithCode(claimCode: string): Promise<{ status: string; client?: any }> {
+/**
+ * Claim an existing business by claim code.
+ * POST /api/claim-account/relink
+ */
+export async function claimWithInviteCode(claimCode: string): Promise<{ status: string; client?: any }> {
   const result = await api.post('/api/claim-account/relink', { claimCode });
   if (!result.success) {
     throw new Error(result.error || 'Failed to claim account with code.');
@@ -109,48 +140,10 @@ async function claimWithCode(claimCode: string): Promise<{ status: string; clien
 
 // ─── Core Auth Functions ──────────────────────────────────────────
 
-// In-memory cache for current auth resolution
-let resolvedClientId: string | null = null;
-let resolvedBusinessName: string | null = null;
-
-async function resolveAuth(session: Session | null): Promise<AuthState> {
-  if (!session?.user) {
-    resolvedClientId = null;
-    resolvedBusinessName = null;
-    return {
-      user: null,
-      session: null,
-      clientId: null,
-      businessName: null,
-      isAuthenticated: false,
-      isLoading: false,
-    };
-  }
-
-  // Try to claim/link the account (idempotent — returns existing if already linked)
-  try {
-    const claimResult = await claimAccount(session.access_token);
-    const client = claimResult?.client;
-    resolvedClientId = client?.client_id || null;
-    resolvedBusinessName = client?.business_name || null;
-  } catch {
-    // If claiming fails, user might be authenticated but not linked yet
-    resolvedClientId = null;
-    resolvedBusinessName = null;
-  }
-
-  return {
-    user: session.user,
-    session,
-    clientId: resolvedClientId,
-    businessName: resolvedBusinessName,
-    isAuthenticated: true,
-    isLoading: false,
-  };
-}
-
 /**
- * Initialize auth — restore session on app mount
+ * Initialize auth — restore session on app mount.
+ * Resolves business ownership from the Worker (database), NOT localStorage.
+ * The Worker is the source of truth for business linking.
  */
 export async function initializeAuth(): Promise<AuthState> {
   const supabase = getSupabaseClient();
@@ -163,13 +156,89 @@ export async function initializeAuth(): Promise<AuthState> {
       syncTokenFromSession(session);
     }
 
-    const state = await resolveAuth(session);
+    if (!session?.user) {
+      const state: AuthState = {
+        user: null,
+        session: null,
+        clientId: null,
+        businessName: null,
+        isAuthenticated: false,
+        isLoading: false,
+      };
+      currentAuthState = state;
+      notifyListeners(state);
+      return state;
+    }
+
+    // User is authenticated — resolve business ownership from the Worker (database)
+    let clientId: string | null = null;
+    let businessName: string | null = null;
+
+    try {
+      const linkStatus = await checkClientLink();
+      if (linkStatus.linked && linkStatus.clientId) {
+        clientId = linkStatus.clientId;
+        businessName = linkStatus.businessName;
+      }
+    } catch (linkErr) {
+      // If the Worker is unreachable, user still needs to go through onboarding
+      console.warn('[Auth] Failed to check business link from Worker:', linkErr);
+    }
+
+    const state: AuthState = {
+      user: session.user,
+      session,
+      clientId,
+      businessName,
+      isAuthenticated: true,
+      isLoading: false,
+    };
+
+    // Store in-memory for synchronous access
+    currentAuthState = state;
     notifyListeners(state);
 
     // Listen for auth state changes (sign in, sign out, token refresh)
     supabase.auth.onAuthStateChange(async (_event: string, session: Session | null) => {
       syncTokenFromSession(session);
-      const newState = await resolveAuth(session);
+
+      if (!session?.user) {
+        const newState: AuthState = {
+          user: null,
+          session: null,
+          clientId: null,
+          businessName: null,
+          isAuthenticated: false,
+          isLoading: false,
+        };
+        currentAuthState = newState;
+        notifyListeners(newState);
+        return;
+      }
+
+      // Re-resolve business link from Worker on auth change
+      let newClientId: string | null = null;
+      let newBusinessName: string | null = null;
+      try {
+        const linkStatus = await checkClientLink();
+        if (linkStatus.linked && linkStatus.clientId) {
+          newClientId = linkStatus.clientId;
+          newBusinessName = linkStatus.businessName;
+        }
+      } catch {
+        // Worker unreachable — user will be redirected to onboarding
+      }
+
+      const newState: AuthState = {
+        user: session.user,
+        session,
+        clientId: newClientId,
+        businessName: newBusinessName,
+        isAuthenticated: true,
+        isLoading: false,
+      };
+
+      currentAuthState = newState;
       notifyListeners(newState);
     });
 
@@ -186,6 +255,20 @@ export async function initializeAuth(): Promise<AuthState> {
     notifyListeners(errorState);
     return errorState;
   }
+}
+
+/**
+ * Set client ID and business name in auth state after successful onboarding.
+ * Called by the onboarding page after create/claim.
+ */
+export async function setClientInfo(clientId: string, businessName: string): Promise<void> {
+  const newState: AuthState = {
+    ...currentAuthState,
+    clientId,
+    businessName,
+  };
+  currentAuthState = newState;
+  notifyListeners(newState);
 }
 
 /**
@@ -223,27 +306,12 @@ export async function signUpWithEmail(email: string, password: string): Promise<
 }
 
 /**
- * Claim account with invitation code (manual relink)
- */
-export async function claimWithInviteCode(code: string): Promise<{ status: string; client?: any }> {
-  const supabase = getSupabaseClient();
-  const session = (await supabase.auth.getSession()).data.session;
-  if (!session?.access_token) {
-    throw new Error('You must be signed in first.');
-  }
-  storeToken(session.access_token);
-  return claimWithCode(code);
-}
-
-/**
  * Sign out
  */
 export async function signOut(): Promise<void> {
   const supabase = getSupabaseClient();
   await supabase.auth.signOut();
   clearToken();
-  resolvedClientId = null;
-  resolvedBusinessName = null;
   const state: AuthState = {
     user: null,
     session: null,
@@ -252,17 +320,37 @@ export async function signOut(): Promise<void> {
     isAuthenticated: false,
     isLoading: false,
   };
+  currentAuthState = state;
   notifyListeners(state);
 }
 
 /**
- * Refresh auth state manually (e.g. after claim-account)
+ * Refresh auth state manually (e.g. after business create/claim)
  */
 export async function refreshAuthState(): Promise<AuthState> {
   const supabase = getSupabaseClient();
   const { data: { session } } = await supabase.auth.getSession();
   if (session) syncTokenFromSession(session);
-  const state = await resolveAuth(session);
+
+  const state: AuthState = session?.user
+    ? {
+        user: session.user,
+        session,
+        clientId: null,
+        businessName: null,
+        isAuthenticated: true,
+        isLoading: false,
+      }
+    : {
+        user: null,
+        session: null,
+        clientId: null,
+        businessName: null,
+        isAuthenticated: false,
+        isLoading: false,
+      };
+
+  currentAuthState = state;
   notifyListeners(state);
   return state;
 }
@@ -272,12 +360,5 @@ export async function refreshAuthState(): Promise<AuthState> {
  */
 export function getCurrentAuthState(): AuthState {
   return { ...currentAuthState };
-}
-
-/**
- * Get resolved client ID from auth state
- */
-export function getClientId(): string | null {
-  return resolvedClientId;
 }
 

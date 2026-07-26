@@ -28,9 +28,9 @@ export const ServicesPage: React.FC = () => {
     { label: 'Beard Grooming', url: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400&auto=format&fit=crop&q=80' },
   ];
 
-  const handleAddService = (e: React.FormEvent) => {
+  const handleAddService = async (e: React.FormEvent) => {
     e.preventDefault();
-    addService({
+    const result = await addService({
       name,
       category,
       durationMinutes: parseInt(duration, 10) || 30,
@@ -38,17 +38,25 @@ export const ServicesPage: React.FC = () => {
       description,
       imageUrl: imageUrl || undefined,
     });
-    addToast({
-      title: 'Service Created',
-      message: `"${name}" is now live and bookable.`,
-      type: 'success',
-    });
-    setIsModalOpen(false);
-    setName('');
-    setCategory('');
-    setPrice('');
-    setDescription('');
-    setImageUrl('');
+    if (result) {
+      addToast({
+        title: 'Service Created',
+        message: `"${name}" is now live and bookable.`,
+        type: 'success',
+      });
+      setIsModalOpen(false);
+      setName('');
+      setCategory('');
+      setPrice('');
+      setDescription('');
+      setImageUrl('');
+    } else {
+      addToast({
+        title: 'Failed to Create Service',
+        message: 'Could not save the service. Please check your connection and try again.',
+        type: 'error',
+      });
+    }
   };
 
   return (

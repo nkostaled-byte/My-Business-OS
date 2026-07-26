@@ -34,26 +34,47 @@ export const ProductsPage: React.FC = () => {
       p.category.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleAddProduct = (e: React.FormEvent) => {
+  const generateSku = (productName: string): string => {
+    const clean = productName
+      .replace(/[^a-zA-Z0-9\s-]/g, '')
+      .trim()
+      .toUpperCase()
+      .replace(/\s+/g, '-')
+      .slice(0, 12);
+    const suffix = Math.random().toString(36).substring(2, 6).toUpperCase();
+    return `${clean}-${suffix}`;
+  };
+
+  const handleAddProduct = async (e: React.FormEvent) => {
     e.preventDefault();
-    addProduct({
+    const sku = generateSku(name);
+    const result = await addProduct({
       name,
+      sku,
       category,
       price: parseFloat(price) || 0,
       stock: parseInt(stock, 10) || 0,
       imageUrl: imageUrl || undefined,
     });
-    addToast({
-      title: 'Product Added',
-      message: `"${name}" has been added to your catalog.`,
-      type: 'success',
-    });
-    setIsModalOpen(false);
-    setName('');
-    setCategory('');
-    setPrice('');
-    setStock('');
-    setImageUrl('');
+    if (result) {
+      addToast({
+        title: 'Product Added',
+        message: `"${name}" has been added to your catalog. (SKU: ${sku})`,
+        type: 'success',
+      });
+      setIsModalOpen(false);
+      setName('');
+      setCategory('');
+      setPrice('');
+      setStock('');
+      setImageUrl('');
+    } else {
+      addToast({
+        title: 'Failed to Add Product',
+        message: 'Could not save the product. Please check your connection and try again.',
+        type: 'error',
+      });
+    }
   };
 
   return (

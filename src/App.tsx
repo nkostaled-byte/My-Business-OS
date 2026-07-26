@@ -19,6 +19,7 @@ import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { SecurityPage } from './pages/SecurityPage';
 import { LoginPage } from './pages/LoginPage';
+import { OnboardingPage } from './pages/OnboardingPage';
 import { WebsiteManagerPage } from './pages/WebsiteManagerPage';
 
 import { OverviewPage } from './pages/OverviewPage';
@@ -38,20 +39,45 @@ import { InvoicesPage } from './pages/InvoicesPage';
 import { BillingPage } from './pages/BillingPage';
 import { SettingsPage } from './pages/SettingsPage';
 
-// Protected Route wrapper
-function ProtectedRoute({ children, authState }: { children: React.ReactNode; authState: AuthState }) {
-  if (authState.isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
-        <div className="flex flex-col items-center gap-3">
-          <div className="w-8 h-8 border-2 border-violet-600 border-t-transparent rounded-full animate-spin" />
-          <p className="text-sm text-slate-500 dark:text-slate-400">Restoring session...</p>
-        </div>
+// ─── Loading Spinner ──────────────────────────────────────────────
+
+function LoadingScreen({ message = 'Restoring session...' }: { message?: string }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-2 border-violet-600 border-t-transparent rounded-full animate-spin" />
+        <p className="text-sm text-slate-500 dark:text-slate-400">{message}</p>
       </div>
-    );
+    </div>
+  );
+}
+
+// ─── Auth Guard ───────────────────────────────────────────────────
+
+function AuthGuard({ children, authState }: { children: React.ReactNode; authState: AuthState }) {
+  if (authState.isLoading) {
+    return <LoadingScreen />;
   }
   if (!authState.isAuthenticated) {
     return <Navigate to="/login" replace />;
+  }
+  return <>{children}</>;
+}
+
+// ─── Business Guard ───────────────────────────────────────────────
+// Ensures the user has a client_id before accessing the dashboard.
+// If no client_id, redirect to onboarding.
+
+function BusinessGuard({ children, authState }: { children: React.ReactNode; authState: AuthState }) {
+  if (authState.isLoading) {
+    return <LoadingScreen />;
+  }
+  if (!authState.isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+  // If user is authenticated but has no client_id, send to onboarding
+  if (!authState.clientId) {
+    return <Navigate to="/onboarding" replace />;
   }
   return <>{children}</>;
 }
@@ -74,7 +100,7 @@ export default function App() {
         <ToastProvider>
           <BrowserRouter>
             <Routes>
-              {/* Separate Public Website Layout (No sidebar, no dashboard header) */}
+              {/* ─── Public Website Layout ─────────────────────────── */}
               <Route element={<PublicLayout />}>
                 <Route path="/" element={<MarketingPage />} />
                 <Route path="/pricing" element={<PricingPage />} />
@@ -88,16 +114,26 @@ export default function App() {
                 <Route path="/security" element={<SecurityPage />} />
               </Route>
 
-              {/* Standalone Public Pages */}
+              {/* ─── Standalone Public Pages ───────────────────────── */}
               <Route path="/login" element={<LoginPage />} />
 
-              {/* Authenticated Dashboard Shell */}
+              {/* ─── Onboarding (Authenticated, No Business) ───────── */}
+              <Route
+                path="/onboarding"
+                element={
+                  <AuthGuard authState={authState}>
+                    <OnboardingPage />
+                  </AuthGuard>
+                }
+              />
+
+              {/* ─── Authenticated Dashboard Shell ─────────────────── */}
               <Route
                 path="/app"
                 element={
-                  <ProtectedRoute authState={authState}>
+                  <BusinessGuard authState={authState}>
                     <DashboardLayout />
-                  </ProtectedRoute>
+                  </BusinessGuard>
                 }
               >
                 <Route index element={<OverviewPage />} />
@@ -119,7 +155,7 @@ export default function App() {
                 <Route path="settings" element={<SettingsPage />} />
               </Route>
 
-              {/* Fallback Catch-all */}
+              {/* ─── Fallback Catch-all ────────────────────────────── */}
               <Route path="*" element={<Navigate to="/" replace />} />
             </Routes>
           </BrowserRouter>
