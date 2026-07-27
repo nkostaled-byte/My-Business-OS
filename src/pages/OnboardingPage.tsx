@@ -12,7 +12,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   Building2,
@@ -28,12 +28,16 @@ import {
   Mail,
   FileText,
   Smartphone,
+  LogOut,
+  ExternalLink,
 } from 'lucide-react';
 import {
   createBusiness,
   claimWithInviteCode,
   setClientInfo,
   getCurrentAuthState,
+  signOut,
+  signInWithGoogle,
 } from '../lib/auth-client';
 
 // ─── Business Types ───────────────────────────────────────────────
@@ -320,6 +324,39 @@ export const OnboardingPage: React.FC = () => {
               <p className="text-center text-xs text-slate-400 dark:text-slate-500 mt-8">
                 You can switch between businesses later from your account settings.
               </p>
+
+              {/* ─── Escape hatches ────────────────────────────────── */}
+              <div className="mt-6 pt-4 border-t border-slate-200 dark:border-slate-700 flex flex-wrap items-center justify-center gap-3">
+                <NavLink
+                  to="/login"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 transition-colors"
+                >
+                  <ArrowLeft className="w-3.5 h-3.5" />
+                  <span>Back to Login</span>
+                </NavLink>
+                <span className="text-slate-300 dark:text-slate-600 text-xs">·</span>
+                <button
+                  onClick={async () => {
+                    await signOut();
+                    navigate('/login', { replace: true });
+                  }}
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-rose-500 hover:text-rose-600 dark:hover:text-rose-400 transition-colors cursor-pointer"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                  <span>Sign Out</span>
+                </button>
+                <span className="text-slate-300 dark:text-slate-600 text-xs">·</span>
+                <button
+                  onClick={async () => {
+                    await signOut();
+                    await signInWithGoogle();
+                  }}
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 transition-colors cursor-pointer"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Switch Google Account</span>
+                </button>
+              </div>
             </motion.div>
           )}
 

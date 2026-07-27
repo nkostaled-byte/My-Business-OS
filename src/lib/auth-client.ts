@@ -152,6 +152,18 @@ export async function initializeAuth(): Promise<AuthState> {
     // Try to restore existing session
     const { data: { session } } = await supabase.auth.getSession();
 
+    // ─── DIAGNOSTIC: Log session details ───────────────────────────
+    console.log('[Auth] initializeAuth session check:', {
+      hasSession: !!session,
+      userId: session?.user?.id || null,
+      email: session?.user?.email || null,
+      accessTokenExists: !!session?.access_token,
+      accessTokenLength: session?.access_token?.length || 0,
+      accessTokenPreview: session?.access_token ? session.access_token.substring(0, 20) + '...' : null,
+      refreshTokenExists: !!session?.refresh_token,
+    });
+    // ───────────────────────────────────────────────────────────────
+
     if (session) {
       syncTokenFromSession(session);
     }
