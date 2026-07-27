@@ -50,6 +50,7 @@ export const ServicesPage: React.FC = () => {
       setPrice('');
       setDescription('');
       setImageUrl('');
+      setDuration('30');
     } else {
       addToast({
         title: 'Failed to Create Service',
