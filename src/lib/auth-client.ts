@@ -119,11 +119,14 @@ export async function createBusiness(data: {
   primaryColor?: string;
   logoUrl?: string;
 }): Promise<{ status: string; client?: any }> {
-  const result = await api.post('/api/claim-account', data);
+  const result = await api.post<any>('/api/claim-account', data);
   if (!result.success) {
     throw new Error(result.error || 'Failed to create business.');
   }
-  return result.data as { status: string; client?: any };
+  // Worker returns { success: true, status: "created", client: {...} }
+  // The api client returns the entire body as `result`, so `result` itself
+  // has the status and client properties directly
+  return result as unknown as { status: string; client?: any };
 }
 
 /**
@@ -131,11 +134,14 @@ export async function createBusiness(data: {
  * POST /api/claim-account/relink
  */
 export async function claimWithInviteCode(claimCode: string): Promise<{ status: string; client?: any }> {
-  const result = await api.post('/api/claim-account/relink', { claimCode });
+  const result = await api.post<any>('/api/claim-account/relink', { claimCode });
   if (!result.success) {
     throw new Error(result.error || 'Failed to claim account with code.');
   }
-  return result.data as { status: string; client?: any };
+  // Worker returns { success: true, status: "linked", client: {...} }
+  // The api client returns the entire body as `result`, so `result` itself
+  // has the status and client properties directly
+  return result as unknown as { status: string; client?: any };
 }
 
 // ─── Core Auth Functions ──────────────────────────────────────────
