@@ -43,9 +43,11 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
 
     try {
       const result = await api.upload(file, folder);
-      if (result.success && result.data?.url) {
-        onChange(result.data.url);
-        setUrlInput(result.data.url);
+      // Worker returns { success: true, url: "...", key: "..." } — url is at top level, not nested under data
+      const uploadedUrl = (result as any).url || result.data?.url;
+      if (result.success && uploadedUrl) {
+        onChange(uploadedUrl);
+        setUrlInput(uploadedUrl);
       } else {
         setUploadError(result.error || 'Upload failed. Please try again or use a URL instead.');
       }

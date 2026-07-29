@@ -36,8 +36,15 @@
 - [x] `auth-client.ts` — Complete with Google OAuth, email sign in/up, claim account
 - [x] `DataContext.tsx` — Complete CRUD via api-client, + convenience wrappers
 
-## Phase 7: Testing & Cleanup
+## Phase 7: Bug Fixes & Deployment
 - [x] Remove demo toggle from Header, OverviewPage
 - [x] Remove mock data fallbacks from BookingsPage, FormsPage
-- [x] Test all Worker endpoints — See `test_all_endpoints.js` (Node.js) and `test_comprehensive.ps1` (PowerShell) in project root.
-- [x] Produce completion report — See `COMPLETION_REPORT.md` in project root.
+- [x] Fix: Products creation 500 (category→category_id mapping) — Worker code updated
+- [x] Fix: Services creation 500 (missing DB columns) — migration created
+- [x] Fix: Metrics endpoint 500 (submissions uses submission_id not id) — Worker code updated
+- [x] Fix: Image upload reading wrong path — ImageUploadInput.tsx updated
+- [x] SQL migration created: `fix_schema_migration.sql` (run in Supabase SQL Editor)
+- [ ] Deploy Worker changes to Cloudflare (`wrangler deploy`)
+- [ ] Run SQL migration in Supabase SQL Editor
+- [ ] Test all Worker endpoints — See `test_all_endpoints.js` (Node.js) and `test_comprehensive.ps1` (PowerShell) in project root.
+- [ ] Produce completion report — See `COMPLETION_REPORT.md` in project root.
