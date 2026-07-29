@@ -91,6 +91,40 @@ function syncTokenFromSession(session: Session | null) {
   }
 }
 
+// ─── Business Link Persistence ────────────────────────────────────
+// Persist clientId and businessName in localStorage so they survive
+// tab switches, browser refreshes, and Worker cold starts.
+
+const CLIENT_ID_KEY = 'grafix_client_id';
+const BUSINESS_NAME_KEY = 'grafix_business_name';
+
+function persistClientLink(clientId: string | null, businessName: string | null): void {
+  try {
+    if (clientId) {
+      localStorage.setItem(CLIENT_ID_KEY, clientId);
+      localStorage.setItem(BUSINESS_NAME_KEY, businessName || '');
+    } else {
+      localStorage.removeItem(CLIENT_ID_KEY);
+      localStorage.removeItem(BUSINESS_NAME_KEY);
+    }
+  } catch {
+    // localStorage unavailable
+  }
+}
+
+function getPersistedClientLink(): { clientId: string | null; businessName: string | null } {
+  try {
+    const clientId = localStorage.getItem(CLIENT_ID_KEY);
+    const businessName = localStorage.getItem(BUSINESS_NAME_KEY);
+    return {
+      clientId: clientId || null,
+      businessName: businessName || null,
+    };
+  } catch {
+    return { clientId: null, businessName: null };
+  }
+}
+
 // ─── Business Linking ─────────────────────────────────────────────
 
 /**
@@ -98,9 +132,18 @@ function syncTokenFromSession(session: Session | null) {
  * Uses a lightweight GET endpoint — does NOT create anything.
  */
 export async function checkClientLink(): Promise<{ linked: boolean; clientId: string | null; businessName: string | null }> {
-  const result = await api.get<{ linked: boolean; clientId: string | null; businessName: string | null }>('/api/claim-account/status');
-  if (result.success && result.data) {
-    return result.data;
+  const result = await api.get<any>('/api/claim-account/status');
+  if (result.success) {
+    // Worker returns { success: true, linked: true, clientId: "...", businessName: "..." }
+    // The api client returns the entire body as `result`, so properties are on `result` directly
+    const linked = result.linked === true;
+    const clientId = result.clientId || null;
+    const businessName = result.businessName || null;
+    // Persist to localStorage for tab-switch resilience
+    if (linked && clientId) {
+      persistClientLink(clientId, businessName);
+    }
+    return { linked, clientId, businessName };
   }
   return { linked: false, clientId: null, businessName: null };
 }
@@ -199,8 +242,16 @@ export async function initializeAuth(): Promise<AuthState> {
         businessName = linkStatus.businessName;
       }
     } catch (linkErr) {
-      // If the Worker is unreachable, user still needs to go through onboarding
+      // If the Worker is unreachable (e.g. cold start, tab switch), fall back
+      // to persisted client link from localStorage so the user isn't
+      // incorrectly redirected to onboarding.
       console.warn('[Auth] Failed to check business link from Worker:', linkErr);
+      const persisted = getPersistedClientLink();
+      if (persisted.clientId) {
+        console.log('[Auth] Using persisted client link as fallback:', persisted);
+        clientId = persisted.clientId;
+        businessName = persisted.businessName;
+      }
     }
 
     const state: AuthState = {
@@ -278,8 +329,11 @@ export async function initializeAuth(): Promise<AuthState> {
 /**
  * Set client ID and business name in auth state after successful onboarding.
  * Called by the onboarding page after create/claim.
+ * Persists to localStorage for tab-switch resilience.
  */
 export async function setClientInfo(clientId: string, businessName: string): Promise<void> {
+  // Persist to localStorage immediately
+  persistClientLink(clientId, businessName);
   const newState: AuthState = {
     ...currentAuthState,
     clientId,
@@ -330,6 +384,8 @@ export async function signOut(): Promise<void> {
   const supabase = getSupabaseClient();
   await supabase.auth.signOut();
   clearToken();
+  // Clear persisted business link
+  persistClientLink(null, null);
   const state: AuthState = {
     user: null,
     session: null,

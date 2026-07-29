@@ -39,5 +39,5 @@
 ## Phase 7: Testing & Cleanup
 - [x] Remove demo toggle from Header, OverviewPage
 - [x] Remove mock data fallbacks from BookingsPage, FormsPage
-- [ ] Test all Worker endpoints
-- [ ] Produce completion report
+- [x] Test all Worker endpoints — See `test_all_endpoints.js` (Node.js) and `test_comprehensive.ps1` (PowerShell) in project root.
+- [x] Produce completion report — See `COMPLETION_REPORT.md` in project root.
