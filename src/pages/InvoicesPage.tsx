@@ -5,12 +5,15 @@ import { useToast } from '../context/ToastContext';
 import { Invoice, InvoiceStatus } from '../types';
 import { DataTable, Column } from '../components/common/DataTable';
 import { Modal } from '../components/common/Modal';
-import { FileSpreadsheet } from 'lucide-react';
+import { FileSpreadsheet, Eye, Download, FileText, Calendar, Mail, DollarSign } from 'lucide-react';
+import api from '../lib/api-client';
 
 export const InvoicesPage: React.FC = () => {
   const { invoices, addInvoice, isLoading } = useData();
   const { addToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
+  const [downloading, setDownloading] = useState<string | null>(null);
 
   // Form State
   const [clientName, setClientName] = useState('');
@@ -49,6 +52,35 @@ export const InvoicesPage: React.FC = () => {
     }
   };
 
+  const handleDownloadPdf = async (invoice: Invoice) => {
+    const id = invoice.id;
+    if (downloading === id) return;
+    setDownloading(id);
+    try {
+      const token = localStorage.getItem('grafix_auth_token');
+      const response = await fetch(
+        `${import.meta.env.VITE_WORKER_API_URL}/api/invoices/${id}/pdf`,
+        { headers: token ? { Authorization: `Bearer ${token}` } : {} }
+      );
+      if (!response.ok) {
+        addToast({ title: 'Download Failed', message: 'Could not generate PDF.', type: 'error' });
+        return;
+      }
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${invoice.invoiceNumber || 'invoice'}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      addToast({ title: 'PDF Downloaded', message: `${invoice.invoiceNumber || 'Invoice'} PDF saved.`, type: 'success' });
+    } catch {
+      addToast({ title: 'Download Failed', message: 'Network error while downloading PDF.', type: 'error' });
+    }
+    setDownloading(null);
+  };
 
   const getStatusBadge = (s: InvoiceStatus) => {
     switch (s) {
@@ -119,10 +151,37 @@ export const InvoicesPage: React.FC = () => {
       cell: (row) => <span>{row.dueDate || row.dueAt || '—'}</span>,
     },
     {
-      header: 'Created Date',
-      cell: (row) => <span>{row.issuedDate || row.issuedAt || '—'}</span>,
+      header: '',
+      cell: (row) => (
+        <div className="flex gap-1">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={(e) => { e.stopPropagation(); setSelectedInvoice(row); }}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 transition-colors cursor-pointer"
+            title="View invoice details"
+          >
+            <Eye className="w-4 h-4" />
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={(e) => { e.stopPropagation(); handleDownloadPdf(row); }}
+            disabled={downloading === row.id}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 transition-colors cursor-pointer disabled:opacity-50"
+            title="Download PDF"
+          >
+            <Download className="w-4 h-4" />
+          </motion.button>
+        </div>
+      ),
     },
   ];
+
+  const formatDate = (d: string | undefined) => {
+    if (!d) return '—';
+    try { return new Date(d).toLocaleDateString(); } catch { return d; }
+  };
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
@@ -249,6 +308,75 @@ export const InvoicesPage: React.FC = () => {
           </div>
         </form>
       </Modal>
+
+      {/* Invoice Detail Modal */}
+      {selectedInvoice && (
+        <Modal
+          isOpen={Boolean(selectedInvoice)}
+          onClose={() => setSelectedInvoice(null)}
+          title={`Invoice ${selectedInvoice.invoiceNumber}`}
+          subtitle={selectedInvoice.clientName || 'Invoice details'}
+        >
+          <div className="space-y-4">
+            <div className="grid grid-cols-2 gap-3 text-xs">
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <span className="text-slate-400 block mb-1 flex items-center gap-1">
+                  <FileText className="w-3.5 h-3.5" /> Invoice #
+                </span>
+                <span className="font-bold text-slate-900 dark:text-slate-100">{selectedInvoice.invoiceNumber}</span>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <span className="text-slate-400 block mb-1">Status</span>
+                <span>{getStatusBadge(selectedInvoice.status)}</span>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <span className="text-slate-400 block mb-1 flex items-center gap-1">
+                  <Mail className="w-3.5 h-3.5" /> Client
+                </span>
+                <span className="font-semibold text-slate-900 dark:text-slate-100">{selectedInvoice.clientName || '—'}</span>
+                {selectedInvoice.clientEmail && <span className="text-slate-500 block">{selectedInvoice.clientEmail}</span>}
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <span className="text-slate-400 block mb-1 flex items-center gap-1">
+                  <DollarSign className="w-3.5 h-3.5" /> Amount
+                </span>
+                <span className="font-extrabold text-lg text-violet-600 dark:text-violet-400">
+                  R{(selectedInvoice.total ?? selectedInvoice.amount ?? 0).toLocaleString()}
+                </span>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <span className="text-slate-400 block mb-1 flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5" /> Due Date
+                </span>
+                <span className="font-semibold text-slate-900 dark:text-slate-100">
+                  {formatDate(selectedInvoice.dueDate || selectedInvoice.dueAt)}
+                </span>
+              </div>
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+                <span className="text-slate-400 block mb-1 flex items-center gap-1">
+                  <Calendar className="w-3.5 h-3.5" /> Issued Date
+                </span>
+                <span className="font-semibold text-slate-900 dark:text-slate-100">
+                  {formatDate(selectedInvoice.issuedDate || selectedInvoice.issuedAt)}
+                </span>
+              </div>
+            </div>
+
+            <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex justify-end">
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                onClick={() => handleDownloadPdf(selectedInvoice)}
+                disabled={downloading === selectedInvoice.id}
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer disabled:opacity-50"
+              >
+                <Download className="w-4 h-4" />
+                <span>{downloading === selectedInvoice.id ? 'Generating PDF...' : 'Download PDF'}</span>
+              </motion.button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
