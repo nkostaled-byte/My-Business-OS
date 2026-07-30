@@ -16,6 +16,7 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import api from '../lib/api-client';
 import { DashboardResource } from '../config/api';
+import { subscribeToAuth } from '../lib/auth-client';
 import {
   DashboardStats,
   RevenueDataPoint,
@@ -482,13 +483,23 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return createResource('gallery', data as unknown as Record<string, unknown>) as unknown as GalleryItem | null;
   }, [createResource]);
 
-  // ─── Initial Fetch on Mount ───────────────────────────────────
+  // ─── Initial Fetch When Auth Is Ready ─────────────────────────
+  // Wait for auth to confirm clientId before fetching dashboard data.
+  // This avoids race conditions where API calls fire before the JWT
+  // token is synced into localStorage by initializeAuth().
 
   useEffect(() => {
-    if (!initialFetchDone.current) {
-      initialFetchDone.current = true;
-      fetchAllData();
-    }
+    const unsubscribe = subscribeToAuth((state) => {
+      if (state.clientId) {
+        if (!initialFetchDone.current) {
+          initialFetchDone.current = true;
+          fetchAllData();
+        }
+      } else {
+        initialFetchDone.current = false;
+      }
+    });
+    return unsubscribe;
   }, [fetchAllData]);
 
   // ─── Context Value ────────────────────────────────────────────

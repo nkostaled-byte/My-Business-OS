@@ -96,71 +96,71 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <ToastProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* ─── Public Website Layout ─────────────────────────── */}
-            <Route element={<PublicLayout />}>
-              <Route path="/" element={<MarketingPage />} />
-              <Route path="/pricing" element={<PricingPage />} />
-              <Route path="/features" element={<FeaturesPage />} />
-              <Route path="/resources" element={<ResourcesPage />} />
-              <Route path="/company" element={<CompanyPage />} />
-              <Route path="/careers" element={<CareersPage />} />
-              <Route path="/contact" element={<ContactPage />} />
-              <Route path="/privacy" element={<PrivacyPage />} />
-              <Route path="/terms" element={<TermsPage />} />
-              <Route path="/security" element={<SecurityPage />} />
-            </Route>
+      <DataProvider>
+        <ToastProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* ─── Public Website Layout ─────────────────────────── */}
+              <Route element={<PublicLayout />}>
+                <Route path="/" element={<MarketingPage />} />
+                <Route path="/pricing" element={<PricingPage />} />
+                <Route path="/features" element={<FeaturesPage />} />
+                <Route path="/resources" element={<ResourcesPage />} />
+                <Route path="/company" element={<CompanyPage />} />
+                <Route path="/careers" element={<CareersPage />} />
+                <Route path="/contact" element={<ContactPage />} />
+                <Route path="/privacy" element={<PrivacyPage />} />
+                <Route path="/terms" element={<TermsPage />} />
+                <Route path="/security" element={<SecurityPage />} />
+              </Route>
 
-            {/* ─── Standalone Public Pages ───────────────────────── */}
-            <Route path="/login" element={<LoginPage />} />
+              {/* ─── Standalone Public Pages ───────────────────────── */}
+              <Route path="/login" element={<LoginPage />} />
 
-            {/* ─── Onboarding (Authenticated, No Business) ───────── */}
-            <Route
-              path="/onboarding"
-              element={
-                <AuthGuard authState={authState}>
-                  <OnboardingPage />
-                </AuthGuard>
-              }
-            />
+              {/* ─── Onboarding (Authenticated, No Business) ───────── */}
+              <Route
+                path="/onboarding"
+                element={
+                  <AuthGuard authState={authState}>
+                    <OnboardingPage />
+                  </AuthGuard>
+                }
+              />
 
-            {/* ─── Authenticated Dashboard Shell ─────────────────── */}
-            <Route
-              path="/app"
-              element={
-                <BusinessGuard authState={authState}>
-                  <DataProvider>
+              {/* ─── Authenticated Dashboard Shell ─────────────────── */}
+              <Route
+                path="/app"
+                element={
+                  <BusinessGuard authState={authState}>
                     <DashboardLayout />
-                  </DataProvider>
-                </BusinessGuard>
-              }
-            >
-              <Route index element={<OverviewPage />} />
-              <Route path="analytics" element={<AnalyticsPage />} />
-              <Route path="orders" element={<OrdersPage />} />
-              <Route path="pos" element={<POSPage />} />
-              <Route path="products" element={<ProductsPage />} />
-              <Route path="services" element={<ServicesPage />} />
-              <Route path="bookings" element={<BookingsPage />} />
-              <Route path="customers" element={<CustomersPage />} />
-              <Route path="inventory" element={<InventoryPage />} />
-              <Route path="staff" element={<StaffPage />} />
-              <Route path="gallery" element={<GalleryPage />} />
-              <Route path="reviews" element={<ReviewsPage />} />
-              <Route path="forms" element={<FormsPage />} />
-              <Route path="website" element={<WebsiteManagerPage />} />
-              <Route path="invoices" element={<InvoicesPage />} />
-              <Route path="billing" element={<BillingPage />} />
-              <Route path="settings" element={<SettingsPage />} />
-            </Route>
+                  </BusinessGuard>
+                }
+              >
+                <Route index element={<OverviewPage />} />
+                <Route path="analytics" element={<AnalyticsPage />} />
+                <Route path="orders" element={<OrdersPage />} />
+                <Route path="pos" element={<POSPage />} />
+                <Route path="products" element={<ProductsPage />} />
+                <Route path="services" element={<ServicesPage />} />
+                <Route path="bookings" element={<BookingsPage />} />
+                <Route path="customers" element={<CustomersPage />} />
+                <Route path="inventory" element={<InventoryPage />} />
+                <Route path="staff" element={<StaffPage />} />
+                <Route path="gallery" element={<GalleryPage />} />
+                <Route path="reviews" element={<ReviewsPage />} />
+                <Route path="forms" element={<FormsPage />} />
+                <Route path="website" element={<WebsiteManagerPage />} />
+                <Route path="invoices" element={<InvoicesPage />} />
+                <Route path="billing" element={<BillingPage />} />
+                <Route path="settings" element={<SettingsPage />} />
+              </Route>
 
-            {/* ─── Fallback Catch-all ────────────────────────────── */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </BrowserRouter>
-      </ToastProvider>
+              {/* ─── Fallback Catch-all ────────────────────────────── */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </BrowserRouter>
+        </ToastProvider>
+      </DataProvider>
     </ThemeProvider>
   );
 }
