@@ -9,7 +9,6 @@ import {
   ChevronDown,
   Menu,
   ExternalLink,
-  User,
   Settings,
   LogOut,
   Globe,
@@ -39,7 +38,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
 
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const [unreadCount, setUnreadCount] = useState(3);
+  const unreadCount = notifications.filter((n) => !n.read).length;
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -47,11 +46,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  const notifications = [
-    { id: 1, title: 'New order #ORD-2456 received', time: '2m ago', read: false },
-    { id: 2, title: 'Booking confirmed with John Smith', time: '15m ago', read: false },
-    { id: 3, title: 'Low inventory alert: Hair Pomade', time: '1h ago', read: false },
-  ];
+  const [notifications, setNotifications] = useState<{ id: number; title: string; time: string; read: boolean }[]>([]);
 
   // Global search with 300ms debounce
   const performSearch = useCallback(async (q: string) => {
@@ -247,7 +242,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                       </h4>
                       {unreadCount > 0 && (
                         <button
-                          onClick={() => setUnreadCount(0)}
+                          onClick={() => setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))}
                           className="text-[11px] font-medium text-violet-600 dark:text-violet-400 hover:underline cursor-pointer"
                         >
                           Mark all as read
@@ -321,16 +316,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                     </div>
 
                     <div className="py-1">
-                      <button
-                        onClick={() => {
-                          setProfileOpen(false);
-                          navigate('/app/settings');
-                        }}
-                        className="w-full text-left px-3.5 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 transition-colors cursor-pointer"
-                      >
-                        <User className="w-3.5 h-3.5 text-slate-400" />
-                        <span>My Profile</span>
-                      </button>
                       <button
                         onClick={() => {
                           setProfileOpen(false);

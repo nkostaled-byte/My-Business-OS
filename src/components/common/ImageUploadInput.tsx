@@ -14,6 +14,7 @@ interface ImageUploadInputProps {
   presets?: ImagePreset[];
   placeholder?: string;
   folder?: 'logos' | 'profile' | 'products';
+  onImageKeyChange?: (key: string | null) => void;
 }
 
 export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
@@ -23,12 +24,14 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
   presets = [],
   placeholder = 'Upload image or enter image URL...',
   folder = 'products',
+  onImageKeyChange,
 }) => {
   const [tab, setTab] = useState<'upload' | 'url'>('upload');
   const [urlInput, setUrlInput] = useState(value);
   const [isDragging, setIsDragging] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const uploadedKeyRef = useRef<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFileChange = async (file: File | undefined) => {
@@ -45,9 +48,16 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
       const result = await api.upload(file, folder);
       // Worker returns { success: true, url: "...", key: "..." } — url is at top level, not nested under data
       const uploadedUrl = (result as any).url || result.data?.url;
+      const uploadedKey = (result as any).key || result.data?.key;
       if (result.success && uploadedUrl) {
+        // Delete previous uploaded image if replacing
+        if (uploadedKeyRef.current) {
+          api.deleteUploadedImage(uploadedKeyRef.current).catch(() => {});
+        }
         onChange(uploadedUrl);
         setUrlInput(uploadedUrl);
+        uploadedKeyRef.current = uploadedKey || null;
+        onImageKeyChange?.(uploadedKey || null);
       } else {
         setUploadError(result.error || 'Upload failed. Please try again or use a URL instead.');
       }
@@ -67,6 +77,12 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
   };
 
   const handleClear = () => {
+    // Delete uploaded image from R2
+    if (uploadedKeyRef.current) {
+      api.deleteUploadedImage(uploadedKeyRef.current).catch(() => {});
+      uploadedKeyRef.current = null;
+    }
+    onImageKeyChange?.(null);
     onChange('');
     setUrlInput('');
     if (fileInputRef.current) {

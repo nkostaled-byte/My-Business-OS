@@ -314,6 +314,14 @@ export const api = {
   },
 
   /**
+   * Delete an uploaded image from R2 by its key
+   * DELETE /api/upload?key=<r2-key>
+   */
+  async deleteUploadedImage(key: string): Promise<ApiResponse<void>> {
+    return this.del('/api/upload', { params: { key } });
+  },
+
+  /**
    * Build full URL for an API path (for downloads, exports etc.)
    */
   getUrl(path: string, params?: Record<string, string>): string {

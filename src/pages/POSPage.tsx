@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 
 export const POSPage: React.FC = () => {
-  const { products, services, orders, addOrder } = useData();
+  const { products, services, orders, addOrder, updateResource } = useData();
   const { addToast } = useToast();
 
   const [viewMode, setViewMode] = useState<'register' | 'history'>('register');
@@ -64,7 +64,7 @@ export const POSPage: React.FC = () => {
       soldCount: 0,
       status: 'in-stock' as const,
       isService: true,
-      imageUrl: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=200&auto=format&fit=crop&q=80',
+      imageUrl: s.imageUrl || undefined,
     })),
   ];
 
@@ -83,11 +83,17 @@ export const POSPage: React.FC = () => {
   });
 
   const addToCart = (product: Product) => {
+    const maxStock = product.stock ?? 999;
+    const currentQty = cart.find((ci) => ci.product.id === product.id)?.quantity || 0;
+    if (currentQty >= maxStock) {
+      addToast({ title: 'Stock Limit', message: `Only ${maxStock} of "${product.name}" available.`, type: 'warning' });
+      return;
+    }
     setCart((prev) => {
       const existing = prev.find((ci) => ci.product.id === product.id);
       if (existing) {
         return prev.map((ci) =>
-          ci.product.id === product.id ? { ...ci, quantity: ci.quantity + 1 } : ci
+          ci.product.id === product.id ? { ...ci, quantity: Math.min(ci.quantity + 1, maxStock) } : ci
         );
       }
       return [...prev, { product, quantity: 1 }];
@@ -99,8 +105,10 @@ export const POSPage: React.FC = () => {
       prev
         .map((ci) => {
           if (ci.product.id === productId) {
+            const maxStock = ci.product.stock ?? 999;
             const nextQty = ci.quantity + delta;
-            return nextQty > 0 ? { ...ci, quantity: nextQty } : null;
+            if (nextQty <= 0) return null;
+            return { ...ci, quantity: Math.min(nextQty, maxStock) };
           }
           return ci;
         })
@@ -119,7 +127,7 @@ export const POSPage: React.FC = () => {
   const taxAmount = (taxableSubtotal * taxPercent) / 100;
   const grandTotal = taxableSubtotal + taxAmount;
 
-  const handleCompleteSale = () => {
+  const handleCompleteSale = async () => {
     const orderNum = `#POS-${Math.floor(1000 + Math.random() * 9000)}`;
     setCompletedOrderNum(orderNum);
 
@@ -129,7 +137,7 @@ export const POSPage: React.FC = () => {
       price: ci.product.price,
     }));
 
-    addOrder({
+    await addOrder({
       orderNumber: orderNum,
       customerName: 'POS Counter Sale',
       totalAmount: grandTotal,
@@ -139,6 +147,15 @@ export const POSPage: React.FC = () => {
       items: orderItems,
       isPos: true,
     });
+
+    // Deduct stock for each product in the cart
+    for (const ci of cart) {
+      const isService = (ci.product as any).isService;
+      if (!isService && ci.product.stock !== undefined) {
+        const newStock = Math.max(0, ci.product.stock - ci.quantity);
+        await updateResource('products', ci.product.id, { stock: newStock } as Partial<Product>);
+      }
+    }
 
     addToast({
       title: 'POS Sale Completed',
@@ -297,7 +314,7 @@ export const POSPage: React.FC = () => {
                   <EmptyState
                     icon={Calculator}
                     title="POS Catalog is Empty"
-                    description="No products or services found. Toggle 'Demo Data Mode' in the top bar to test checkout, or add inventory."
+                    description="No products or services found. Add inventory to start selling."
                   />
                 </div>
               ) : (
@@ -754,11 +771,8 @@ export const POSPage: React.FC = () => {
             <div className="p-5 rounded-2xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700 space-y-4 font-mono text-xs">
               <div className="text-center border-b border-slate-200 dark:border-slate-700 pb-3">
                 <h4 className="font-extrabold text-sm text-slate-900 dark:text-slate-100 tracking-tight">
-                  ELEGANCE BEAUTY STUDIO
+                  POS Receipt
                 </h4>
-                <p className="text-[11px] text-slate-500 dark:text-slate-400">
-                  Point of Sale Register #01
-                </p>
                 <p className="text-[10px] text-slate-400 mt-1">{selectedReceipt.createdAt}</p>
               </div>
 

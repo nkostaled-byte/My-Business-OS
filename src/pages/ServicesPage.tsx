@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
@@ -6,12 +6,14 @@ import { Modal } from '../components/common/Modal';
 import { EmptyState } from '../components/common/EmptyState';
 import { MotionCard } from '../components/common/MotionCard';
 import { ImageUploadInput } from '../components/common/ImageUploadInput';
+import api from '../lib/api-client';
 import { Scissors, Clock, Plus } from 'lucide-react';
 
 export const ServicesPage: React.FC = () => {
   const { services, addService } = useData();
   const { addToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const uploadedKeyRef = useRef<string | null>(null);
 
   // Form State
   const [name, setName] = useState('');
@@ -21,12 +23,19 @@ export const ServicesPage: React.FC = () => {
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
 
-  const servicePresets = [
-    { label: 'Barber Trim', url: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&auto=format&fit=crop&q=80' },
-    { label: 'Scalp Care', url: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&auto=format&fit=crop&q=80' },
-    { label: 'Color & Blowout', url: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&auto=format&fit=crop&q=80' },
-    { label: 'Beard Grooming', url: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400&auto=format&fit=crop&q=80' },
-  ];
+  const closeModal = () => {
+    if (uploadedKeyRef.current) {
+      api.deleteUploadedImage(uploadedKeyRef.current).catch(() => {});
+      uploadedKeyRef.current = null;
+    }
+    setIsModalOpen(false);
+    setName('');
+    setCategory('');
+    setPrice('');
+    setDescription('');
+    setImageUrl('');
+    setDuration('30');
+  };
 
   const handleAddService = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -44,13 +53,8 @@ export const ServicesPage: React.FC = () => {
         message: `"${name}" is now live and bookable.`,
         type: 'success',
       });
-      setIsModalOpen(false);
-      setName('');
-      setCategory('');
-      setPrice('');
-      setDescription('');
-      setImageUrl('');
-      setDuration('30');
+      uploadedKeyRef.current = null;
+      closeModal();
     } else {
       addToast({
         title: 'Failed to Create Service',
@@ -147,7 +151,7 @@ export const ServicesPage: React.FC = () => {
       {/* Add Service Modal */}
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
+        onClose={closeModal}
         title="Add Service Offering"
         subtitle="Define a service for online booking & POS checkout"
       >
@@ -226,15 +230,15 @@ export const ServicesPage: React.FC = () => {
           <ImageUploadInput
             value={imageUrl}
             onChange={(url) => setImageUrl(url)}
+            onImageKeyChange={(key) => { uploadedKeyRef.current = key; }}
             label="Service Photo / Cover Image"
-            presets={servicePresets}
             placeholder="Upload file or enter service image link..."
           />
 
           <div className="pt-3 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
             <button
               type="button"
-              onClick={() => setIsModalOpen(false)}
+              onClick={closeModal}
               className="px-4 py-2 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer"
             >
               Cancel
