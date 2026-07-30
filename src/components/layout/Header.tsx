@@ -36,17 +36,16 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   const { profileName, profileEmail, profileAvatar, refreshAll } = useData();
   const navigate = useNavigate();
 
+  const [notifications, setNotifications] = useState<{ id: number; title: string; time: string; read: boolean }[]>([]);
+  const unreadCount = notifications.filter((n) => !n.read).length;
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
-  const unreadCount = notifications.filter((n) => !n.read).length;
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchOpen, setSearchOpen] = useState(false);
   const [searching, setSearching] = useState(false);
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
-
-  const [notifications, setNotifications] = useState<{ id: number; title: string; time: string; read: boolean }[]>([]);
 
   // Global search with 300ms debounce
   const performSearch = useCallback(async (q: string) => {

@@ -5,8 +5,7 @@ import { useToast } from '../context/ToastContext';
 import { Order, OrderStatus } from '../types';
 import { DataTable, Column } from '../components/common/DataTable';
 import { Modal } from '../components/common/Modal';
-import { ShoppingBag, Eye, X } from 'lucide-react';
-import api from '../lib/api-client';
+import { ShoppingBag, Eye } from 'lucide-react';
 
 export const OrdersPage: React.FC = () => {
   const { orders, addOrder, updateResource, refreshResource } = useData();
