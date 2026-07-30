@@ -83,7 +83,7 @@ export const CustomersPage: React.FC = () => {
       header: 'Total Spent',
       cell: (row) => (
         <span className="font-extrabold text-slate-900 dark:text-slate-100">
-          R{row.totalSpent.toLocaleString()}
+          R{(row.totalSpent || 0).toLocaleString()}
         </span>
       ),
     },
@@ -91,7 +91,7 @@ export const CustomersPage: React.FC = () => {
       header: 'Orders',
       cell: (row) => (
         <span className="font-semibold text-slate-700 dark:text-slate-300">
-          {row.ordersCount} orders
+          {row.ordersCount ?? 0} orders
         </span>
       ),
     },
@@ -243,7 +243,7 @@ export const CustomersPage: React.FC = () => {
                   <ShoppingBag className="w-3.5 h-3.5" /> Lifetime Spend
                 </span>
                 <span className="font-extrabold text-violet-600 dark:text-violet-400 text-sm">
-                  R{selectedCustomer.totalSpent.toLocaleString()}
+                  R{(selectedCustomer.totalSpent || 0).toLocaleString()}
                 </span>
               </div>
 

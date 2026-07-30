@@ -388,7 +388,17 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           case 'gallery': setGallery((prev) => [result.data as unknown as GalleryItem, ...prev]); break;
           case 'reviews': setReviews((prev) => [result.data as unknown as Review, ...prev]); break;
           case 'submissions': setForms((prev) => [result.data as unknown as FormSubmission, ...prev]); break;
-          case 'invoices': setInvoices((prev) => [result.data as unknown as Invoice, ...prev]); break;
+          case 'invoices': {
+            const inv = result.data as Record<string, unknown>;
+            setInvoices((prev) => [{
+              ...inv,
+              clientName: (inv as any).clientName || data.clientName,
+              clientEmail: (inv as any).clientEmail || data.clientEmail,
+              amount: (inv as any).amount ?? (inv as any).total ?? 0,
+              total: (inv as any).total ?? (inv as any).amount ?? 0,
+            } as unknown as Invoice, ...prev]);
+            break;
+          }
           default: break;
         }
         return result.data;

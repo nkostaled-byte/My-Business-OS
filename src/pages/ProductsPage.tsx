@@ -6,7 +6,7 @@ import { Modal } from '../components/common/Modal';
 import { EmptyState } from '../components/common/EmptyState';
 import { MotionCard } from '../components/common/MotionCard';
 import { ImageUploadInput } from '../components/common/ImageUploadInput';
-import { Package, Plus, Edit3, Trash2, Search, Hash, PackageOpen } from 'lucide-react';
+import { Package, Plus, Edit3, Trash2, Search, Hash } from 'lucide-react';
 import api from '../lib/api-client';
 import type { Product } from '../types';
 

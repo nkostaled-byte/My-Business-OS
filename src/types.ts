@@ -160,11 +160,14 @@ export interface FormSubmission {
 export interface Invoice {
   id: string;
   invoiceNumber: string;
-  clientName: string;
+  clientName?: string;
   clientEmail?: string;
-  amount: number;
-  dueDate: string;
-  issuedDate: string;
+  amount?: number;
+  total?: number;
+  dueDate?: string;
+  dueAt?: string;
+  issuedDate?: string;
+  issuedAt?: string;
   status: InvoiceStatus;
 }
 

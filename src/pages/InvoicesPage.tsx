@@ -19,24 +19,34 @@ export const InvoicesPage: React.FC = () => {
   const [status, setStatus] = useState<InvoiceStatus>('sent');
   const [dueDate, setDueDate] = useState('');
 
-  const handleCreateInvoice = (e: React.FormEvent) => {
+  const handleCreateInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
-    addInvoice({
+    const result = await addInvoice({
       clientName,
       clientEmail,
       amount: parseFloat(amount) || 0,
       status,
       dueDate: dueDate || new Date(Date.now() + 14 * 86400000).toISOString().substring(0, 10),
     });
-    addToast({
-      title: 'Invoice Issued',
-      message: `Invoice created for ${clientName} (R${amount}).`,
-      type: 'success',
-    });
-    setIsModalOpen(false);
-    setClientName('');
-    setClientEmail('');
-    setAmount('');
+    if (result) {
+      addToast({
+        title: 'Invoice Issued',
+        message: `Invoice created for ${clientName} (R${amount}).`,
+        type: 'success',
+      });
+      setIsModalOpen(false);
+      setClientName('');
+      setClientEmail('');
+      setAmount('');
+      setDueDate('');
+      setStatus('sent');
+    } else {
+      addToast({
+        title: 'Failed to Create Invoice',
+        message: 'Could not save the invoice. Please check your connection and try again.',
+        type: 'error',
+      });
+    }
   };
 
 
@@ -83,11 +93,10 @@ export const InvoicesPage: React.FC = () => {
     },
     {
       header: 'Client',
-      accessorKey: 'clientName',
       cell: (row) => (
         <div>
           <span className="font-semibold block text-slate-800 dark:text-slate-200">
-            {row.clientName}
+            {row.clientName || '—'}
           </span>
           <span className="text-[11px] text-slate-400">{row.clientEmail || '—'}</span>
         </div>
@@ -101,17 +110,17 @@ export const InvoicesPage: React.FC = () => {
       header: 'Amount',
       cell: (row) => (
         <span className="font-extrabold text-slate-900 dark:text-slate-100">
-          R{row.amount.toLocaleString()}
+          R{(row.total ?? row.amount ?? 0).toLocaleString()}
         </span>
       ),
     },
     {
       header: 'Due Date',
-      accessorKey: 'dueDate',
+      cell: (row) => <span>{row.dueDate || row.dueAt || '—'}</span>,
     },
     {
       header: 'Created Date',
-      accessorKey: 'issuedDate',
+      cell: (row) => <span>{row.issuedDate || row.issuedAt || '—'}</span>,
     },
   ];
 

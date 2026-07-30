@@ -7,12 +7,15 @@ import { EmptyState } from '../components/common/EmptyState';
 import { MotionCard } from '../components/common/MotionCard';
 import { ImageUploadInput } from '../components/common/ImageUploadInput';
 import api from '../lib/api-client';
-import { Scissors, Clock, Plus } from 'lucide-react';
+import type { Service } from '../types';
+import { Scissors, Clock, Plus, Edit3, Trash2 } from 'lucide-react';
 
 export const ServicesPage: React.FC = () => {
-  const { services, addService } = useData();
+  const { services, addService, updateResource, deleteResource } = useData();
   const { addToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingService, setEditingService] = useState<Service | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
   const uploadedKeyRef = useRef<string | null>(null);
 
   // Form State
@@ -23,12 +26,7 @@ export const ServicesPage: React.FC = () => {
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
 
-  const closeModal = () => {
-    if (uploadedKeyRef.current) {
-      api.deleteUploadedImage(uploadedKeyRef.current).catch(() => {});
-      uploadedKeyRef.current = null;
-    }
-    setIsModalOpen(false);
+  const resetForm = () => {
     setName('');
     setCategory('');
     setPrice('');
@@ -37,31 +35,90 @@ export const ServicesPage: React.FC = () => {
     setDuration('30');
   };
 
-  const handleAddService = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const result = await addService({
-      name,
-      category,
-      durationMinutes: parseInt(duration, 10) || 30,
-      price: parseFloat(price) || 0,
-      description,
-      imageUrl: imageUrl || undefined,
-    });
-    if (result) {
-      addToast({
-        title: 'Service Created',
-        message: `"${name}" is now live and bookable.`,
-        type: 'success',
-      });
+  const closeModal = () => {
+    if (uploadedKeyRef.current) {
+      api.deleteUploadedImage(uploadedKeyRef.current).catch(() => {});
       uploadedKeyRef.current = null;
-      closeModal();
-    } else {
-      addToast({
-        title: 'Failed to Create Service',
-        message: 'Could not save the service. Please check your connection and try again.',
-        type: 'error',
-      });
     }
+    setIsModalOpen(false);
+    setEditingService(null);
+    resetForm();
+  };
+
+  const openAddModal = () => {
+    setEditingService(null);
+    resetForm();
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (service: Service) => {
+    setEditingService(service);
+    setName(service.name);
+    setCategory(service.category);
+    setDuration(String(service.durationMinutes));
+    setPrice(String(service.price));
+    setDescription(service.description || '');
+    setImageUrl(service.imageUrl || '');
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name || !category) return;
+
+    if (editingService) {
+      const success = await updateResource('services', editingService.id, {
+        name,
+        category,
+        durationMinutes: parseInt(duration, 10) || 30,
+        price: parseFloat(price) || 0,
+        description,
+        imageUrl: imageUrl || undefined,
+      } as Partial<Service>);
+      if (success) {
+        addToast({ title: 'Service Updated', message: `"${name}" has been updated.`, type: 'success' });
+        uploadedKeyRef.current = null;
+        closeModal();
+      } else {
+        addToast({ title: 'Update Failed', message: 'Could not update the service.', type: 'error' });
+      }
+    } else {
+      const result = await addService({
+        name,
+        category,
+        durationMinutes: parseInt(duration, 10) || 30,
+        price: parseFloat(price) || 0,
+        description,
+        imageUrl: imageUrl || undefined,
+      });
+      if (result) {
+        addToast({
+          title: 'Service Created',
+          message: `"${name}" is now live and bookable.`,
+          type: 'success',
+        });
+        uploadedKeyRef.current = null;
+        closeModal();
+      } else {
+        addToast({
+          title: 'Failed to Create Service',
+          message: 'Could not save the service. Please check your connection and try again.',
+          type: 'error',
+        });
+      }
+    }
+  };
+
+  const handleDelete = async (id: string, serviceName: string) => {
+    if (deleting === id) return;
+    setDeleting(id);
+    const success = await deleteResource('services', id);
+    if (success) {
+      addToast({ title: 'Service Deleted', message: `"${serviceName}" has been removed.`, type: 'success' });
+    } else {
+      addToast({ title: 'Delete Failed', message: 'Could not delete the service.', type: 'error' });
+    }
+    setDeleting(null);
   };
 
   return (
@@ -79,7 +136,7 @@ export const ServicesPage: React.FC = () => {
         <motion.button
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
-          onClick={() => setIsModalOpen(true)}
+          onClick={openAddModal}
           className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
@@ -95,7 +152,7 @@ export const ServicesPage: React.FC = () => {
             title="No services configured"
             description="Add services such as haircuts, scalp treatments, or styling for online booking."
             actionLabel="Add Service"
-            onAction={() => setIsModalOpen(true)}
+            onAction={openAddModal}
           />
         </div>
       ) : (
@@ -139,23 +196,46 @@ export const ServicesPage: React.FC = () => {
                 <span className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
                   R{s.price.toLocaleString()}
                 </span>
-                <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-md">
-                  Active
-                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold bg-emerald-50 dark:bg-emerald-950/50 px-2 py-0.5 rounded-md">
+                    Active
+                  </span>
+                  <div className="flex gap-1">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => openEditModal(s)}
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 transition-colors cursor-pointer"
+                      title="Edit service"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleDelete(s.id, s.name)}
+                      disabled={deleting === s.id}
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer disabled:opacity-50"
+                      title="Delete service"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </motion.button>
+                  </div>
+                </div>
               </div>
             </MotionCard>
           ))}
         </div>
       )}
 
-      {/* Add Service Modal */}
+      {/* Add / Edit Service Modal */}
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title="Add Service Offering"
-        subtitle="Define a service for online booking & POS checkout"
+        title={editingService ? 'Edit Service' : 'Add Service Offering'}
+        subtitle={editingService ? `Update ${editingService.name}` : 'Define a service for online booking & POS checkout'}
       >
-        <form onSubmit={handleAddService} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
               Service Name
@@ -249,7 +329,7 @@ export const ServicesPage: React.FC = () => {
               type="submit"
               className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer"
             >
-              Save Service
+              {editingService ? 'Save Changes' : 'Save Service'}
             </motion.button>
           </div>
         </form>

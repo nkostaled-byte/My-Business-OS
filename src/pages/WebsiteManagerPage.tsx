@@ -52,7 +52,7 @@ export const WebsiteManagerPage: React.FC = () => {
     setIsPublishing(true);
     setTimeout(() => {
       setIsPublishing(false);
-      addToast('All changes successfully published to your live website!', 'success');
+      addToast('Website published', 'success');
     }, 1000);
   };
 
@@ -99,7 +99,7 @@ export const WebsiteManagerPage: React.FC = () => {
           <div className="flex items-center gap-2">
             <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-extrabold uppercase tracking-widest flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              🟢 Website Live
+              Website Live
             </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">
@@ -161,19 +161,19 @@ export const WebsiteManagerPage: React.FC = () => {
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Last Published</span>
             <div className="flex items-center justify-between">
-              <p className="text-sm font-extrabold text-slate-900 dark:text-slate-100">Today at 08:30</p>
+              <p className="text-sm font-extrabold text-slate-900 dark:text-slate-100">—</p>
               <Calendar className="w-5 h-5 text-violet-600" />
             </div>
-            <span className="text-[11px] text-slate-500 block">Version 2.4 Live</span>
+            <span className="text-[11px] text-slate-500 block">Not published yet</span>
           </div>
 
           <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Uptime</span>
             <div className="flex items-center justify-between">
-              <p className="text-lg font-extrabold text-slate-900 dark:text-slate-100">99.98%</p>
+              <p className="text-lg font-extrabold text-slate-900 dark:text-slate-100">—</p>
               <Server className="w-5 h-5 text-indigo-600" />
             </div>
-            <span className="text-[11px] text-slate-500 block">Last 30 days</span>
+            <span className="text-[11px] text-slate-500 block">Monitoring inactive</span>
           </div>
         </div>
       </div>
@@ -200,11 +200,11 @@ export const WebsiteManagerPage: React.FC = () => {
           </div>
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
             <span className="text-slate-400 font-medium">Business Type</span>
-            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">Professional Services & Retail</p>
+            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">—</p>
           </div>
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
             <span className="text-slate-400 font-medium">Phone Number</span>
-            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">+27 82 555 0192</p>
+            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">—</p>
           </div>
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
             <span className="text-slate-400 font-medium">Email Address</span>
@@ -212,11 +212,11 @@ export const WebsiteManagerPage: React.FC = () => {
           </div>
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
             <span className="text-slate-400 font-medium">Physical Address</span>
-            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">124 Long Street, Cape Town</p>
+            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">—</p>
           </div>
           <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
             <span className="text-slate-400 font-medium">Opening Hours</span>
-            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">Mon - Sat: 08:00 - 18:00</p>
+            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">—</p>
           </div>
         </div>
       </div>
@@ -271,32 +271,8 @@ export const WebsiteManagerPage: React.FC = () => {
             ))}
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center space-y-1">
-              <span className="text-[11px] font-bold text-slate-400 uppercase">Visitors</span>
-              <p className="text-xl font-extrabold text-slate-900 dark:text-slate-100">4,820</p>
-              <span className="text-[10px] text-emerald-600 font-bold">+12% this month</span>
-            </div>
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center space-y-1">
-              <span className="text-[11px] font-bold text-slate-400 uppercase">Page Views</span>
-              <p className="text-xl font-extrabold text-slate-900 dark:text-slate-100">14,350</p>
-              <span className="text-[10px] text-emerald-600 font-bold">+18% this month</span>
-            </div>
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center space-y-1">
-              <span className="text-[11px] font-bold text-slate-400 uppercase">Bookings</span>
-              <p className="text-xl font-extrabold text-slate-900 dark:text-slate-100">142</p>
-              <span className="text-[10px] text-emerald-600 font-bold">+8% this month</span>
-            </div>
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center space-y-1">
-              <span className="text-[11px] font-bold text-slate-400 uppercase">Enquiries</span>
-              <p className="text-xl font-extrabold text-slate-900 dark:text-slate-100">68</p>
-              <span className="text-[10px] text-emerald-600 font-bold">+15% this month</span>
-            </div>
-            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 text-center space-y-1 col-span-2 md:col-span-1">
-              <span className="text-[11px] font-bold text-slate-400 uppercase">Conversion</span>
-              <p className="text-xl font-extrabold text-violet-600 dark:text-violet-400">4.4%</p>
-              <span className="text-[10px] text-emerald-600 font-bold">Healthy rate</span>
-            </div>
+          <div className="flex items-center justify-center py-12 text-slate-400 text-xs">
+            Connect a supported analytics service to view visitor metrics.
           </div>
         )}
       </div>
@@ -304,8 +280,8 @@ export const WebsiteManagerPage: React.FC = () => {
       {/* Publishing Status */}
       <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Website Version v2.4</span>
-          <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 mt-0.5">Last Published Today at 08:30 UTC</h4>
+          <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Website Status</span>
+          <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 mt-0.5">Changes published instantly</h4>
         </div>
         <button
           onClick={handlePublish}
