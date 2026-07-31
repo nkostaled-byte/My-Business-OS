@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
@@ -50,9 +50,9 @@ export const SettingsPage: React.FC = () => {
   const [draftBusinessName, setDraftBusinessName] = useState(businessName);
   const [draftProfileName, setDraftProfileName] = useState(profileName);
   const [draftProfileEmail, setDraftProfileEmail] = useState(profileEmail);
-  const [phone, setPhone] = useState('+27 82 555 0192');
-  const [address, setAddress] = useState('124 Long Street, Cape Town, South Africa');
-  const [hours, setHours] = useState('Mon - Sat: 08:00 - 18:00');
+  const [phone, setPhone] = useState('');
+  const [address, setAddress] = useState('');
+  const [hours, setHours] = useState('');
   const [language, setLanguage] = useState('English (South Africa)');
   const [timezone, setTimezone] = useState('(GMT+02:00) Johannesburg / Cape Town');
 
@@ -72,6 +72,38 @@ export const SettingsPage: React.FC = () => {
   const [secondaryColor, setSecondaryColor] = useState('#f5f5f5');
   const [logoUrl, setLogoUrl] = useState('');
   const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
+
+  // Load persisted settings on mount so saved values are shown.
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const result = await api.get('/api/client-settings');
+        if (!cancelled && result.success && result.data) {
+          const s = result.data as any;
+          if (s.businessName) setDraftBusinessName(s.businessName);
+          if (s.phone) setPhone(s.phone);
+          if (s.address) setAddress(s.address);
+          if (s.openingHours) setHours(s.openingHours);
+          if (s.bankName) setBankName(s.bankName);
+          if (s.bankAccountName) setBankAccountName(s.bankAccountName);
+          if (s.bankAccountNumber) setBankAccountNumber(s.bankAccountNumber);
+          if (s.bankBranchCode) setBankBranchCode(s.bankBranchCode);
+          if (s.paymentInstructions) setPaymentInstructions(s.paymentInstructions);
+          if (s.primaryColor) setPrimaryColor(s.primaryColor);
+          if (s.secondaryColor) setSecondaryColor(s.secondaryColor);
+          if (s.logoUrl) setLogoUrl(s.logoUrl);
+          if (s.ownerEmail) setDraftProfileEmail(s.ownerEmail);
+        }
+      } catch {
+        // Silent — fields just stay at defaults if the fetch fails.
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
