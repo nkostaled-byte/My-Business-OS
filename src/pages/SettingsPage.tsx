@@ -21,7 +21,10 @@ import {
   Mail,
   Phone,
   MapPin,
-  Clock
+  Clock,
+  FileText,
+  Banknote,
+  PenLine
 } from 'lucide-react';
 
 export const SettingsPage: React.FC = () => {
@@ -39,7 +42,7 @@ export const SettingsPage: React.FC = () => {
     setProfileAvatar,
   } = useData();
 
-  const [activeTab, setActiveTab] = useState<'general' | 'business' | 'website' | 'team' | 'notifications' | 'billing' | 'account'>('general');
+  const [activeTab, setActiveTab] = useState<'general' | 'business' | 'website' | 'team' | 'notifications' | 'billing' | 'account' | 'invoice'>('general');
 
   // Form states
   const [draftBusinessName, setDraftBusinessName] = useState(businessName);
@@ -57,13 +60,47 @@ export const SettingsPage: React.FC = () => {
   const [formNotifs, setFormNotifs] = useState(true);
   const [invoiceNotifs, setInvoiceNotifs] = useState(true);
 
-  const handleSave = (e: React.FormEvent) => {
-    e.preventDefault();
-    setBusinessName(draftBusinessName);
-    setProfileName(draftProfileName);
-    setProfileEmail(draftProfileEmail);
+  // Invoice / Banking settings
+  const [bankName, setBankName] = useState('');
+  const [bankAccountName, setBankAccountName] = useState('');
+  const [bankAccountNumber, setBankAccountNumber] = useState('');
+  const [bankBranchCode, setBankBranchCode] = useState('');
+  const [paymentInstructions, setPaymentInstructions] = useState('');
+  const [saving, setSaving] = useState(false);
 
-    addToast('Settings updated successfully', 'success');
+  const handleSave = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setSaving(true);
+    try {
+      setBusinessName(draftBusinessName);
+      setProfileName(draftProfileName);
+      setProfileEmail(draftProfileEmail);
+
+      // Persist business/invoice settings to backend
+      const payload: Record<string, any> = {
+        businessName: draftBusinessName,
+        phone,
+        address,
+        openingHours: hours,
+        bankName,
+        bankAccountName,
+        bankAccountNumber,
+        bankBranchCode,
+        paymentInstructions,
+      };
+
+      const result = await api.put('/api/client-settings', payload);
+      if (!result.success) {
+        addToast({ title: 'Save Failed', message: result.error || 'Could not save settings.', type: 'error' });
+        setSaving(false);
+        return;
+      }
+
+      addToast('Settings updated successfully', 'success');
+    } catch {
+      addToast({ title: 'Network Error', message: 'Could not reach the server.', type: 'error' });
+    }
+    setSaving(false);
   };
 
   const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -99,6 +136,7 @@ export const SettingsPage: React.FC = () => {
           { id: 'team', label: 'Team', icon: Users },
           { id: 'notifications', label: 'Notifications', icon: Bell },
           { id: 'billing', label: 'Billing', icon: CreditCard },
+          { id: 'invoice', label: 'Invoice', icon: FileText },
           { id: 'account', label: 'Account', icon: ShieldAlert },
         ].map((tab) => {
           const Icon = tab.icon;
@@ -391,6 +429,57 @@ export const SettingsPage: React.FC = () => {
                   >
                     Manage Subscription
                   </button>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'invoice' && (
+              <motion.div key="invoice" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-6">
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Invoice Template Settings</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Banking details and payment instructions will appear on every PDF invoice.</p>
+                </div>
+
+                <div className="space-y-4">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <Banknote className="w-3.5 h-3.5" /> Banking Details
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Bank Name</label>
+                      <input type="text" value={bankName} onChange={(e) => setBankName(e.target.value)}
+                        placeholder="e.g. First National Bank"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Account Name</label>
+                      <input type="text" value={bankAccountName} onChange={(e) => setBankAccountName(e.target.value)}
+                        placeholder="e.g. My Business (Pty) Ltd"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Account Number</label>
+                      <input type="text" value={bankAccountNumber} onChange={(e) => setBankAccountNumber(e.target.value)}
+                        placeholder="e.g. 62819283746"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Branch Code</label>
+                      <input type="text" value={bankBranchCode} onChange={(e) => setBankBranchCode(e.target.value)}
+                        placeholder="e.g. 255005"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <PenLine className="w-3.5 h-3.5" /> Payment Instructions
+                  </h4>
+                  <textarea value={paymentInstructions} onChange={(e) => setPaymentInstructions(e.target.value)}
+                    placeholder="e.g. Please use the invoice number as reference when making payment. EFT payments may take 2-3 business days to reflect."
+                    rows={4}
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 resize-none" />
                 </div>
               </motion.div>
             )}

@@ -164,11 +164,22 @@ export interface Invoice {
   clientEmail?: string;
   amount?: number;
   total?: number;
+  subtotal?: number;
+  tax?: number;
   dueDate?: string;
   dueAt?: string;
   issuedDate?: string;
   issuedAt?: string;
   status: InvoiceStatus;
+  items?: InvoiceLineItem[];
+}
+
+export interface InvoiceLineItem {
+  id?: string;
+  description: string;
+  quantity: number;
+  price: number;
+  lineTotal?: number;
 }
 
 export interface ActivityItem {

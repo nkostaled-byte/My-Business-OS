@@ -72,6 +72,7 @@ interface DataContextType {
   forms: FormSubmission[];
   formsLoading: boolean;
   invoices: Invoice[];
+  setInvoices: (invoices: Invoice[]) => void;
   invoicesLoading: boolean;
   inventory: Array<{
     id: string;
@@ -534,6 +535,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     forms,
     formsLoading,
     invoices,
+    setInvoices,
     invoicesLoading,
     inventory,
     createResource,

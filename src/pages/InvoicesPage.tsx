@@ -9,47 +9,96 @@ import { FileSpreadsheet, Eye, Download, FileText, Calendar, Mail, DollarSign } 
 import api from '../lib/api-client';
 
 export const InvoicesPage: React.FC = () => {
-  const { invoices, addInvoice, isLoading } = useData();
+  const { invoices, setInvoices, isLoading } = useData();
   const { addToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
+  const [creating, setCreating] = useState(false);
 
   // Form State
   const [clientName, setClientName] = useState('');
   const [clientEmail, setClientEmail] = useState('');
-  const [amount, setAmount] = useState('');
+  const [lineItems, setLineItems] = useState<{ description: string; quantity: number; price: number }[]>([
+    { description: '', quantity: 1, price: 0 },
+  ]);
+  const [tax, setTax] = useState(0);
   const [status, setStatus] = useState<InvoiceStatus>('sent');
   const [dueDate, setDueDate] = useState('');
 
+  const subtotal = lineItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
+  const total = subtotal + tax;
+
+  const addLineItem = () => {
+    setLineItems([...lineItems, { description: '', quantity: 1, price: 0 }]);
+  };
+
+  const removeLineItem = (idx: number) => {
+    if (lineItems.length <= 1) return;
+    setLineItems(lineItems.filter((_, i) => i !== idx));
+  };
+
+  const updateLineItem = (idx: number, field: 'description' | 'quantity' | 'price', value: string | number) => {
+    const updated = [...lineItems];
+    (updated[idx] as any)[field] = value;
+    setLineItems(updated);
+  };
+
   const handleCreateInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
-    const result = await addInvoice({
-      clientName,
-      clientEmail,
-      amount: parseFloat(amount) || 0,
-      status,
-      dueDate: dueDate || new Date(Date.now() + 14 * 86400000).toISOString().substring(0, 10),
-    });
-    if (result) {
-      addToast({
-        title: 'Invoice Issued',
-        message: `Invoice created for ${clientName} (R${amount}).`,
-        type: 'success',
+    setCreating(true);
+    try {
+      const validItems = lineItems.filter((item) => item.description.trim() && item.quantity > 0);
+      if (validItems.length === 0) {
+        addToast({ title: 'Validation Error', message: 'Add at least one item with a description.', type: 'error' });
+        setCreating(false);
+        return;
+      }
+
+      const result = await api.post<any>('/api/invoices', {
+        customer: { name: clientName, email: clientEmail },
+        items: validItems.map((item) => ({
+          description: item.description,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        tax,
+        dueDate: dueDate || new Date(Date.now() + 14 * 86400000).toISOString().substring(0, 10),
       });
-      setIsModalOpen(false);
-      setClientName('');
-      setClientEmail('');
-      setAmount('');
-      setDueDate('');
-      setStatus('sent');
-    } else {
+
+      if (result.success && result.data) {
+        // Refresh invoices list from dashboard
+        const refresh = await api.get<Invoice[]>('/api/dashboard/invoices?order=created_at.desc&limit=50');
+        if (refresh.success && refresh.data) {
+          setInvoices(refresh.data);
+        }
+        addToast({
+          title: 'Invoice Issued',
+          message: `Invoice created for ${clientName} — PDF generated.`,
+          type: 'success',
+        });
+        setIsModalOpen(false);
+        setClientName('');
+        setClientEmail('');
+        setLineItems([{ description: '', quantity: 1, price: 0 }]);
+        setTax(0);
+        setDueDate('');
+        setStatus('sent');
+      } else {
+        addToast({
+          title: 'Failed to Create Invoice',
+          message: result.error || 'Could not save the invoice.',
+          type: 'error',
+        });
+      }
+    } catch (err: any) {
       addToast({
-        title: 'Failed to Create Invoice',
-        message: 'Could not save the invoice. Please check your connection and try again.',
+        title: 'Network Error',
+        message: err?.message || 'Could not reach the server.',
         type: 'error',
       });
     }
+    setCreating(false);
   };
 
   const handleDownloadPdf = async (invoice: Invoice) => {
@@ -214,79 +263,146 @@ export const InvoicesPage: React.FC = () => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         title="Create New Invoice"
-        subtitle="Generate digital billing statement"
+        subtitle="Generate digital billing statement with line items"
+        maxWidth="max-w-2xl"
       >
         <form onSubmit={handleCreateInvoice} className="space-y-4">
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              Client / Company Name
-            </label>
-            <input
-              type="text"
-              required
-              value={clientName}
-              onChange={(e) => setClientName(e.target.value)}
-              placeholder="e.g. Apex Beauty Suppliers"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
-            />
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Client / Company Name
+              </label>
+              <input
+                type="text"
+                required
+                value={clientName}
+                onChange={(e) => setClientName(e.target.value)}
+                placeholder="e.g. Apex Beauty Suppliers"
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Client Email
+              </label>
+              <input
+                type="email"
+                required
+                value={clientEmail}
+                onChange={(e) => setClientEmail(e.target.value)}
+                placeholder="billing@apexbeauty.co.za"
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+              />
+            </div>
           </div>
 
+          {/* Line Items */}
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              Client Email
-            </label>
-            <input
-              type="email"
-              required
-              value={clientEmail}
-              onChange={(e) => setClientEmail(e.target.value)}
-              placeholder="billing@apexbeauty.co.za"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
-            />
+            <div className="flex items-center justify-between mb-2">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                Line Items
+              </label>
+              <button
+                type="button"
+                onClick={addLineItem}
+                className="text-[11px] font-bold text-violet-600 hover:text-violet-700 dark:text-violet-400 cursor-pointer"
+              >
+                + Add Item
+              </button>
+            </div>
+            <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+              {lineItems.map((item, idx) => (
+                <div key={idx} className="flex items-center gap-2">
+                  <input
+                    type="text"
+                    value={item.description}
+                    onChange={(e) => updateLineItem(idx, 'description', e.target.value)}
+                    placeholder="Item description"
+                    className="flex-1 min-w-0 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                  />
+                  <input
+                    type="number"
+                    min={1}
+                    value={item.quantity}
+                    onChange={(e) => updateLineItem(idx, 'quantity', Math.max(1, parseInt(e.target.value) || 1))}
+                    className="w-14 px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-center text-slate-900 dark:text-slate-100"
+                    title="Qty"
+                  />
+                  <input
+                    type="number"
+                    min={0}
+                    step={0.01}
+                    value={item.price}
+                    onChange={(e) => updateLineItem(idx, 'price', parseFloat(e.target.value) || 0)}
+                    className="w-24 px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-right text-slate-900 dark:text-slate-100"
+                    title="Price"
+                  />
+                  <span className="text-xs font-semibold text-slate-500 w-16 text-right">
+                    R{(item.quantity * item.price).toFixed(2)}
+                  </span>
+                  <button
+                    type="button"
+                    onClick={() => removeLineItem(idx)}
+                    disabled={lineItems.length <= 1}
+                    className="p-1 rounded-md text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 disabled:opacity-30 cursor-pointer"
+                  >
+                    <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
+                  </button>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Totals */}
+          <div className="bg-slate-50 dark:bg-slate-800/50 rounded-xl p-3 space-y-1 text-xs">
+            <div className="flex justify-between text-slate-500">
+              <span>Subtotal</span>
+              <span>R{subtotal.toFixed(2)}</span>
+            </div>
+            <div className="flex justify-between items-center">
+              <span className="text-slate-500">Tax (ZAR)</span>
+              <input
+                type="number"
+                min={0}
+                step={0.01}
+                value={tax}
+                onChange={(e) => setTax(parseFloat(e.target.value) || 0)}
+                className="w-28 px-2 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs text-right text-slate-900 dark:text-slate-100"
+              />
+            </div>
+            <div className="flex justify-between font-bold text-slate-900 dark:text-slate-100 pt-1 border-t border-slate-200 dark:border-slate-700">
+              <span>Total</span>
+              <span>R{total.toFixed(2)}</span>
+            </div>
           </div>
 
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                Amount (ZAR)
-              </label>
-              <input
-                type="number"
-                required
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-                placeholder="4200"
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                Initial Status
+                Status
               </label>
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as InvoiceStatus)}
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
               >
                 <option value="sent">Sent</option>
                 <option value="draft">Draft</option>
                 <option value="paid">Paid</option>
               </select>
             </div>
-          </div>
-
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-              Due Date
-            </label>
-            <input
-              type="date"
-              required
-              value={dueDate}
-              onChange={(e) => setDueDate(e.target.value)}
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
-            />
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Due Date
+              </label>
+              <input
+                type="date"
+                required
+                value={dueDate}
+                onChange={(e) => setDueDate(e.target.value)}
+                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+              />
+            </div>
           </div>
 
           <div className="pt-3 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
@@ -301,9 +417,10 @@ export const InvoicesPage: React.FC = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer"
+              disabled={creating}
+              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer disabled:opacity-50"
             >
-              Save Invoice
+              {creating ? 'Generating...' : 'Issue Invoice'}
             </motion.button>
           </div>
         </form>
