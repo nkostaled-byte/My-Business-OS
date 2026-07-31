@@ -5,11 +5,11 @@ import { useToast } from '../context/ToastContext';
 import { Invoice, InvoiceStatus } from '../types';
 import { DataTable, Column } from '../components/common/DataTable';
 import { Modal } from '../components/common/Modal';
-import { FileSpreadsheet, Eye, Download, FileText, Calendar, Mail, DollarSign } from 'lucide-react';
+import { FileSpreadsheet, Eye, Download, FileText, Calendar, Mail, DollarSign, Package, Scissors, Type } from 'lucide-react';
 import api from '../lib/api-client';
 
 export const InvoicesPage: React.FC = () => {
-  const { invoices, setInvoices, isLoading } = useData();
+  const { invoices, setInvoices, isLoading, products, services } = useData();
   const { addToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
@@ -19,8 +19,14 @@ export const InvoicesPage: React.FC = () => {
   // Form State
   const [clientName, setClientName] = useState('');
   const [clientEmail, setClientEmail] = useState('');
-  const [lineItems, setLineItems] = useState<{ description: string; quantity: number; price: number }[]>([
-    { description: '', quantity: 1, price: 0 },
+  const [lineItems, setLineItems] = useState<{
+    description: string;
+    quantity: number;
+    price: number;
+    source: 'manual' | 'product' | 'service';
+    sourceId?: string;
+  }[]>([
+    { description: '', quantity: 1, price: 0, source: 'manual' },
   ]);
   const [tax, setTax] = useState(0);
   const [status, setStatus] = useState<InvoiceStatus>('sent');
@@ -30,7 +36,7 @@ export const InvoicesPage: React.FC = () => {
   const total = subtotal + tax;
 
   const addLineItem = () => {
-    setLineItems([...lineItems, { description: '', quantity: 1, price: 0 }]);
+    setLineItems([...lineItems, { description: '', quantity: 1, price: 0, source: 'manual' }]);
   };
 
   const removeLineItem = (idx: number) => {
@@ -38,9 +44,37 @@ export const InvoicesPage: React.FC = () => {
     setLineItems(lineItems.filter((_, i) => i !== idx));
   };
 
-  const updateLineItem = (idx: number, field: 'description' | 'quantity' | 'price', value: string | number) => {
+  const updateLineItem = (idx: number, field: 'description' | 'quantity' | 'price' | 'source' | 'sourceId', value: string | number) => {
     const updated = [...lineItems];
     (updated[idx] as any)[field] = value;
+    setLineItems(updated);
+  };
+
+  const pickProduct = (idx: number, productId: string) => {
+    const product = products.find((p) => p.id === productId);
+    if (!product) return;
+    const updated = [...lineItems];
+    updated[idx] = {
+      description: product.name,
+      quantity: 1,
+      price: product.price,
+      source: 'product',
+      sourceId: productId,
+    };
+    setLineItems(updated);
+  };
+
+  const pickService = (idx: number, serviceId: string) => {
+    const svc = services.find((s) => s.id === serviceId);
+    if (!svc) return;
+    const updated = [...lineItems];
+    updated[idx] = {
+      description: svc.name,
+      quantity: 1,
+      price: svc.price,
+      source: 'service',
+      sourceId: serviceId,
+    };
     setLineItems(updated);
   };
 
@@ -58,6 +92,8 @@ export const InvoicesPage: React.FC = () => {
       const result = await api.post<any>('/api/invoices', {
         customer: { name: clientName, email: clientEmail },
         items: validItems.map((item) => ({
+          productId: item.source === 'product' ? item.sourceId : undefined,
+          serviceId: item.source === 'service' ? item.sourceId : undefined,
           description: item.description,
           quantity: item.quantity,
           price: item.price,
@@ -80,7 +116,7 @@ export const InvoicesPage: React.FC = () => {
         setIsModalOpen(false);
         setClientName('');
         setClientEmail('');
-        setLineItems([{ description: '', quantity: 1, price: 0 }]);
+        setLineItems([{ description: '', quantity: 1, price: 0, source: 'manual' }]);
         setTax(0);
         setDueDate('');
         setStatus('sent');
@@ -310,16 +346,78 @@ export const InvoicesPage: React.FC = () => {
                 + Add Item
               </button>
             </div>
-            <div className="space-y-2 max-h-56 overflow-y-auto pr-1">
+            <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
               {lineItems.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-2">
-                  <input
-                    type="text"
-                    value={item.description}
-                    onChange={(e) => updateLineItem(idx, 'description', e.target.value)}
-                    placeholder="Item description"
-                    className="flex-1 min-w-0 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
-                  />
+                <div key={idx} className="flex items-center gap-1.5">
+                  {/* Source type toggle */}
+                  <div className="flex gap-px border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden flex-shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => updateLineItem(idx, 'source', 'manual')}
+                      className={`px-1.5 py-1.5 text-[10px] font-bold cursor-pointer ${item.source === 'manual' ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400' : 'bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500'}`}
+                      title="Manual entry"
+                    >
+                      <Type className="w-3 h-3" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => updateLineItem(idx, 'source', 'product')}
+                      className={`px-1.5 py-1.5 text-[10px] font-bold cursor-pointer ${item.source === 'product' ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400' : 'bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500'}`}
+                      title="Pick from inventory"
+                    >
+                      <Package className="w-3 h-3" />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => updateLineItem(idx, 'source', 'service')}
+                      className={`px-1.5 py-1.5 text-[10px] font-bold cursor-pointer ${item.source === 'service' ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400' : 'bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500'}`}
+                      title="Pick a service"
+                    >
+                      <Scissors className="w-3 h-3" />
+                    </button>
+                  </div>
+
+                  {/* Description field or picker */}
+                  {item.source === 'manual' ? (
+                    <input
+                      type="text"
+                      value={item.description}
+                      onChange={(e) => updateLineItem(idx, 'description', e.target.value)}
+                      placeholder="Item description"
+                      className="flex-1 min-w-0 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                    />
+                  ) : item.source === 'product' ? (
+                    <select
+                      value={item.sourceId || ''}
+                      onChange={(e) => pickProduct(idx, e.target.value)}
+                      className="flex-1 min-w-0 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                    >
+                      <option value="">Select product...</option>
+                      {products
+                        .filter((p) => p.status !== 'out-of-stock')
+                        .map((p) => (
+                          <option key={p.id} value={p.id}>
+                            {p.name} — R{p.price.toFixed(2)} ({p.stock} in stock)
+                          </option>
+                        ))}
+                    </select>
+                  ) : (
+                    <select
+                      value={item.sourceId || ''}
+                      onChange={(e) => pickService(idx, e.target.value)}
+                      className="flex-1 min-w-0 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                    >
+                      <option value="">Select service...</option>
+                      {services
+                        .filter((s) => s.isActive)
+                        .map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.name} — R{s.price.toFixed(2)} ({s.durationMinutes}min)
+                          </option>
+                        ))}
+                    </select>
+                  )}
+
                   <input
                     type="number"
                     min={1}
@@ -334,17 +432,17 @@ export const InvoicesPage: React.FC = () => {
                     step={0.01}
                     value={item.price}
                     onChange={(e) => updateLineItem(idx, 'price', parseFloat(e.target.value) || 0)}
-                    className="w-24 px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-right text-slate-900 dark:text-slate-100"
+                    className="w-20 px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-right text-slate-900 dark:text-slate-100"
                     title="Price"
                   />
-                  <span className="text-xs font-semibold text-slate-500 w-16 text-right">
+                  <span className="text-[11px] font-semibold text-slate-500 w-14 text-right flex-shrink-0">
                     R{(item.quantity * item.price).toFixed(2)}
                   </span>
                   <button
                     type="button"
                     onClick={() => removeLineItem(idx)}
                     disabled={lineItems.length <= 1}
-                    className="p-1 rounded-md text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 disabled:opacity-30 cursor-pointer"
+                    className="p-1 rounded-md text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/50 disabled:opacity-30 cursor-pointer flex-shrink-0"
                   >
                     <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" /></svg>
                   </button>

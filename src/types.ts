@@ -176,6 +176,8 @@ export interface Invoice {
 
 export interface InvoiceLineItem {
   id?: string;
+  productId?: string;
+  serviceId?: string;
   description: string;
   quantity: number;
   price: number;
