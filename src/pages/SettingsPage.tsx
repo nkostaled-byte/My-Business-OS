@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { useTheme } from '../context/ThemeContext';
 import { useToast } from '../context/ToastContext';
 import { useData } from '../context/DataContext';
+import api from '../lib/api-client';
 import { 
   Building2, 
   User, 
@@ -69,6 +70,7 @@ export const SettingsPage: React.FC = () => {
   const [paymentInstructions, setPaymentInstructions] = useState('');
   const [primaryColor, setPrimaryColor] = useState('#111111');
   const [secondaryColor, setSecondaryColor] = useState('#f5f5f5');
+  const [logoUrl, setLogoUrl] = useState('');
   const [saving, setSaving] = useState(false);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -92,6 +94,7 @@ export const SettingsPage: React.FC = () => {
         paymentInstructions,
         primaryColor,
         secondaryColor,
+        logoUrl,
       };
 
       const result = await api.put('/api/client-settings', payload);
@@ -120,6 +123,18 @@ export const SettingsPage: React.FC = () => {
       };
       reader.readAsDataURL(file);
     }
+  };
+
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const result = await api.upload(file, 'logos');
+    if (!result.success || !result.data?.url) {
+      addToast({ title: 'Upload Failed', message: result.error || 'Could not upload logo.', type: 'error' });
+      return;
+    }
+    setLogoUrl(result.data.url);
+    addToast({ title: 'Logo uploaded', message: 'Click Save to persist.', type: 'success' });
   };
 
   return (
@@ -257,6 +272,29 @@ export const SettingsPage: React.FC = () => {
                     onChange={(e) => setDraftBusinessName(e.target.value)}
                     className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" 
                   />
+                </div>
+
+                <div>
+                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-2">Business Logo</label>
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-2xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center overflow-hidden">
+                      {logoUrl ? (
+                        <img src={logoUrl} alt="Business logo" className="w-full h-full object-contain" />
+                      ) : (
+                        <Building2 className="w-7 h-7 text-slate-400" />
+                      )}
+                    </div>
+                    <label className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer inline-flex items-center gap-2">
+                      <Upload className="w-3.5 h-3.5" /> Upload Logo
+                      <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
+                    </label>
+                    {logoUrl && (
+                      <button type="button" onClick={() => setLogoUrl('')} className="text-xs font-semibold text-rose-500 hover:text-rose-600 cursor-pointer">
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  <p className="text-[11px] text-slate-400 mt-1.5">PNG or JPEG. Used on your invoices and website. Save to persist.</p>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
