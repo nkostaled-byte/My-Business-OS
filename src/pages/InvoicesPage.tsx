@@ -59,7 +59,7 @@ export const InvoicesPage: React.FC = () => {
     try {
       const token = localStorage.getItem('grafix_auth_token');
       const response = await fetch(
-        `${import.meta.env.VITE_WORKER_API_URL}/api/invoices/${id}/pdf`,
+        api.getUrl(`/api/invoices/${id}/pdf`),
         { headers: token ? { Authorization: `Bearer ${token}` } : {} }
       );
       if (!response.ok) {
