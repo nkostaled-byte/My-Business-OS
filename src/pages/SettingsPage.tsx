@@ -24,6 +24,7 @@ import {
   Clock,
   FileText,
   Banknote,
+  Palette,
   PenLine
 } from 'lucide-react';
 
@@ -66,6 +67,8 @@ export const SettingsPage: React.FC = () => {
   const [bankAccountNumber, setBankAccountNumber] = useState('');
   const [bankBranchCode, setBankBranchCode] = useState('');
   const [paymentInstructions, setPaymentInstructions] = useState('');
+  const [primaryColor, setPrimaryColor] = useState('#111111');
+  const [secondaryColor, setSecondaryColor] = useState('#f5f5f5');
   const [saving, setSaving] = useState(false);
 
   const handleSave = async (e: React.FormEvent) => {
@@ -87,6 +90,8 @@ export const SettingsPage: React.FC = () => {
         bankAccountNumber,
         bankBranchCode,
         paymentInstructions,
+        primaryColor,
+        secondaryColor,
       };
 
       const result = await api.put('/api/client-settings', payload);
@@ -97,8 +102,9 @@ export const SettingsPage: React.FC = () => {
       }
 
       addToast('Settings updated successfully', 'success');
-    } catch {
-      addToast({ title: 'Network Error', message: 'Could not reach the server.', type: 'error' });
+    } catch (err: any) {
+      console.error('[Settings] Save error:', err);
+      addToast({ title: 'Network Error', message: err?.message || 'Could not reach the server.', type: 'error' });
     }
     setSaving(false);
   };
@@ -468,6 +474,35 @@ export const SettingsPage: React.FC = () => {
                       <input type="text" value={bankBranchCode} onChange={(e) => setBankBranchCode(e.target.value)}
                         placeholder="e.g. 255005"
                         className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                    </div>
+                  </div>
+                </div>
+
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                    <Palette className="w-3.5 h-3.5" /> Template Colors
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">Used for headers, headings and accents on your invoices.</p>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Primary Color</label>
+                      <div className="flex items-center gap-2">
+                        <input type="color" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)}
+                          className="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer" />
+                        <input type="text" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)}
+                          placeholder="#111111"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Secondary Color</label>
+                      <div className="flex items-center gap-2">
+                        <input type="color" value={secondaryColor} onChange={(e) => setSecondaryColor(e.target.value)}
+                          className="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer" />
+                        <input type="text" value={secondaryColor} onChange={(e) => setSecondaryColor(e.target.value)}
+                          placeholder="#f5f5f5"
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                      </div>
                     </div>
                   </div>
                 </div>

@@ -231,17 +231,30 @@ export const api = {
   ): Promise<ApiResponse<T>> {
     const url = buildUrl(path, options?.params);
     try {
+      const headers = {
+        'Content-Type': 'application/json',
+        ...getAuthHeaders(),
+      };
+      console.log(`[API Client] PUT ${url}`, {
+        headersKeys: Object.keys(headers),
+        hasAuth: !!headers.Authorization,
+        bodyPreview: body ? JSON.stringify(body).substring(0, 100) : null,
+      });
       const response = await fetch(url, {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          ...getAuthHeaders(),
-        },
+        headers,
         body: body !== undefined ? JSON.stringify(body) : undefined,
         signal: options?.signal,
       });
-      return handleResponse<T>(response);
+      console.log(`[API Client] PUT ${url} response:`, {
+        status: response.status,
+        statusText: response.statusText,
+      });
+      const result = await handleResponse<T>(response);
+      console.log(`[API Client] PUT ${url} result:`, result);
+      return result;
     } catch (err: any) {
+      console.error(`[API Client] PUT ${url} error:`, err?.message);
       return {
         success: false,
         error: err?.message || 'Network error',
