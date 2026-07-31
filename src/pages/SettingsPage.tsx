@@ -129,11 +129,12 @@ export const SettingsPage: React.FC = () => {
     const file = e.target.files?.[0];
     if (!file) return;
     const result = await api.upload(file, 'logos');
-    if (!result.success || !result.data?.url) {
+    const url = result.data?.url || (result as any).url;
+    if (!result.success || !url) {
       addToast({ title: 'Upload Failed', message: result.error || 'Could not upload logo.', type: 'error' });
       return;
     }
-    setLogoUrl(result.data.url);
+    setLogoUrl(url);
     addToast({ title: 'Logo uploaded', message: 'Click Save to persist.', type: 'success' });
   };
 
