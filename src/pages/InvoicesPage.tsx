@@ -15,6 +15,7 @@ export const InvoicesPage: React.FC = () => {
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
   const [downloading, setDownloading] = useState<string | null>(null);
   const [creating, setCreating] = useState(false);
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   // Form State
   const [clientName, setClientName] = useState('');
@@ -99,6 +100,7 @@ export const InvoicesPage: React.FC = () => {
           price: item.price,
         })),
         tax,
+        status,
         dueDate: dueDate || new Date(Date.now() + 14 * 86400000).toISOString().substring(0, 10),
       });
 
@@ -165,6 +167,25 @@ export const InvoicesPage: React.FC = () => {
       addToast({ title: 'Download Failed', message: 'Network error while downloading PDF.', type: 'error' });
     }
     setDownloading(null);
+  };
+
+  const handleUpdateStatus = async (invoice: Invoice, newStatus: InvoiceStatus) => {
+    if (newStatus === invoice.status) return;
+    setUpdatingStatus(true);
+    try {
+      const result = await api.put<any>(`/api/dashboard/invoices/${invoice.id}`, { status: newStatus });
+      if (result.success) {
+        const updated = { ...invoice, status: newStatus };
+        setSelectedInvoice(updated);
+        setInvoices(invoices.map((inv) => (inv.id === invoice.id ? updated : inv)));
+        addToast({ title: 'Status Updated', message: `Invoice marked as ${newStatus}.`, type: 'success' });
+      } else {
+        addToast({ title: 'Update Failed', message: result.error || 'Could not update status.', type: 'error' });
+      }
+    } catch {
+      addToast({ title: 'Update Failed', message: 'Network error while updating status.', type: 'error' });
+    }
+    setUpdatingStatus(false);
   };
 
   const getStatusBadge = (s: InvoiceStatus) => {
@@ -542,7 +563,20 @@ export const InvoicesPage: React.FC = () => {
               </div>
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
                 <span className="text-slate-400 block mb-1">Status</span>
-                <span>{getStatusBadge(selectedInvoice.status)}</span>
+                <div className="flex items-center gap-2">
+                  <select
+                    value={selectedInvoice.status}
+                    disabled={updatingStatus}
+                    onChange={(e) => handleUpdateStatus(selectedInvoice, e.target.value as InvoiceStatus)}
+                    className="px-2 py-1.5 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs font-semibold text-slate-900 dark:text-slate-100 disabled:opacity-50"
+                  >
+                    <option value="draft">Draft</option>
+                    <option value="sent">Sent</option>
+                    <option value="paid">Paid</option>
+                    <option value="overdue">Overdue</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select>
+                </div>
               </div>
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
                 <span className="text-slate-400 block mb-1 flex items-center gap-1">
