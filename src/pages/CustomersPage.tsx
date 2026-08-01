@@ -5,33 +5,90 @@ import { useToast } from '../context/ToastContext';
 import { Customer } from '../types';
 import { DataTable, Column } from '../components/common/DataTable';
 import { Modal } from '../components/common/Modal';
-import { Users, Mail, Phone, Calendar, ShoppingBag } from 'lucide-react';
+import { Users, Mail, Phone, Calendar, ShoppingBag, Edit3, Trash2 } from 'lucide-react';
+
+const getInitials = (name: string) =>
+  name
+    .trim()
+    .split(/\s+/)
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
 
 export const CustomersPage: React.FC = () => {
-  const { customers, addCustomer, isLoading } = useData();
+  const { customers, addCustomer, updateResource, deleteResource, isLoading } = useData();
   const { addToast } = useToast();
-  const [isAddOpen, setIsAddOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
   const [selectedCustomer, setSelectedCustomer] = useState<Customer | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   // Form State
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
 
-  const handleAddCustomer = (e: React.FormEvent) => {
-    e.preventDefault();
-    addCustomer({ name, email, phone });
-    addToast({
-      title: 'Customer Added',
-      message: `Profile created for ${name}.`,
-      type: 'success',
-    });
-    setIsAddOpen(false);
+  const resetForm = () => {
     setName('');
     setEmail('');
     setPhone('');
   };
 
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingCustomer(null);
+    resetForm();
+  };
+
+  const openAddModal = () => {
+    setEditingCustomer(null);
+    resetForm();
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (customer: Customer) => {
+    setEditingCustomer(customer);
+    setName(customer.name);
+    setEmail(customer.email || '');
+    setPhone(customer.phone || '');
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name) return;
+
+    if (editingCustomer) {
+      const success = await updateResource('customers', editingCustomer.id, {
+        name,
+        email,
+        phone,
+      } as Partial<Customer>);
+      if (success) {
+        addToast({ title: 'Customer Updated', message: `Profile updated for ${name}.`, type: 'success' });
+      } else {
+        addToast({ title: 'Update Failed', message: 'Could not update the customer.', type: 'error' });
+      }
+    } else {
+      await addCustomer({ name, email, phone });
+      addToast({ title: 'Customer Added', message: `Profile created for ${name}.`, type: 'success' });
+    }
+    closeModal();
+  };
+
+  const handleDelete = async (customer: Customer) => {
+    if (deleting === customer.id) return;
+    setDeleting(customer.id);
+    const success = await deleteResource('customers', customer.id);
+    if (success) {
+      addToast({ title: 'Customer Deleted', message: `${customer.name} has been removed.`, type: 'success' });
+      if (selectedCustomer?.id === customer.id) setSelectedCustomer(null);
+    } else {
+      addToast({ title: 'Delete Failed', message: 'Could not delete the customer.', type: 'error' });
+    }
+    setDeleting(null);
+  };
 
   const columns: Column<Customer>[] = [
     {
@@ -42,14 +99,9 @@ export const CustomersPage: React.FC = () => {
           onClick={() => setSelectedCustomer(row)}
           className="flex items-center gap-3 cursor-pointer group"
         >
-          <img
-            src={
-              row.avatarUrl ||
-              'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80'
-            }
-            alt={row.name}
-            className="w-9 h-9 rounded-full object-cover ring-2 ring-slate-100 dark:ring-slate-800"
-          />
+          <div className="w-9 h-9 rounded-full bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-300 font-bold text-xs flex items-center justify-center ring-2 ring-slate-100 dark:ring-slate-800">
+            {getInitials(row.name)}
+          </div>
           <div>
             <span className="font-bold block text-slate-900 dark:text-slate-100 group-hover:text-violet-600 transition-colors">
               {row.name}
@@ -95,6 +147,32 @@ export const CustomersPage: React.FC = () => {
         </span>
       ),
     },
+    {
+      header: 'Actions',
+      cell: (row) => (
+        <div className="flex gap-1">
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => openEditModal(row)}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 transition-colors cursor-pointer"
+            title="Edit customer"
+          >
+            <Edit3 className="w-3.5 h-3.5" />
+          </motion.button>
+          <motion.button
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => handleDelete(row)}
+            disabled={deleting === row.id}
+            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer disabled:opacity-50"
+            title="Delete customer"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </motion.button>
+        </div>
+      ),
+    },
   ];
 
   return (
@@ -116,21 +194,21 @@ export const CustomersPage: React.FC = () => {
         emptyTitle="No customers registered"
         emptyDescription="Customer records will accumulate as orders and bookings are created."
         emptyIcon={Users}
-        onAddClick={() => setIsAddOpen(true)}
+        onAddClick={openAddModal}
         addButtonLabel="New Customer"
         isLoading={isLoading}
         exportFilename="customers_export"
         exportTable="customers"
       />
 
-      {/* Add Customer Modal */}
+      {/* Add / Edit Customer Modal */}
       <Modal
-        isOpen={isAddOpen}
-        onClose={() => setIsAddOpen(false)}
-        title="Add Customer Profile"
-        subtitle="Create a new client record"
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={editingCustomer ? 'Edit Customer Profile' : 'Add Customer Profile'}
+        subtitle={editingCustomer ? `Update ${editingCustomer.name}` : 'Create a new client record'}
       >
-        <form onSubmit={handleAddCustomer} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
               Full Name
@@ -176,7 +254,7 @@ export const CustomersPage: React.FC = () => {
           <div className="pt-3 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
             <button
               type="button"
-              onClick={() => setIsAddOpen(false)}
+              onClick={closeModal}
               className="px-4 py-2 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer"
             >
               Cancel
@@ -187,7 +265,7 @@ export const CustomersPage: React.FC = () => {
               type="submit"
               className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer"
             >
-              Save Customer
+              {editingCustomer ? 'Save Changes' : 'Save Customer'}
             </motion.button>
           </div>
         </form>
@@ -203,20 +281,24 @@ export const CustomersPage: React.FC = () => {
         >
           <div className="space-y-4 text-xs">
             <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-              <img
-                src={
-                  selectedCustomer.avatarUrl ||
-                  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=120&auto=format&fit=crop&q=80'
-                }
-                alt={selectedCustomer.name}
-                className="w-14 h-14 rounded-full object-cover ring-2 ring-violet-500"
-              />
-              <div>
+              <div className="w-14 h-14 rounded-full bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-300 font-bold text-base flex items-center justify-center ring-2 ring-violet-500">
+                {getInitials(selectedCustomer.name)}
+              </div>
+              <div className="flex-1">
                 <h4 className="text-base font-bold text-slate-900 dark:text-slate-100">
                   {selectedCustomer.name}
                 </h4>
                 <span className="text-violet-600 font-semibold">{selectedCustomer.tier} Tier</span>
               </div>
+              <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => openEditModal(selectedCustomer)}
+                className="p-2 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 transition-colors cursor-pointer"
+                title="Edit customer"
+              >
+                <Edit3 className="w-4 h-4" />
+              </motion.button>
             </div>
 
             <div className="grid grid-cols-2 gap-3">

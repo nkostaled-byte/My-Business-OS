@@ -14,7 +14,6 @@ import {
   Package,
   Scissors,
   Server,
-  Sparkles,
   Lock,
   ArrowUpRight,
   RefreshCw,
@@ -226,7 +225,6 @@ export const WebsiteManagerPage: React.FC = () => {
         <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Website Content</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
-            { label: 'Update Hero Section', desc: 'Change headline, subtext, and call to action', path: '/app/website', icon: Sparkles },
             { label: 'Manage Services', desc: 'Add or edit services offered to clients', path: '/app/services', icon: Scissors },
             { label: 'Manage Products', desc: 'Update POS and online catalog items', path: '/app/products', icon: Package },
             { label: 'Update Gallery', desc: 'Upload portfolio photos and showcase work', path: '/app/gallery', icon: FileText },

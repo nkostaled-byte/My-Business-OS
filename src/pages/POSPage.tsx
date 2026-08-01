@@ -45,6 +45,7 @@ export const POSPage: React.FC = () => {
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('card');
   const [saleCompleted, setSaleCompleted] = useState<boolean>(false);
   const [completedOrderNum, setCompletedOrderNum] = useState<string>('');
+  const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
 
   // History State
   const [historySearch, setHistorySearch] = useState('');
@@ -129,7 +130,6 @@ export const POSPage: React.FC = () => {
 
   const handleCompleteSale = async () => {
     const orderNum = `#POS-${Math.floor(1000 + Math.random() * 9000)}`;
-    setCompletedOrderNum(orderNum);
 
     const orderItems = cart.map((ci) => ({
       name: ci.product.name,
@@ -137,7 +137,7 @@ export const POSPage: React.FC = () => {
       price: ci.product.price,
     }));
 
-    await addOrder({
+    const created = await addOrder({
       orderNumber: orderNum,
       customerName: 'POS Counter Sale',
       totalAmount: grandTotal,
@@ -157,9 +157,25 @@ export const POSPage: React.FC = () => {
       }
     }
 
+    const savedOrder: Order = created ?? {
+      id: '',
+      orderNumber: orderNum,
+      customerName: 'POS Counter Sale',
+      status: 'completed',
+      totalAmount: grandTotal,
+      itemsCount: cart.reduce((a, b) => a + b.quantity, 0),
+      items: orderItems,
+      createdAt: new Date().toISOString(),
+      paymentMethod,
+      isPos: true,
+    };
+
+    setCompletedOrder(savedOrder);
+    setCompletedOrderNum(savedOrder.orderNumber);
+
     addToast({
       title: 'POS Sale Completed',
-      message: `Receipt ${orderNum} generated. Total: R${grandTotal.toFixed(2)}`,
+      message: `Receipt ${savedOrder.orderNumber} generated. Total: R${grandTotal.toFixed(2)}`,
       type: 'success',
     });
 
@@ -169,6 +185,7 @@ export const POSPage: React.FC = () => {
   const resetPOS = () => {
     setCart([]);
     setDiscountPercent(0);
+    setCompletedOrder(null);
     setIsCheckoutOpen(false);
     setSaleCompleted(false);
   };
@@ -741,6 +758,16 @@ export const POSPage: React.FC = () => {
                     Paid R{grandTotal.toFixed(2)} via {paymentMethod.toUpperCase()}
                   </p>
                 </div>
+
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => completedOrder && setSelectedReceipt(completedOrder)}
+                  className="w-full py-3 rounded-xl text-xs font-bold text-violet-600 dark:text-violet-300 bg-violet-50 dark:bg-violet-950/60 hover:bg-violet-100 dark:hover:bg-violet-900/60 flex items-center justify-center gap-2 cursor-pointer transition-colors"
+                >
+                  <Receipt className="w-4 h-4" />
+                  <span>View Receipt</span>
+                </motion.button>
 
                 <motion.button
                   whileHover={{ scale: 1.02 }}

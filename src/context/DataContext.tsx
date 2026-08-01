@@ -176,17 +176,20 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [invoicesLoading, setInvoicesLoading] = useState(false);
 
   // Derived inventory from products
-  const inventory = products.map((p) => ({
-    id: p.id,
-    sku: p.sku,
-    productName: p.name,
-    category: p.category,
-    currentStock: p.stock,
-    minThreshold: 10,
-    unit: 'units',
-    unitCost: p.costPrice || 0,
-    status: (p.stock > 10 ? 'normal' : p.stock > 0 ? 'low' : 'critical') as 'normal' | 'low' | 'critical',
-  }));
+  const inventory = products.map((p) => {
+    const minThreshold = (p as any).lowStockWarning ?? 10;
+    return {
+      id: p.id,
+      sku: p.sku,
+      productName: p.name,
+      category: p.category,
+      currentStock: p.stock,
+      minThreshold,
+      unit: 'units',
+      unitCost: p.costPrice || 0,
+      status: (p.stock > minThreshold ? 'normal' : p.stock > 0 ? 'low' : 'critical') as 'normal' | 'low' | 'critical',
+    };
+  });
 
   // Profile / Business metadata (localStorage only)
   const [businessName, setBusinessNameState] = useState<string>(

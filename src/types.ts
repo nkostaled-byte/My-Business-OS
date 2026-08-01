@@ -118,6 +118,7 @@ export interface StaffMember {
   email: string;
   phone: string;
   status: 'active' | 'on-leave' | 'inactive';
+  active?: boolean;
   avatarUrl?: string;
   specialties: string[];
 }

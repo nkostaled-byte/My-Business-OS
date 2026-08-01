@@ -1,13 +1,27 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { useData } from '../context/DataContext';
+import { useToast } from '../context/ToastContext';
 import { StaffMember } from '../types';
 import { Modal } from '../components/common/Modal';
 import { EmptyState } from '../components/common/EmptyState';
-import { UserCheck, Plus, Mail, Phone } from 'lucide-react';
+import { UserCheck, Plus, Mail, Phone, Edit3, Trash2, Briefcase } from 'lucide-react';
+
+const getInitials = (name: string) =>
+  name
+    .trim()
+    .split(/\s+/)
+    .map((p) => p[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
 
 export const StaffPage: React.FC = () => {
-  const { staff, addStaff } = useData();
+  const { staff, addStaff, updateResource, deleteResource, isLoading } = useData();
+  const { addToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [editingMember, setEditingMember] = useState<StaffMember | null>(null);
+  const [deleting, setDeleting] = useState<string | null>(null);
 
   // Form State
   const [name, setName] = useState('');
@@ -16,21 +30,76 @@ export const StaffPage: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [specialtiesStr, setSpecialtiesStr] = useState('');
 
-  const handleAddStaff = (e: React.FormEvent) => {
-    e.preventDefault();
-    addStaff({
-      name,
-      role,
-      email,
-      phone,
-      specialties: specialtiesStr ? specialtiesStr.split(',').map((s) => s.trim()) : ['General'],
-    });
-    setIsModalOpen(false);
+  const resetForm = () => {
     setName('');
     setRole('');
     setEmail('');
     setPhone('');
     setSpecialtiesStr('');
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setEditingMember(null);
+    resetForm();
+  };
+
+  const openAddModal = () => {
+    setEditingMember(null);
+    resetForm();
+    setIsModalOpen(true);
+  };
+
+  const openEditModal = (member: StaffMember) => {
+    setEditingMember(member);
+    setName(member.name);
+    setRole(member.role || '');
+    setEmail(member.email || '');
+    setPhone(member.phone || '');
+    setSpecialtiesStr((member.specialties || []).join(', '));
+    setIsModalOpen(true);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name) return;
+
+    const payload = {
+      name,
+      role,
+      email,
+      phone,
+      specialties: specialtiesStr ? specialtiesStr.split(',').map((s) => s.trim()).filter(Boolean) : ['General'],
+    };
+
+    if (editingMember) {
+      const success = await updateResource('staff', editingMember.id, payload as Partial<StaffMember>);
+      if (success) {
+        addToast({ title: 'Staff Updated', message: `${name}'s profile has been updated.`, type: 'success' });
+      } else {
+        addToast({ title: 'Update Failed', message: 'Could not update the staff member.', type: 'error' });
+      }
+    } else {
+      const result = await addStaff(payload);
+      if (result) {
+        addToast({ title: 'Staff Added', message: `${name} is now on your team.`, type: 'success' });
+      } else {
+        addToast({ title: 'Failed to Add Staff', message: 'Could not save the staff member.', type: 'error' });
+      }
+    }
+    closeModal();
+  };
+
+  const handleDelete = async (member: StaffMember) => {
+    if (deleting === member.id) return;
+    setDeleting(member.id);
+    const success = await deleteResource('staff', member.id);
+    if (success) {
+      addToast({ title: 'Staff Removed', message: `${member.name} has been removed from the team.`, type: 'success' });
+    } else {
+      addToast({ title: 'Delete Failed', message: 'Could not delete the staff member.', type: 'error' });
+    }
+    setDeleting(null);
   };
 
   return (
@@ -46,7 +115,7 @@ export const StaffPage: React.FC = () => {
         </div>
 
         <button
-          onClick={() => setIsModalOpen(true)}
+          onClick={openAddModal}
           className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
@@ -54,14 +123,20 @@ export const StaffPage: React.FC = () => {
         </button>
       </div>
 
-      {staff.length === 0 ? (
+      {isLoading ? (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse">
+          {[1, 2, 3].map((n) => (
+            <div key={n} className="h-52 bg-slate-100 dark:bg-slate-800 rounded-2xl"></div>
+          ))}
+        </div>
+      ) : staff.length === 0 ? (
         <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800">
           <EmptyState
             icon={UserCheck}
             title="No staff members listed"
             description="Add your team members to enable staff assignment for client bookings."
             actionLabel="Add Staff Member"
-            onAction={() => setIsModalOpen(true)}
+            onAction={openAddModal}
           />
         </div>
       ) : (
@@ -72,53 +147,90 @@ export const StaffPage: React.FC = () => {
               className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4"
             >
               <div className="flex items-start justify-between">
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
-                    {member.name}
-                  </h3>
-                  <span className="text-xs font-semibold text-violet-600 dark:text-violet-400">
-                    {member.role}
-                  </span>
+                <div className="flex items-center gap-3">
+                  <div className="w-11 h-11 rounded-full bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-300 font-bold text-sm flex items-center justify-center">
+                    {getInitials(member.name)}
+                  </div>
+                  <div>
+                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                      {member.name}
+                    </h3>
+                    <span className="text-xs font-semibold text-violet-600 dark:text-violet-400 flex items-center gap-1">
+                      <Briefcase className="w-3 h-3" />
+                      {member.role || 'Team Member'}
+                    </span>
+                  </div>
                 </div>
-                <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
-                  Active
-                </span>
+                <div className="flex flex-col items-end gap-1.5">
+                  <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-emerald-50 text-emerald-600 dark:bg-emerald-950/60 dark:text-emerald-400">
+                    {member.active === false ? 'Inactive' : 'Active'}
+                  </span>
+                  <div className="flex gap-1">
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => openEditModal(member)}
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 transition-colors cursor-pointer"
+                      title="Edit staff member"
+                    >
+                      <Edit3 className="w-3.5 h-3.5" />
+                    </motion.button>
+                    <motion.button
+                      whileHover={{ scale: 1.05 }}
+                      whileTap={{ scale: 0.95 }}
+                      onClick={() => handleDelete(member)}
+                      disabled={deleting === member.id}
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer disabled:opacity-50"
+                      title="Delete staff member"
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </motion.button>
+                  </div>
+                </div>
               </div>
 
-              <div className="space-y-1.5 text-xs text-slate-500 dark:text-slate-400">
-                <div className="flex items-center gap-2">
-                  <Mail className="w-3.5 h-3.5 text-slate-400" />
-                  <span>{member.email}</span>
+              {(member.email || member.phone) && (
+                <div className="space-y-1.5 text-xs text-slate-500 dark:text-slate-400">
+                  {member.email && (
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-3.5 h-3.5 text-slate-400" />
+                      <span>{member.email}</span>
+                    </div>
+                  )}
+                  {member.phone && (
+                    <div className="flex items-center gap-2">
+                      <Phone className="w-3.5 h-3.5 text-slate-400" />
+                      <span>{member.phone}</span>
+                    </div>
+                  )}
                 </div>
-                <div className="flex items-center gap-2">
-                  <Phone className="w-3.5 h-3.5 text-slate-400" />
-                  <span>{member.phone}</span>
-                </div>
-              </div>
+              )}
 
-              <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-1.5">
-                {(member.specialties || []).map((spec, i) => (
-                  <span
-                    key={i}
-                    className="px-2 py-0.5 rounded-md text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium"
-                  >
-                    {spec}
-                  </span>
-                ))}
-              </div>
+              {(member.specialties || []).length > 0 && (
+                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-1.5">
+                  {(member.specialties || []).map((spec, i) => (
+                    <span
+                      key={i}
+                      className="px-2 py-0.5 rounded-md text-[10px] bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 font-medium"
+                    >
+                      {spec}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           ))}
         </div>
       )}
 
-      {/* Add Staff Modal */}
+      {/* Add / Edit Staff Modal */}
       <Modal
         isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        title="Add Staff Member"
-        subtitle="Create a new team member profile"
+        onClose={closeModal}
+        title={editingMember ? 'Edit Staff Member' : 'Add Staff Member'}
+        subtitle={editingMember ? `Update ${editingMember.name}` : 'Create a new team member profile'}
       >
-        <form onSubmit={handleAddStaff} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
               Full Name
@@ -139,7 +251,6 @@ export const StaffPage: React.FC = () => {
             </label>
             <input
               type="text"
-              required
               value={role}
               onChange={(e) => setRole(e.target.value)}
               placeholder="e.g. Master Barber"
@@ -154,7 +265,6 @@ export const StaffPage: React.FC = () => {
               </label>
               <input
                 type="email"
-                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="david@grafixos.com"
@@ -168,7 +278,6 @@ export const StaffPage: React.FC = () => {
               </label>
               <input
                 type="tel"
-                required
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+27 81 222 3344"
@@ -193,17 +302,19 @@ export const StaffPage: React.FC = () => {
           <div className="pt-3 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
             <button
               type="button"
-              onClick={() => setIsModalOpen(false)}
-              className="px-4 py-2 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300"
+              onClick={closeModal}
+              className="px-4 py-2 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer"
             >
               Cancel
             </button>
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               type="submit"
-              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20"
+              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer"
             >
-              Save Staff Member
-            </button>
+              {editingMember ? 'Save Changes' : 'Save Staff Member'}
+            </motion.button>
           </div>
         </form>
       </Modal>

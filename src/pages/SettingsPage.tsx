@@ -67,6 +67,8 @@ export const SettingsPage: React.FC = () => {
   const [bankAccountName, setBankAccountName] = useState('');
   const [bankAccountNumber, setBankAccountNumber] = useState('');
   const [bankBranchCode, setBankBranchCode] = useState('');
+  const [bankAccountType, setBankAccountType] = useState('');
+  const [bankReference, setBankReference] = useState('');
   const [paymentInstructions, setPaymentInstructions] = useState('');
   const [primaryColor, setPrimaryColor] = useState('#111111');
   const [secondaryColor, setSecondaryColor] = useState('#f5f5f5');
@@ -90,6 +92,8 @@ export const SettingsPage: React.FC = () => {
           if (s.bankAccountName) setBankAccountName(s.bankAccountName);
           if (s.bankAccountNumber) setBankAccountNumber(s.bankAccountNumber);
           if (s.bankBranchCode) setBankBranchCode(s.bankBranchCode);
+          if (s.bankAccountType) setBankAccountType(s.bankAccountType);
+          if (s.bankReference) setBankReference(s.bankReference);
           if (s.paymentInstructions) setPaymentInstructions(s.paymentInstructions);
           if (s.primaryColor) setPrimaryColor(s.primaryColor);
           if (s.secondaryColor) setSecondaryColor(s.secondaryColor);
@@ -123,6 +127,8 @@ export const SettingsPage: React.FC = () => {
         bankAccountName,
         bankAccountNumber,
         bankBranchCode,
+        bankAccountType,
+        bankReference,
         paymentInstructions,
         primaryColor,
         secondaryColor,
@@ -544,6 +550,18 @@ export const SettingsPage: React.FC = () => {
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Branch Code</label>
                       <input type="text" value={bankBranchCode} onChange={(e) => setBankBranchCode(e.target.value)}
                         placeholder="e.g. 255005"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Account Type</label>
+                      <input type="text" value={bankAccountType} onChange={(e) => setBankAccountType(e.target.value)}
+                        placeholder="e.g. Cheque / Savings"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                    </div>
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Reference</label>
+                      <input type="text" value={bankReference} onChange={(e) => setBankReference(e.target.value)}
+                        placeholder="e.g. My Business Invoice"
                         className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                   </div>
