@@ -2,8 +2,13 @@
  * LeadBase — shared presenters (badges/pills) for the Lead Generation & CRM module.
  */
 import React from 'react';
-import type { Lead, LeadStatus, LeadPriority } from '../../types';
+import type { Lead, LeadStatus, LeadPriority, RecommendedService } from '../../types';
 import { scoreTone } from '../../lib/leads-api';
+
+/** Normalise a recommended-service entry (string or object) to its display label. */
+export function recommendedLabel(r: RecommendedService | string): string {
+  return typeof r === 'string' ? r : (r?.name ?? '');
+}
 
 export interface PlacesMeta {
   placeId?: string | null;

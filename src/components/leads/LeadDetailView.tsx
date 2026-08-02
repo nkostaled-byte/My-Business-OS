@@ -9,7 +9,7 @@ import { Modal } from '../common/Modal';
 import { useToast } from '../../context/ToastContext';
 import { leadsApi, formatDateTime } from '../../lib/leads-api';
 import { EmptyState } from '../common/EmptyState';
-import { ScoreBadge, StatusPill, PriorityPill, OpportunityBadge, STATUS_LABEL, getInitials, GooglePlaceBadge, getPlacesMeta } from './LeadBase';
+import { ScoreBadge, StatusPill, PriorityPill, OpportunityBadge, STATUS_LABEL, getInitials, GooglePlaceBadge, getPlacesMeta, recommendedLabel } from './LeadBase';
 import {
   Globe, Mail, Phone, Target, MessageSquare, CheckSquare, Bell, FileText,
   ClipboardCheck, Sparkles, AlertTriangle, TrendingUp, Check, Tag, Star, MapPin,
@@ -239,7 +239,7 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
                   </div>
                   {lead.recommendedServices && lead.recommendedServices.length ? (
                     <div className="mt-2 flex flex-wrap gap-1.5">
-                      {lead.recommendedServices.map((s) => <span key={s} className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-400">{s}</span>)}
+                      {lead.recommendedServices.map((s, i) => <span key={typeof s === 'string' ? s : (s.id || i)} className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-400">{recommendedLabel(s)}</span>)}
                     </div>
                   ) : (
                     <div className="mt-2 flex items-center gap-2">

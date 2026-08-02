@@ -304,11 +304,18 @@ export interface ScoreDeduction {
   impact: string;
 }
 
+export interface RecommendedService {
+  id: string;
+  name: string;
+  priceRange: string;
+  description: string;
+}
+
 export interface ScoreResult {
   score: number;
   opportunityLevel: OpportunityLevel;
   priority: LeadPriority;
-  recommendedServices: string[];
+  recommendedServices: RecommendedService[] | string[];
   reasoning: string;
   deductions: ScoreDeduction[];
 }
@@ -370,7 +377,7 @@ export interface Lead {
   score: number;
   scoreBreakdown?: { deductions?: ScoreDeduction[] } | null;
   opportunityLevel?: OpportunityLevel | null;
-  recommendedServices?: string[] | null;
+  recommendedServices?: RecommendedService[] | string[] | null;
   aiSummary?: string | null;
   emails?: string[] | null;
   phones?: string[] | null;

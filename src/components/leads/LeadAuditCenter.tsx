@@ -8,7 +8,7 @@ import { motion } from 'motion/react';
 import { Modal } from '../common/Modal';
 import { useToast } from '../../context/ToastContext';
 import { leadsApi } from '../../lib/leads-api';
-import { ScoreBadge, OpportunityBadge } from './LeadBase';
+import { ScoreBadge, OpportunityBadge, recommendedLabel } from './LeadBase';
 import { LeadForm } from './LeadForm';
 import { Sparkles, AlertTriangle, Shield, ShieldCheck, ExternalLink, Mail, Phone, Building2, Target, ClipboardCheck } from 'lucide-react';
 import type { AuditFullResponse, Lead } from '../../types';
@@ -173,7 +173,7 @@ const AuditResultView = ({ result, onCreateLead, onNew, onClose, businessName }:
         <div>
           <h5 className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 mb-2 flex items-center gap-1.5"><ClipboardCheck className="w-3.5 h-3.5" /> Recommended services</h5>
           <div className="flex flex-wrap gap-1.5">
-            {score.recommendedServices.map((s) => <span key={s} className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-400">{s}</span>)}
+            {score.recommendedServices.map((s, i) => <span key={typeof s === 'string' ? s : (s.id || i)} className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-400">{recommendedLabel(s)}</span>)}
           </div>
         </div>
       )}

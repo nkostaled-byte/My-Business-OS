@@ -30,6 +30,9 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
   const [result, setResult] = useState<PlaceBusiness[] | null>(null);
   const [searchedOnce, setSearchedOnce] = useState(false);
   const [savingId, setSavingId] = useState<string | null>(null);
+  const [noWebsiteOnly, setNoWebsiteOnly] = useState(true);
+
+  const visible = result ? (noWebsiteOnly ? result.filter((b) => !b.website) : result) : result;
 
   const search = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -106,6 +109,23 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
             {searching ? 'Searching…' : 'Find Businesses'}
           </motion.button>
         </div>
+        <div className="flex flex-wrap items-center gap-4 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+          <label className="inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 cursor-pointer select-none">
+            <input
+              type="checkbox"
+              checked={noWebsiteOnly}
+              onChange={(e) => setNoWebsiteOnly(e.target.checked)}
+              className="w-3.5 h-3.5 accent-violet-600 cursor-pointer"
+            />
+            <Globe className="w-3.5 h-3.5 text-slate-400" />
+            Only businesses without a website
+          </label>
+          {result && (
+            <span className="text-[11px] text-slate-400 ml-auto">
+              {visible.length} of {result.length} shown
+            </span>
+          )}
+        </div>
       </form>
 
       {/* Results */}
@@ -116,7 +136,7 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
         </div>
       ) : result && result.length ? (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-          {result.map((b) => (
+          {visible.map((b) => (
             <motion.div
               key={b.placeId}
               initial={{ opacity: 0, y: 6 }}
@@ -176,6 +196,8 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
             </motion.div>
           ))}
         </div>
+      ) : searchedOnce && visible && visible.length === 0 && result && result.length > 0 ? (
+        <EmptyState icon={Globe} title="No leads without a website" description="Every result in this search already has a website. Turn off the filter to see all businesses." />
       ) : searchedOnce ? (
         <EmptyState icon={MapPin} title="No businesses found" description="Try a different keyword or a more specific location." />
       ) : (
