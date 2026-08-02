@@ -30,6 +30,7 @@ import { ProductsPage } from './pages/ProductsPage';
 import { ServicesPage } from './pages/ServicesPage';
 import { BookingsPage } from './pages/BookingsPage';
 import { CustomersPage } from './pages/CustomersPage';
+import { LeadsPage } from './pages/LeadsPage';
 import { InventoryPage } from './pages/InventoryPage';
 import { StaffPage } from './pages/StaffPage';
 import { GalleryPage } from './pages/GalleryPage';
@@ -155,6 +156,7 @@ export default function App() {
                 <Route path="services" element={<ServicesPage />} />
                 <Route path="bookings" element={<BookingsPage />} />
                 <Route path="customers" element={<CustomersPage />} />
+                <Route path="leads" element={<LeadsPage />} />
                 <Route path="inventory" element={<InventoryPage />} />
                 <Route path="staff" element={<StaffPage />} />
                 <Route path="gallery" element={<GalleryPage />} />

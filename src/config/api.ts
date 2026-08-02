@@ -50,6 +50,35 @@ export const API = {
   // Export
   export: (table: string) => `/api/export/${table}`,
 
+  // Leads / CRM (Lead Generation module)
+  leads: {
+    list: '/api/leads',
+    create: '/api/leads',
+    byId: (id: string) => `/api/leads/${id}`,
+    status: (id: string) => `/api/leads/${id}/status`,
+    convert: (id: string) => `/api/leads/${id}/convert`,
+    pipeline: '/api/leads/pipeline',
+    stages: '/api/leads/stages',
+    stageById: (id: string) => `/api/leads/stages/${id}`,
+    tags: '/api/leads/tags',
+    tagById: (id: string) => `/api/leads/tags/${id}`,
+    companies: '/api/leads/companies',
+    companyById: (id: string) => `/api/leads/companies/${id}`,
+    contacts: '/api/leads/contacts',
+    contactById: (id: string) => `/api/leads/contacts/${id}`,
+    notes: (id: string) => `/api/leads/${id}/notes`,
+    activities: (id: string) => `/api/leads/${id}/activities`,
+    tasks: (id: string) => `/api/leads/${id}/tasks`,
+    taskById: (id: string, taskId: string) => `/api/leads/${id}/tasks/${taskId}`,
+    followups: (id: string) => `/api/leads/${id}/followups`,
+    followupById: (id: string, followId: string) => `/api/leads/${id}/followups/${followId}`,
+    scan: '/api/leads/scan',
+    audit: '/api/leads/audit',
+    searchBusinesses: '/api/leads/search/businesses',
+    bulk: '/api/leads/bulk',
+    export: '/api/leads/export',
+  },
+
   // Supported dashboard resources
   resources: [
     'products',

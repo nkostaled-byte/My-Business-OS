@@ -23,6 +23,7 @@ import {
   Globe,
   Lock,
   X,
+  Target,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -32,7 +33,7 @@ interface SidebarProps {
 }
 
 /** Paths hidden from `staff`-role users (admin/settings areas). */
-export const STAFF_RESTRICTED_PATHS = ['/app/website', '/app/invoices', '/app/billing', '/app/settings'];
+export const STAFF_RESTRICTED_PATHS = ['/app/website', '/app/leads', '/app/invoices', '/app/billing', '/app/settings'];
 
 export const navItems = [
   { label: 'Overview', path: '/app', icon: LayoutDashboard },
@@ -44,6 +45,7 @@ export const navItems = [
   { label: 'Services', path: '/app/services', icon: Scissors },
   { label: 'Bookings', path: '/app/bookings', icon: Calendar },
   { label: 'Customers', path: '/app/customers', icon: Users },
+  { label: 'Lead Gen', path: '/app/leads', icon: Target },
   { label: 'Inventory', path: '/app/inventory', icon: Boxes },
   { label: 'Staff', path: '/app/staff', icon: UserCheck },
   { label: 'Gallery', path: '/app/gallery', icon: Image },

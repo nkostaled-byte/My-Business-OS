@@ -41,6 +41,7 @@ export const PAGE_MIN_PLAN: Record<string, string> = {
   '/app/reviews': 'business',
   '/app/website': 'business', // Website Manager
   '/app/invoices': 'business', // Invoices & PDFs
+  '/app/leads': 'business', // Lead Generation & CRM (premium)
   '/app/billing': 'free', // Billing
   '/app/settings': 'free', // Settings
 };
