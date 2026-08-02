@@ -193,7 +193,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
               Current plan
             </span>
             <span className="text-[11px] font-bold text-violet-600 dark:text-violet-400">
-              {PLAN_NAMES[plan] || 'Starter'}
+              {PLAN_NAMES[plan] || 'Free'}
             </span>
           </div>
           <NavLink
@@ -234,7 +234,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
                 <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
                   You're currently on the{' '}
                   <span className="font-semibold text-slate-700 dark:text-slate-200">
-                    {PLAN_NAMES[plan] || 'Starter'}
+                    {PLAN_NAMES[plan] || 'Free'}
                   </span>{' '}
                   plan. Upgrade to unlock {upgradeRequiredName === 'Business' ? 'team management, invoices, gallery, reviews and website tools' : 'advanced features'} and more.
                 </p>

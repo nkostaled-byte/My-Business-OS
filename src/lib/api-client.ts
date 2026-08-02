@@ -486,7 +486,7 @@ export const api = {
   },
 
   /**
-   * Cancel a product subscription (default: OS plan, which downgrades to Starter)
+   * Cancel a product subscription (default: OS plan, which downgrades to Free)
    * POST /api/paystack/cancel
    */
   async cancelSubscription(

@@ -14,7 +14,7 @@ interface UpgradeModalProps {
 export const UpgradeModal: React.FC<UpgradeModalProps> = ({
   isOpen,
   onClose,
-  currentPlanName = 'Starter',
+  currentPlanName = 'Free',
 }) => {
   const { addToast } = useToast();
   const [isYearly, setIsYearly] = useState(false);
@@ -132,9 +132,9 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
                   <div>
                     <div className="flex items-baseline gap-1">
                       <span className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">
-                        R{price}
+                        {plan.monthlyPrice === 0 ? 'Free' : `R${price}`}
                       </span>
-                      <span className="text-slate-400 text-xs">/month</span>
+                      {plan.monthlyPrice > 0 && <span className="text-slate-400 text-xs">/month</span>}
                     </div>
                     <span className="text-[10px] text-slate-400">{billingText}</span>
                   </div>
@@ -158,7 +158,15 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
                 </div>
 
                 <div className="pt-5 mt-4 border-t border-slate-100 dark:border-slate-800">
-                  {isCurrent ? (
+                  {plan.id === 'free' ? (
+                    <button
+                      type="button"
+                      disabled
+                      className="w-full py-2.5 rounded-xl text-xs font-bold text-slate-400 bg-slate-100 dark:bg-slate-800 cursor-not-allowed"
+                    >
+                      Free forever
+                    </button>
+                  ) : isCurrent ? (
                     <button
                       type="button"
                       disabled
@@ -174,9 +182,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
                       className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
                         plan.isPopular
                           ? 'text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-violet-500/20'
-                          : plan.id === 'enterprise'
-                            ? 'text-white bg-violet-600 hover:bg-violet-700'
-                            : 'text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'
+                          : 'text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'
                       }`}
                     >
                       {loadingPlanId === plan.id ? 'Starting…' : `Switch to ${plan.name}`}

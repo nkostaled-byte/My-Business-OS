@@ -29,7 +29,7 @@ export const FloatingActionButton: React.FC = () => {
       icon: Calendar,
       color: 'bg-purple-500 text-white',
       onClick: () => navigate('/app/bookings'),
-      minPlan: 'starter',
+      minPlan: 'free',
     },
     {
       label: 'Create Invoice',

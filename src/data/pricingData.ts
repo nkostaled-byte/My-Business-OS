@@ -17,6 +17,22 @@ export interface PricingPlan {
 
 export const PRICING_PLANS: PricingPlan[] = [
   {
+    id: 'free',
+    name: 'Free',
+    tagline: 'Start today, upgrade when you grow',
+    monthlyPrice: 0,
+    yearlyPrice: 0,
+    monthlyBillingText: 'Free forever',
+    yearlyBillingText: 'Free forever',
+    features: [
+      'Orders',
+      'Customers (CRM)',
+      'Bookings & Appointments',
+      'Overview Dashboard',
+    ],
+    includedFromPrevious: '',
+  },
+  {
     id: 'starter',
     name: 'Starter',
     tagline: 'Small businesses & solo creators',
@@ -72,21 +88,6 @@ export const PRICING_PLANS: PricingPlan[] = [
       'Priority Support',
     ],
     includedFromPrevious: 'Everything in Business +',
-  },
-  {
-    id: 'enterprise',
-    name: 'Enterprise',
-    tagline: 'Large brands & high-volume businesses',
-    monthlyPrice: 1499,
-    yearlyPrice: 1199,
-    monthlyBillingText: 'Billed monthly',
-    yearlyBillingText: 'R14,388 billed annually',
-    features: [
-      'API Access',
-      'Unlimited Staff',
-      'Dedicated Support',
-    ],
-    includedFromPrevious: 'Everything in Professional +',
   },
 ];
 

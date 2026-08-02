@@ -112,23 +112,22 @@ export const PricingPage: React.FC = () => {
   ];
 
   const comparisonRows = [
-    { feature: 'Website Dashboard & CRM', starter: true, business: true, professional: true, enterprise: true },
-    { feature: 'Products & Services Catalog', starter: true, business: true, professional: true, enterprise: true },
-    { feature: 'POS & Orders', starter: true, business: true, professional: true, enterprise: true },
-    { feature: 'Bookings & Appointments', starter: true, business: true, professional: true, enterprise: true },
-    { feature: 'Contact Forms & Basic Analytics', starter: true, business: true, professional: true, enterprise: true },
-    { feature: 'Online Bookings & E-Commerce', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Team Members & Staff Access', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Invoices & PDFs', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Website Manager & Custom Branding', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Gallery & Reviews', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Reports & Exports', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Inventory Tracking', starter: false, business: false, professional: true, enterprise: true },
-    { feature: 'Advanced Analytics', starter: false, business: false, professional: true, enterprise: true },
-    { feature: 'Priority Support', starter: false, business: false, professional: true, enterprise: true },
-    { feature: 'API Access', starter: false, business: false, professional: false, enterprise: true },
-    { feature: 'Unlimited Staff', starter: false, business: false, professional: false, enterprise: true },
-    { feature: 'Dedicated Support', starter: false, business: false, professional: false, enterprise: true },
+    { feature: 'Orders', free: true, starter: true, business: true, professional: true },
+    { feature: 'Customers (CRM)', free: true, starter: true, business: true, professional: true },
+    { feature: 'Bookings & Appointments', free: true, starter: true, business: true, professional: true },
+    { feature: 'Overview Dashboard', free: true, starter: true, business: true, professional: true },
+    { feature: 'Products & Services Catalog', free: false, starter: true, business: true, professional: true },
+    { feature: 'POS', free: false, starter: true, business: true, professional: true },
+    { feature: 'Contact Forms & Basic Analytics', free: false, starter: true, business: true, professional: true },
+    { feature: 'Online Bookings & E-Commerce', free: false, starter: false, business: true, professional: true },
+    { feature: 'Team Members & Staff Access', free: false, starter: false, business: true, professional: true },
+    { feature: 'Invoices & PDFs', free: false, starter: false, business: true, professional: true },
+    { feature: 'Website Manager & Custom Branding', free: false, starter: false, business: true, professional: true },
+    { feature: 'Gallery & Reviews', free: false, starter: false, business: true, professional: true },
+    { feature: 'Reports & Exports', free: false, starter: false, business: true, professional: true },
+    { feature: 'Inventory Tracking', free: false, starter: false, business: false, professional: true },
+    { feature: 'Advanced Analytics', free: false, starter: false, business: false, professional: true },
+    { feature: 'Priority Support', free: false, starter: false, business: false, professional: true },
   ];
 
   return (
@@ -248,9 +247,9 @@ export const PricingPage: React.FC = () => {
                   <div className="my-5">
                     <div className="flex items-baseline gap-1">
                       <span className="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                        R{price}
+                        {plan.monthlyPrice === 0 ? 'Free' : `R${price}`}
                       </span>
-                      <span className="text-xs text-slate-500 font-medium">/month</span>
+                      {plan.monthlyPrice > 0 && <span className="text-xs text-slate-500 font-medium">/month</span>}
                     </div>
                     <p className="text-[10px] text-slate-400 mt-0.5">{billingText}</p>
                   </div>
@@ -274,17 +273,14 @@ export const PricingPage: React.FC = () => {
                 </div>
 
                 <div>
-                  {plan.id === 'enterprise' ? (
-                    <div className="space-y-2">
-                      <button
-                        type="button"
-                        disabled={checkoutLoading !== null}
-                        onClick={() => handleCheckout(plan)}
-                        className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 transition-all shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-wait"
-                      >
-                        {checkoutLoading === plan.id ? 'Starting…' : 'Choose Enterprise'}
-                      </button>
-                    </div>
+                  {plan.id === 'free' ? (
+                    <button
+                      type="button"
+                      disabled
+                      className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-slate-400 dark:text-slate-500 bg-slate-100 dark:bg-slate-800 cursor-default"
+                    >
+                      Free Forever
+                    </button>
                   ) : (
                     <button
                       type="button"
@@ -344,12 +340,12 @@ export const PricingPage: React.FC = () => {
                 <thead>
                   <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50 text-xs font-bold text-slate-900 dark:text-white">
                     <th className="py-5 px-6 sm:px-8 w-2/5">Features</th>
+                    <th className="py-5 px-4 text-center w-[15%]">Free</th>
                     <th className="py-5 px-4 text-center w-[15%]">Starter</th>
                     <th className="py-5 px-4 text-center w-[15%]">Business</th>
                     <th className="py-5 px-4 text-center w-[15%] text-violet-600 bg-violet-50/50 dark:bg-violet-950/30">
                       Professional
                     </th>
-                    <th className="py-5 px-4 text-center w-[15%]">Enterprise</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
@@ -360,6 +356,13 @@ export const PricingPage: React.FC = () => {
                     >
                       <td className="py-4 px-6 sm:px-8 font-semibold text-slate-800 dark:text-slate-200">
                         {row.feature}
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        {row.free ? (
+                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                        ) : (
+                          <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
+                        )}
                       </td>
                       <td className="py-4 px-4 text-center">
                         {row.starter ? (
@@ -377,13 +380,6 @@ export const PricingPage: React.FC = () => {
                       </td>
                       <td className="py-4 px-4 text-center bg-violet-50/20 dark:bg-violet-950/10">
                         {row.professional ? (
-                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
-                        ) : (
-                          <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
-                        )}
-                      </td>
-                      <td className="py-4 px-4 text-center">
-                        {row.enterprise ? (
                           <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
                         ) : (
                           <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />

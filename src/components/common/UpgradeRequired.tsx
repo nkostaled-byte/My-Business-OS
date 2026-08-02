@@ -10,7 +10,7 @@ interface UpgradeRequiredProps {
 
 export const UpgradeRequired: React.FC<UpgradeRequiredProps> = ({ requiredPlan }) => {
   const { plan } = useData();
-  const currentName = PLAN_NAMES[plan] || 'Starter';
+  const currentName = PLAN_NAMES[plan] || 'Free';
   const requiredName = PLAN_NAMES[requiredPlan] || requiredPlan;
 
   return (

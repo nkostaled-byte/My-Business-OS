@@ -67,7 +67,7 @@ export const BillingPage: React.FC = () => {
     const downgradeNote =
       product === 'hosting'
         ? ' Your hosted site will be suspended after the billing period ends.'
-        : ' You will be downgraded to the Starter plan and automatic renewals will stop.';
+        : ' You will be downgraded to the Free plan and automatic renewals will stop.';
     const confirmed = window.confirm(`Cancel ${label}?${downgradeNote}`);
     if (!confirmed) return;
 
@@ -97,8 +97,8 @@ export const BillingPage: React.FC = () => {
     }
   };
 
-  const currentPlan = status?.plan || 'starter';
-  const currentPlanName = status?.plan_name || 'Starter';
+  const currentPlan = status?.plan || 'free';
+  const currentPlanName = status?.plan_name || 'Free';
   const hostingCurrentPlan = status?.hosting_plan || null;
   const hostingCurrentName = status?.hosting_plan_name || 'Hosting';
 
@@ -126,23 +126,22 @@ export const BillingPage: React.FC = () => {
   ];
 
   const comparisonRows = [
-    { feature: 'Website Dashboard & CRM', starter: true, business: true, professional: true, enterprise: true },
-    { feature: 'Products & Services Catalog', starter: true, business: true, professional: true, enterprise: true },
-    { feature: 'POS & Orders', starter: true, business: true, professional: true, enterprise: true },
-    { feature: 'Bookings & Appointments', starter: true, business: true, professional: true, enterprise: true },
-    { feature: 'Contact Forms & Basic Analytics', starter: true, business: true, professional: true, enterprise: true },
-    { feature: 'Online Bookings & E-Commerce', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Team Members & Staff Access', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Invoices & PDFs', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Website Manager & Custom Branding', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Gallery & Reviews', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Reports & Exports', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Inventory Tracking', starter: false, business: false, professional: true, enterprise: true },
-    { feature: 'Advanced Analytics', starter: false, business: false, professional: true, enterprise: true },
-    { feature: 'Priority Support', starter: false, business: false, professional: true, enterprise: true },
-    { feature: 'API Access', starter: false, business: false, professional: false, enterprise: true },
-    { feature: 'Unlimited Staff', starter: false, business: false, professional: false, enterprise: true },
-    { feature: 'Dedicated Support', starter: false, business: false, professional: false, enterprise: true },
+    { feature: 'Orders', free: true, starter: true, business: true, professional: true },
+    { feature: 'Customers (CRM)', free: true, starter: true, business: true, professional: true },
+    { feature: 'Bookings & Appointments', free: true, starter: true, business: true, professional: true },
+    { feature: 'Overview Dashboard', free: true, starter: true, business: true, professional: true },
+    { feature: 'Products & Services Catalog', free: false, starter: true, business: true, professional: true },
+    { feature: 'POS', free: false, starter: true, business: true, professional: true },
+    { feature: 'Contact Forms & Basic Analytics', free: false, starter: true, business: true, professional: true },
+    { feature: 'Online Bookings & E-Commerce', free: false, starter: false, business: true, professional: true },
+    { feature: 'Team Members & Staff Access', free: false, starter: false, business: true, professional: true },
+    { feature: 'Invoices & PDFs', free: false, starter: false, business: true, professional: true },
+    { feature: 'Website Manager & Custom Branding', free: false, starter: false, business: true, professional: true },
+    { feature: 'Gallery & Reviews', free: false, starter: false, business: true, professional: true },
+    { feature: 'Reports & Exports', free: false, starter: false, business: true, professional: true },
+    { feature: 'Inventory Tracking', free: false, starter: false, business: false, professional: true },
+    { feature: 'Advanced Analytics', free: false, starter: false, business: false, professional: true },
+    { feature: 'Priority Support', free: false, starter: false, business: false, professional: true },
   ];
 
   return (
@@ -207,7 +206,14 @@ export const BillingPage: React.FC = () => {
           {!status?.subscription_active && (
             <button
               type="button"
-              onClick={() => handleCheckout(PRICING_PLANS.find((p) => p.id === currentPlan) ?? PRICING_PLANS[0])}
+              onClick={() => {
+                const firstPaid = PRICING_PLANS.find((p) => p.monthlyPrice > 0);
+                const target =
+                  currentPlan === 'free'
+                    ? firstPaid
+                    : PRICING_PLANS.find((p) => p.id === currentPlan) ?? firstPaid;
+                if (target) handleCheckout(target);
+              }}
               className="px-5 py-2.5 rounded-2xl text-xs font-bold text-white bg-violet-500 hover:bg-violet-400 transition-colors shadow-lg cursor-pointer"
             >
               <span className="inline-flex items-center gap-1.5">
@@ -318,15 +324,15 @@ export const BillingPage: React.FC = () => {
                   {plan.tagline}
                 </p>
 
-                <div className="my-4">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">
-                      R{price}
-                    </span>
-                    <span className="text-slate-500 text-xs">/month</span>
+                  <div className="my-4">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">
+                        {plan.monthlyPrice === 0 ? 'Free' : `R${price}`}
+                      </span>
+                      {plan.monthlyPrice > 0 && <span className="text-slate-500 text-xs">/month</span>}
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5">{billingText}</p>
                   </div>
-                  <p className="text-[10px] text-slate-400 mt-0.5">{billingText}</p>
-                </div>
 
                 <div className="w-full h-px bg-slate-100 dark:bg-slate-800 my-4" />
 
@@ -347,7 +353,19 @@ export const BillingPage: React.FC = () => {
               </div>
 
               <div>
-                {isCurrent ? (
+                {plan.id === 'free' ? (
+                  <button
+                    type="button"
+                    disabled
+                    className="w-full py-3 rounded-xl text-xs font-bold text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 cursor-default"
+                  >
+                    {isCurrent
+                      ? status?.subscription_active
+                        ? 'Active Plan'
+                        : 'Current Plan'
+                      : 'Free forever'}
+                  </button>
+                ) : isCurrent ? (
                   <button
                     type="button"
                     disabled
@@ -361,8 +379,8 @@ export const BillingPage: React.FC = () => {
                     disabled={checkoutLoading !== null}
                     onClick={() => handleCheckout(plan)}
                     className={`w-full py-3 rounded-xl text-xs font-bold transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
-                      plan.id === 'enterprise'
-                        ? 'text-white bg-violet-600 hover:bg-violet-700'
+                      isCurrent
+                        ? 'text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800'
                         : 'text-violet-600 dark:text-violet-400 border-2 border-violet-600 dark:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-950/40'
                     }`}
                   >
@@ -525,7 +543,7 @@ export const BillingPage: React.FC = () => {
             Plan capability comparison
           </h2>
           <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-            Capability comparison across Starter, Business, Professional, and Enterprise tiers.
+            Capability comparison across Free, Starter, Business, and Professional tiers.
           </p>
         </div>
 
@@ -533,56 +551,56 @@ export const BillingPage: React.FC = () => {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50 text-xs font-bold text-slate-900 dark:text-white">
-                  <th className="py-5 px-6 sm:px-8 w-2/5">Capability</th>
-                  <th className="py-5 px-4 text-center w-[15%]">Starter</th>
-                  <th className="py-5 px-4 text-center w-[15%] text-violet-600 bg-violet-50/50 dark:bg-violet-950/30">
-                    Business
-                  </th>
-                  <th className="py-5 px-4 text-center w-[15%]">Professional</th>
-                  <th className="py-5 px-4 text-center w-[15%]">Enterprise</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
-                {comparisonRows.map((row, idx) => (
-                  <tr
-                    key={idx}
-                    className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
-                  >
-                    <td className="py-4 px-6 sm:px-8 font-semibold text-slate-800 dark:text-slate-200">
-                      {row.feature}
-                    </td>
-                    <td className="py-4 px-4 text-center">
-                      {row.starter ? (
-                        <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
-                      ) : (
-                        <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
-                      )}
-                    </td>
-                    <td className="py-4 px-4 text-center bg-violet-50/20 dark:bg-violet-950/10">
-                      {row.business ? (
-                        <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
-                      ) : (
-                        <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
-                      )}
-                    </td>
-                    <td className="py-4 px-4 text-center">
-                      {row.professional ? (
-                        <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
-                      ) : (
-                        <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
-                      )}
-                    </td>
-                    <td className="py-4 px-4 text-center">
-                      {row.enterprise ? (
-                        <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
-                      ) : (
-                        <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
-                      )}
-                    </td>
+                  <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50 text-xs font-bold text-slate-900 dark:text-white">
+                    <th className="py-5 px-6 sm:px-8 w-2/5">Capability</th>
+                    <th className="py-5 px-4 text-center w-[15%]">Free</th>
+                    <th className="py-5 px-4 text-center w-[15%]">Starter</th>
+                    <th className="py-5 px-4 text-center w-[15%] text-violet-600 bg-violet-50/50 dark:bg-violet-950/30">
+                      Business
+                    </th>
+                    <th className="py-5 px-4 text-center w-[15%]">Professional</th>
                   </tr>
-                ))}
-              </tbody>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                  {comparisonRows.map((row, idx) => (
+                    <tr
+                      key={idx}
+                      className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
+                    >
+                      <td className="py-4 px-6 sm:px-8 font-semibold text-slate-800 dark:text-slate-200">
+                        {row.feature}
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        {row.free ? (
+                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                        ) : (
+                          <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
+                        )}
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        {row.starter ? (
+                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                        ) : (
+                          <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
+                        )}
+                      </td>
+                      <td className="py-4 px-4 text-center bg-violet-50/20 dark:bg-violet-950/10">
+                        {row.business ? (
+                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                        ) : (
+                          <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
+                        )}
+                      </td>
+                      <td className="py-4 px-4 text-center">
+                        {row.professional ? (
+                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                        ) : (
+                          <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
             </table>
           </div>
         </div>

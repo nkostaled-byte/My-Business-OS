@@ -206,8 +206,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return;
   }, []);
 
-  // Effective plan — a lapsed/cancelled subscription downgrades to Starter
-  const plan = subscription && subscription.subscription_active ? subscription.plan : 'starter';
+  // Effective plan — a lapsed/cancelled subscription downgrades to Free
+  const plan = subscription && subscription.subscription_active ? subscription.plan : 'free';
   const planTier = getPlanTier(plan);
   const planName = PLAN_NAMES[plan] || plan;
 

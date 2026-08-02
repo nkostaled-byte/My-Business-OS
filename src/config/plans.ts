@@ -4,13 +4,16 @@
  */
 
 export const PLAN_TIERS: Record<string, number> = {
+  free: 0,
   starter: 1,
   business: 2,
   professional: 3,
+  // Kept for legacy stored values only — no longer sold or selectable.
   enterprise: 4,
 };
 
 export const PLAN_NAMES: Record<string, string> = {
+  free: 'Free',
   starter: 'Starter',
   business: 'Business',
   professional: 'Professional',
@@ -19,16 +22,17 @@ export const PLAN_NAMES: Record<string, string> = {
 
 /**
  * Minimum plan required to access each dashboard route.
- * Any path not listed defaults to Starter (available to everyone).
+ * Any path not listed defaults to Free (available to everyone).
+ * The Free tier includes Orders, Customers and Bookings.
  */
 export const PAGE_MIN_PLAN: Record<string, string> = {
+  '/app/orders': 'free', // Orders
+  '/app/customers': 'free', // Customers (CRM)
+  '/app/bookings': 'free', // Bookings & Appointments
   '/app/analytics': 'starter', // Basic Analytics
-  '/app/orders': 'starter', // POS & Orders
-  '/app/pos': 'starter',
-  '/app/products': 'starter', // Products & Services
-  '/app/services': 'starter',
-  '/app/bookings': 'starter', // Bookings & Appointments
-  '/app/customers': 'starter', // CRM
+  '/app/pos': 'starter', // POS
+  '/app/products': 'starter', // Products
+  '/app/services': 'starter', // Services
   '/app/forms': 'starter', // Contact Forms
   '/app/inventory': 'professional', // Inventory Tracking
   '/app/staff': 'business', // Team Members & Staff Access
@@ -40,7 +44,7 @@ export const PAGE_MIN_PLAN: Record<string, string> = {
 };
 
 export function getPlanTier(plan: string | null | undefined): number {
-  return (plan && PLAN_TIERS[plan]) || 1;
+  return (plan && PLAN_TIERS[plan]) ?? 0;
 }
 
 export function getPageMinPlan(path: string): string {
