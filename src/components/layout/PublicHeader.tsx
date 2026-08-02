@@ -86,7 +86,7 @@ export const PublicHeader: React.FC = () => {
             to="/login"
             className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 active:scale-[0.98] transition-all cursor-pointer"
           >
-            Start Free Trial
+            Get Started
           </NavLink>
         </div>
       </div>

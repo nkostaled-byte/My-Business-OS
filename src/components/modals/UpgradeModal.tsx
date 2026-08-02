@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { PRICING_PLANS } from '../../data/pricingData';
-import { Check, Sparkles, Shield, ArrowRight } from 'lucide-react';
+import { Check, Sparkles, Shield } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
+import { api } from '../../lib/api-client';
 
 interface UpgradeModalProps {
   isOpen: boolean;
@@ -19,19 +20,22 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
   const [isYearly, setIsYearly] = useState(false);
   const [loadingPlanId, setLoadingPlanId] = useState<string | null>(null);
 
-  const handleSelectPlan = (planName: string, isEnterprise?: boolean) => {
-    setLoadingPlanId(planName);
-    setTimeout(() => {
+  const handleSelectPlan = async (planId: string) => {
+    setLoadingPlanId(planId);
+    try {
+      const res = await api.createCheckout(planId, isYearly ? 'yearly' : 'monthly');
+      if (res.success && res.data?.authorization_url) {
+        window.location.href = res.data.authorization_url;
+      } else {
+        addToast({
+          title: 'Checkout failed',
+          message: res.error || 'Could not start checkout.',
+          type: 'error',
+        });
+      }
+    } finally {
       setLoadingPlanId(null);
-      addToast({
-        title: isEnterprise ? 'Sales Team Notified' : `Successfully upgraded to ${planName}!`,
-        message: isEnterprise
-          ? 'Our enterprise account executive will contact you within 2 business hours.'
-          : `Your subscription is now active (${isYearly ? 'Yearly' : 'Monthly'} billing).`,
-        type: 'success',
-      });
-      onClose();
-    }, 900);
+    }
   };
 
   return (
@@ -94,7 +98,6 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
             const isCurrent = currentPlanName.toLowerCase() === plan.name.toLowerCase();
             const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
             const billingText = isYearly ? plan.yearlyBillingText : plan.monthlyBillingText;
-            const isLoading = loadingPlanId === plan.name;
 
             return (
               <div
@@ -163,37 +166,20 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
                     >
                       Active Plan
                     </button>
-                  ) : plan.id === 'enterprise' ? (
-                    <div className="flex gap-2">
-                      <button
-                        type="button"
-                        onClick={() => handleSelectPlan(plan.name)}
-                        disabled={isLoading}
-                        className="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors cursor-pointer"
-                      >
-                        {isLoading ? 'Processing...' : 'Free Trial'}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleSelectPlan(plan.name, true)}
-                        disabled={isLoading}
-                        className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 transition-all shadow-sm cursor-pointer"
-                      >
-                        Contact Sales
-                      </button>
-                    </div>
                   ) : (
                     <button
                       type="button"
-                      onClick={() => handleSelectPlan(plan.name)}
-                      disabled={isLoading}
-                      className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer ${
+                      onClick={() => handleSelectPlan(plan.id)}
+                      disabled={loadingPlanId !== null}
+                      className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
                         plan.isPopular
                           ? 'text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-violet-500/20'
-                          : 'text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'
+                          : plan.id === 'enterprise'
+                            ? 'text-white bg-violet-600 hover:bg-violet-700'
+                            : 'text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'
                       }`}
                     >
-                      {isLoading ? 'Updating...' : `Upgrade to ${plan.name}`}
+                      {loadingPlanId === plan.id ? 'Starting…' : `Switch to ${plan.name}`}
                     </button>
                   )}
                 </div>

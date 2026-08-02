@@ -1,3 +1,5 @@
+import { api } from '../lib/api-client';
+
 export interface PricingPlan {
   id: string;
   name: string;
@@ -90,13 +92,12 @@ export const PRICING_PLANS: PricingPlan[] = [
 
 export async function fetchPricingPlans(): Promise<PricingPlan[]> {
   try {
-    const res = await fetch('/api/pricing');
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) return data;
+    const res = await api.getPlans();
+    if (res.success && Array.isArray(res.data) && res.data.length > 0) {
+      return res.data as PricingPlan[];
     }
   } catch {
-    // Fallback to static configuration if worker endpoint is unconfigured
+    // Fallback to static configuration if the worker endpoint is unconfigured
   }
   return PRICING_PLANS;
 }

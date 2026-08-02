@@ -38,6 +38,7 @@ import { FormsPage } from './pages/FormsPage';
 import { InvoicesPage } from './pages/InvoicesPage';
 import { BillingPage } from './pages/BillingPage';
 import { SettingsPage } from './pages/SettingsPage';
+import { PaystackCallbackPage } from './pages/PaystackCallbackPage';
 
 // ─── Loading Spinner ──────────────────────────────────────────────
 
@@ -124,6 +125,16 @@ export default function App() {
                   <AuthGuard authState={authState}>
                     <OnboardingPage />
                   </AuthGuard>
+                }
+              />
+
+              {/* ─── Paystack callback (Authenticated) ─────────────── */}
+              <Route
+                path="/app/paystack/callback"
+                element={
+                  <BusinessGuard authState={authState}>
+                    <PaystackCallbackPage />
+                  </BusinessGuard>
                 }
               />
 

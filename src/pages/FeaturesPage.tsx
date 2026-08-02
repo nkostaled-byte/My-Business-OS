@@ -105,7 +105,7 @@ export const FeaturesPage: React.FC = () => {
       <div className="rounded-3xl bg-gradient-to-r from-violet-600 to-purple-600 text-white p-10 text-center space-y-6 shadow-xl">
         <h2 className="text-3xl font-extrabold">Ready to explore Business OS?</h2>
         <p className="text-violet-100 max-w-xl mx-auto">
-          Start your 14-day free trial today. No credit card required.
+          Pick a plan that fits your business and start running today. No hidden fees.
         </p>
         <NavLink
           to="/pricing"

@@ -5,6 +5,7 @@ import { useTheme } from '../context/ThemeContext';
 import { useToast } from '../context/ToastContext';
 import { useData } from '../context/DataContext';
 import api from '../lib/api-client';
+import { PRICING_PLANS } from '../data/pricingData';
 import { Modal } from '../components/common/Modal';
 import {
   Building2, 
@@ -47,6 +48,22 @@ export const SettingsPage: React.FC = () => {
   } = useData();
 
   const [activeTab, setActiveTab] = useState<'general' | 'business' | 'website' | 'team' | 'notifications' | 'billing' | 'account' | 'invoice'>('general');
+
+  // Live subscription state for the billing tab
+  const [billingStatus, setBillingStatus] = useState<{
+    plan: string;
+    plan_name: string;
+    plan_expires_at: string | null;
+    subscription_active: boolean;
+  } | null>(null);
+
+  useEffect(() => {
+    api.getSubscriptionStatus().then((res) => {
+      if (res.success && res.data) {
+        setBillingStatus(res.data);
+      }
+    });
+  }, []);
 
   // Form states
   const [draftBusinessName, setDraftBusinessName] = useState(businessName);
@@ -610,12 +627,29 @@ export const SettingsPage: React.FC = () => {
                 <div className="p-6 rounded-3xl bg-gradient-to-r from-violet-900 to-indigo-900 text-white space-y-4 shadow-lg">
                   <div className="flex justify-between items-center">
                     <div>
-                      <span className="text-[10px] font-extrabold uppercase tracking-widest bg-white/20 px-2.5 py-1 rounded-full">Current Plan</span>
-                      <h4 className="text-xl font-extrabold mt-2">Professional Business OS</h4>
+                      <span className="text-[10px] font-extrabold uppercase tracking-widest bg-white/20 px-2.5 py-1 rounded-full">
+                        {billingStatus?.subscription_active ? 'Current Plan' : 'Current Plan (not renewing)'}
+                      </span>
+                      <h4 className="text-xl font-extrabold mt-2">
+                        {billingStatus ? `${billingStatus.plan_name} Business OS` : 'Loading plan…'}
+                      </h4>
                     </div>
-                    <span className="text-2xl font-black">R549 <span className="text-xs font-normal">/mo</span></span>
+                    {billingStatus && (
+                      <span className="text-2xl font-black">
+                        R{PRICING_PLANS.find((p) => p.id === billingStatus.plan)?.monthlyPrice ?? ''}{' '}
+                        <span className="text-xs font-normal">/mo</span>
+                      </span>
+                    )}
                   </div>
-                  <p className="text-xs text-violet-200">Next billing date: August 24, 2026</p>
+                  <p className="text-xs text-violet-200">
+                    {billingStatus?.subscription_active
+                      ? billingStatus.plan_expires_at
+                        ? `Next billing date: ${new Date(billingStatus.plan_expires_at).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`
+                        : 'Automatic renewals are active.'
+                      : billingStatus
+                        ? 'Automatic renewals are paused.'
+                        : 'Subscription status unavailable.'}
+                  </p>
                 </div>
 
                 <div className="flex gap-3">
@@ -628,7 +662,7 @@ export const SettingsPage: React.FC = () => {
                   </button>
                   <button 
                     type="button" 
-                    onClick={() => addToast('Subscription management portal opened', 'info')}
+                    onClick={() => navigate('/app/billing')}
                     className="py-3 px-4 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition-colors"
                   >
                     Manage Subscription

@@ -54,7 +54,7 @@ export const MarketingPage: React.FC = () => {
                   to="/app"
                   className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-xl shadow-violet-500/25 active:scale-[0.98] transition-all"
                 >
-                  <span>Start Free Trial</span>
+                  <span>Get Started</span>
                   <ArrowRight className="w-4 h-4" />
                 </NavLink>
               </div>
@@ -63,7 +63,7 @@ export const MarketingPage: React.FC = () => {
               <div className="flex flex-wrap items-center gap-x-6 gap-y-2 pt-2 text-xs font-medium text-slate-500 dark:text-slate-400">
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                  <span>No credit card required</span>
+                  <span>Simple monthly pricing</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-4 h-4 text-emerald-500" />

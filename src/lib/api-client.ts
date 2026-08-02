@@ -72,6 +72,37 @@ export interface ApiListResponse<T = any> {
   error?: string;
 }
 
+export interface PlanInfo {
+  id: string;
+  name: string;
+  tagline: string;
+  monthlyPrice: number;
+  yearlyPrice: number;
+  monthlyBillingText: string;
+  yearlyBillingText: string;
+  badge?: string;
+  isPopular?: boolean;
+  isBestValue?: boolean;
+  features: string[];
+  includedFromPrevious?: string;
+}
+
+export interface SubscriptionStatus {
+  plan: string;
+  plan_name: string;
+  plan_started_at: string | null;
+  plan_expires_at: string | null;
+  subscription_active: boolean;
+  has_subscription: boolean;
+  customer_code: string | null;
+}
+
+export interface CheckoutResult {
+  authorization_url: string;
+  reference: string;
+  access_code?: string;
+}
+
 type RequestOptions = Omit<RequestInit, 'body'> & {
   body?: any;
   params?: Record<string, string>;
@@ -391,6 +422,51 @@ export const api = {
   async healthCheck(): Promise<boolean> {
     const result = await this.get('/api/health');
     return result.success === true && (result.data as { worker?: boolean })?.worker === true;
+  },
+
+  // ─── Paystack / Subscriptions ────────────────────────────────────
+
+  /**
+   * Fetch the plan catalog (public endpoint)
+   * GET /api/pricing
+   */
+  async getPlans(): Promise<ApiResponse<PlanInfo[]>> {
+    return this.get<PlanInfo[]>('/api/pricing');
+  },
+
+  /**
+   * Start a Paystack subscription checkout for a plan
+   * POST /api/paystack/checkout
+   */
+  async createCheckout(
+    planId: string,
+    billing: 'monthly' | 'yearly' = 'monthly'
+  ): Promise<ApiResponse<CheckoutResult>> {
+    return this.post<CheckoutResult>('/api/paystack/checkout', { plan: planId, billing });
+  },
+
+  /**
+   * Verify a Paystack transaction and activate the plan
+   * GET /api/paystack/verify?reference=...
+   */
+  async verifyPayment(reference: string): Promise<ApiResponse<{ plan: string; plan_name: string }>> {
+    return this.get('/api/paystack/verify', { params: { reference } });
+  },
+
+  /**
+   * Get the workspace's current subscription status
+   * GET /api/paystack/status
+   */
+  async getSubscriptionStatus(): Promise<ApiResponse<SubscriptionStatus>> {
+    return this.get('/api/paystack/status');
+  },
+
+  /**
+   * Cancel the active subscription (downgrades to Starter)
+   * POST /api/paystack/cancel
+   */
+  async cancelSubscription(): Promise<ApiResponse<{ plan: string; subscription_active: boolean }>> {
+    return this.post('/api/paystack/cancel', {});
   },
 };
 

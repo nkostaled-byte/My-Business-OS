@@ -1,41 +1,107 @@
-import React, { useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useToast } from '../context/ToastContext';
-import { PRICING_PLANS } from '../data/pricingData';
+import { PRICING_PLANS, type PricingPlan } from '../data/pricingData';
+import { api, type SubscriptionStatus } from '../lib/api-client';
 import {
   Check,
   Minus,
   ChevronDown,
   ShieldCheck,
+  Loader2,
+  CreditCard,
+  RefreshCw,
 } from 'lucide-react';
 
 export const BillingPage: React.FC = () => {
   const { addToast } = useToast();
   const [isYearly, setIsYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [status, setStatus] = useState<SubscriptionStatus | null>(null);
+  const [statusLoading, setStatusLoading] = useState(true);
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
+  const [cancelLoading, setCancelLoading] = useState(false);
 
-  const handleSelectPlan = (planName: string, isEnterprise?: boolean) => {
-    addToast({
-      title: isEnterprise ? 'Enterprise Sales Notified' : `${planName} Selected`,
-      message: isEnterprise
-        ? 'Our enterprise account executive will contact you shortly.'
-        : `Your workspace subscription update request for ${planName} (${isYearly ? 'Yearly' : 'Monthly'}) was processed.`,
-      type: 'success',
-    });
+  const loadStatus = useCallback(async () => {
+    setStatusLoading(true);
+    const res = await api.getSubscriptionStatus();
+    if (res.success && res.data) {
+      setStatus(res.data);
+    } else {
+      addToast({
+        title: 'Could not load subscription',
+        message: res.error || 'Please try again.',
+        type: 'error',
+      });
+    }
+    setStatusLoading(false);
+  }, [addToast]);
+
+  useEffect(() => {
+    loadStatus();
+  }, [loadStatus]);
+
+  const handleCheckout = async (plan: PricingPlan) => {
+    setCheckoutLoading(plan.id);
+    try {
+      const res = await api.createCheckout(plan.id, isYearly ? 'yearly' : 'monthly');
+      if (res.success && res.data?.authorization_url) {
+        window.location.href = res.data.authorization_url;
+      } else {
+        addToast({
+          title: 'Checkout failed',
+          message: res.error || 'Could not start checkout.',
+          type: 'error',
+        });
+      }
+    } finally {
+      setCheckoutLoading(null);
+    }
   };
+
+  const handleCancel = async () => {
+    const confirmed = window.confirm(
+      'Cancel your subscription? You will be downgraded to the Starter plan and automatic renewals will stop.'
+    );
+    if (!confirmed) return;
+
+    setCancelLoading(true);
+    try {
+      const res = await api.cancelSubscription();
+      if (res.success) {
+        addToast({
+          title: 'Subscription cancelled',
+          message: 'Your workspace is now on the Starter plan.',
+          type: 'success',
+        });
+        loadStatus();
+      } else {
+        addToast({
+          title: 'Could not cancel',
+          message: res.error || 'Please try again.',
+          type: 'error',
+        });
+      }
+    } finally {
+      setCancelLoading(false);
+    }
+  };
+
+  const currentPlan = status?.plan || 'starter';
+  const currentPlanName = status?.plan_name || 'Starter';
 
   const faqData = [
     {
       q: 'How does billing work?',
-      a: 'Billing is straightforward and transparent. Choose between flexible monthly or discounted annual subscription plans. All plans include full access to core OS capabilities with zero hidden setup fees or surprise charges.',
+      a: 'Billing is straightforward and transparent. Choose between flexible monthly or discounted annual subscription plans. Payments are processed securely through Paystack, and every plan includes full access to core OS capabilities with zero hidden setup fees.',
     },
     {
       q: 'Can I cancel anytime?',
-      a: 'Yes, absolutely. You can upgrade, downgrade, or cancel your subscription at any time directly from your account settings with no cancellation penalties or long-term contracts.',
+      a: 'Yes, absolutely. You can upgrade, downgrade, or cancel your subscription at any time from this page. Cancelling stops future renewals, and you keep access until the end of your current billing period.',
     },
     {
       q: 'Can I upgrade later?',
-      a: 'Yes! As your business grows, you can seamlessly switch plans with a single click. Any unused balance on your previous plan is automatically credited toward your upgrade.',
+      a: 'Yes! As your business grows, you can switch plans anytime from this page. Upgrading starts your new subscription right away, and you keep access for the rest of your current billing period.',
     },
     {
       q: 'Can I have multiple businesses?',
@@ -71,30 +137,74 @@ export const BillingPage: React.FC = () => {
     <div className="space-y-12 py-4">
       {/* Current Workspace Plan Banner */}
       <div className="p-6 sm:p-8 rounded-[28px] bg-gradient-to-br from-violet-900 via-purple-900 to-slate-900 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border border-violet-700/50">
-        <div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs font-bold border border-violet-400/30">
-            <ShieldCheck className="w-3.5 h-3.5 text-violet-400" />
-            Active Tier: Business Plan (R249/mo)
-          </span>
-          <h2 className="text-xl sm:text-2xl font-extrabold mt-3">My Business OS Pro Workspace</h2>
-          <p className="text-xs sm:text-sm text-violet-200 mt-1 max-w-xl">
-            Your next auto-renewal date is August 15, 2026. All features including orders, POS, inventory, staff, and website integration are fully active.
-          </p>
+        <div className="flex items-start gap-4">
+          {statusLoading ? (
+            <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center">
+              <Loader2 className="w-5 h-5 animate-spin text-violet-300" />
+            </div>
+          ) : (
+            <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
+              <ShieldCheck className="w-5 h-5 text-violet-300" />
+            </div>
+          )}
+
+          <div>
+            {statusLoading ? (
+              <>
+                <div className="h-4 w-40 bg-white/20 rounded animate-pulse" />
+                <div className="h-3 w-64 bg-white/10 rounded animate-pulse mt-3" />
+              </>
+            ) : (
+              <>
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs font-bold border border-violet-400/30">
+                  <ShieldCheck className="w-3.5 h-3.5 text-violet-400" />
+                  {status?.subscription_active
+                    ? `Active Tier: ${currentPlanName} Plan`
+                    : status?.has_subscription
+                      ? `Plan: ${currentPlanName} (auto-renew off)`
+                      : `Plan: ${currentPlanName} Plan`}
+                </span>
+                <h2 className="text-xl sm:text-2xl font-extrabold mt-3">My Business OS Workspace</h2>
+                <p className="text-xs sm:text-sm text-violet-200 mt-1 max-w-xl">
+                  {status?.subscription_active
+                    ? `Your plan renews automatically on ${status.plan_expires_at
+                        ? new Date(status.plan_expires_at).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })
+                        : 'the next billing cycle'}. All plan features are fully active.`
+                    : status?.has_subscription
+                      ? `Your subscription is no longer renewing and access ends ${status.plan_expires_at
+                          ? `on ${new Date(status.plan_expires_at).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`
+                          : 'soon'}. Reactivate below to keep your plan.`
+                      : `You're on the ${currentPlanName} plan. Upgrade anytime to unlock more features.`}
+                </p>
+              </>
+            )}
+          </div>
         </div>
 
-        <button
-          type="button"
-          onClick={() =>
-            addToast({
-              title: 'Billing Portal Active',
-              message: 'Workspace account is in good standing with active card on file.',
-              type: 'info',
-            })
-          }
-          className="px-5 py-2.5 rounded-2xl text-xs font-bold text-slate-900 bg-white hover:bg-slate-100 transition-colors shadow-lg cursor-pointer shrink-0"
-        >
-          Manage Payment Methods
-        </button>
+        <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">
+          {status?.subscription_active && (
+            <button
+              type="button"
+              disabled={cancelLoading}
+              onClick={handleCancel}
+              className="px-5 py-2.5 rounded-2xl text-xs font-bold text-slate-900 bg-white hover:bg-slate-100 transition-colors shadow-lg cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+            >
+              {cancelLoading ? 'Cancelling…' : 'Cancel Subscription'}
+            </button>
+          )}
+          {!status?.subscription_active && (
+            <button
+              type="button"
+              onClick={() => handleCheckout(PRICING_PLANS.find((p) => p.id === currentPlan) ?? PRICING_PLANS[0])}
+              className="px-5 py-2.5 rounded-2xl text-xs font-bold text-white bg-violet-500 hover:bg-violet-400 transition-colors shadow-lg cursor-pointer"
+            >
+              <span className="inline-flex items-center gap-1.5">
+                <RefreshCw className="w-3.5 h-3.5" />
+                Reactivate Plan
+              </span>
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Hero Header */}
@@ -163,7 +273,7 @@ export const BillingPage: React.FC = () => {
         {PRICING_PLANS.map((plan) => {
           const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
           const billingText = isYearly ? plan.yearlyBillingText : plan.monthlyBillingText;
-          const isCurrent = plan.name === 'Business';
+          const isCurrent = plan.id === currentPlan;
 
           return (
             <motion.div
@@ -225,44 +335,38 @@ export const BillingPage: React.FC = () => {
               </div>
 
               <div>
-                {plan.id === 'enterprise' ? (
-                  <div className="space-y-2">
-                    <button
-                      type="button"
-                      onClick={() => handleSelectPlan(plan.name)}
-                      className="w-full py-2.5 rounded-xl text-xs font-bold text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
-                    >
-                      Start Free Trial
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => handleSelectPlan(plan.name, true)}
-                      className="w-full py-2.5 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 transition-all shadow-sm cursor-pointer"
-                    >
-                      Contact Sales
-                    </button>
-                  </div>
-                ) : isCurrent ? (
+                {isCurrent ? (
                   <button
                     type="button"
                     disabled
                     className="w-full py-3 rounded-xl text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 cursor-default"
                   >
-                    Active Plan
+                    {status?.subscription_active ? 'Active Plan' : 'Current Plan'}
                   </button>
                 ) : (
                   <button
                     type="button"
-                    onClick={() => handleSelectPlan(plan.name)}
-                    className="w-full py-3 rounded-xl text-xs font-bold text-violet-600 dark:text-violet-400 border-2 border-violet-600 dark:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-950/40 transition-colors cursor-pointer"
+                    disabled={checkoutLoading !== null}
+                    onClick={() => handleCheckout(plan)}
+                    className={`w-full py-3 rounded-xl text-xs font-bold transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
+                      plan.id === 'enterprise'
+                        ? 'text-white bg-violet-600 hover:bg-violet-700'
+                        : 'text-violet-600 dark:text-violet-400 border-2 border-violet-600 dark:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-950/40'
+                    }`}
                   >
-                    Switch to {plan.name}
+                    {checkoutLoading === plan.id ? 'Starting…' : `Switch to ${plan.name}`}
                   </button>
                 )}
               </div>
             </motion.div>
           );
         })}
+      </div>
+
+      {/* Payment note */}
+      <div className="flex items-center justify-center gap-2 text-[11px] text-slate-500 dark:text-slate-400">
+        <CreditCard className="w-3.5 h-3.5" />
+        Payments are processed securely through Paystack.
       </div>
 
       {/* Feature Comparison Table */}

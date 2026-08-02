@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useToast } from '../context/ToastContext';
-import { PRICING_PLANS } from '../data/pricingData';
+import { PRICING_PLANS, type PricingPlan } from '../data/pricingData';
+import { api, getStoredToken } from '../lib/api-client';
 import {
   Check,
   Minus,
@@ -21,18 +22,34 @@ export const PricingPage: React.FC = () => {
 
   const [isYearly, setIsYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [checkoutLoading, setCheckoutLoading] = useState<string | null>(null);
 
-  const handleAction = (planName: string, isEnterprise?: boolean) => {
-    addToast({
-      title: isEnterprise ? 'Sales Team Notified' : `${planName} Plan Selected`,
-      message: isEnterprise
-        ? 'Our enterprise account executive will contact you shortly.'
-        : `Redirecting to signup for ${planName} (${isYearly ? 'Yearly' : 'Monthly'} billing)...`,
-      type: 'success',
-    });
-    setTimeout(() => {
+  const handleCheckout = async (plan: PricingPlan) => {
+    if (!getStoredToken()) {
+      addToast({
+        title: 'Sign in required',
+        message: 'Log in or create your account to subscribe.',
+        type: 'info',
+      });
       navigate('/login');
-    }, 1000);
+      return;
+    }
+
+    setCheckoutLoading(plan.id);
+    try {
+      const res = await api.createCheckout(plan.id, isYearly ? 'yearly' : 'monthly');
+      if (res.success && res.data?.authorization_url) {
+        window.location.href = res.data.authorization_url;
+      } else {
+        addToast({
+          title: 'Checkout failed',
+          message: res.error || 'Could not start checkout.',
+          type: 'error',
+        });
+      }
+    } finally {
+      setCheckoutLoading(null);
+    }
   };
 
   const sideFeaturesLeft = [
@@ -74,15 +91,15 @@ export const PricingPage: React.FC = () => {
   const faqData = [
     {
       q: 'How does billing work?',
-      a: 'Billing is straightforward and transparent. Choose between flexible monthly or discounted annual subscription plans. All plans include full access to core OS capabilities with zero hidden setup fees or surprise charges.',
+      a: 'Billing is straightforward and transparent. Choose between flexible monthly or discounted annual subscription plans. Payments are processed securely through Paystack, and every plan includes full access to core OS capabilities with zero hidden setup fees.',
     },
     {
       q: 'Can I cancel anytime?',
-      a: 'Yes, absolutely. You can upgrade, downgrade, or cancel your subscription at any time directly from your account settings with no cancellation penalties or long-term contracts.',
+      a: 'Yes, absolutely. You can upgrade, downgrade, or cancel your subscription at any time from the Billing page in your dashboard. Cancelling stops future renewals, and you keep access until the end of your current billing period.',
     },
     {
       q: 'Can I upgrade later?',
-      a: 'Yes! As your business grows, you can seamlessly switch plans with a single click. Any unused balance on your previous plan is automatically credited toward your upgrade.',
+      a: 'Yes! As your business grows, you can switch plans anytime from the Billing page. Upgrading starts your new subscription right away, and you keep access for the rest of your current billing period.',
     },
     {
       q: 'Can I have multiple businesses?',
@@ -200,7 +217,7 @@ export const PricingPage: React.FC = () => {
         </div>
 
         {/* Pricing Cards Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+        <div id="pricing-cards" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
           {PRICING_PLANS.map((plan) => {
             const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
             const billingText = isYearly ? plan.yearlyBillingText : plan.monthlyBillingText;
@@ -261,30 +278,25 @@ export const PricingPage: React.FC = () => {
                     <div className="space-y-2">
                       <button
                         type="button"
-                        onClick={() => handleAction(plan.name)}
-                        className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
+                        disabled={checkoutLoading !== null}
+                        onClick={() => handleCheckout(plan)}
+                        className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 transition-all shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-wait"
                       >
-                        Start Free Trial
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => handleAction(plan.name, true)}
-                        className="w-full py-2.5 px-3 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 transition-all shadow-sm cursor-pointer"
-                      >
-                        Contact Sales
+                        {checkoutLoading === plan.id ? 'Starting…' : 'Choose Enterprise'}
                       </button>
                     </div>
                   ) : (
                     <button
                       type="button"
-                      onClick={() => handleAction(plan.name)}
-                      className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer ${
+                      disabled={checkoutLoading !== null}
+                      onClick={() => handleCheckout(plan)}
+                      className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
                         plan.isPopular
                           ? 'text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-violet-500/20'
                           : 'text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                       }`}
                     >
-                      Start Free Trial
+                      {checkoutLoading === plan.id ? 'Starting…' : `Get ${plan.name}`}
                     </button>
                   )}
                 </div>
@@ -445,30 +457,26 @@ export const PricingPage: React.FC = () => {
               Ready to grow your business?
             </h2>
             <p className="text-xs sm:text-base text-violet-100 leading-relaxed">
-              Start your 14-day free trial today and experience the future of business operations.
+              Pick a plan, connect your payments, and start running your business today.
             </p>
 
             <div className="pt-4 flex flex-col sm:flex-row items-center justify-center gap-3">
               <button
                 type="button"
-                onClick={() => handleAction('Business')}
+                onClick={() => handleCheckout(PRICING_PLANS.find((p) => p.isPopular) ?? PRICING_PLANS[1])}
                 className="w-full sm:w-auto px-8 py-3.5 rounded-2xl text-xs sm:text-sm font-extrabold text-violet-950 bg-white hover:bg-violet-50 transition-colors shadow-xl cursor-pointer"
               >
-                Start Free Trial
+                Get Started
               </button>
 
               <button
                 type="button"
-                onClick={() => {
-                  addToast({
-                    title: 'Demo Scheduled',
-                    message: 'Our product team will reach out shortly!',
-                    type: 'info',
-                  });
-                }}
+                onClick={() =>
+                  document.querySelector('#pricing-cards')?.scrollIntoView({ behavior: 'smooth' })
+                }
                 className="w-full sm:w-auto px-8 py-3.5 rounded-2xl text-xs sm:text-sm font-bold text-white border border-white/40 hover:bg-white/10 backdrop-blur-xs transition-colors cursor-pointer"
               >
-                Book a Demo
+                View Plans
               </button>
             </div>
           </div>
