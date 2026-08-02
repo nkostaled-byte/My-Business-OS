@@ -39,7 +39,7 @@ export const BillingPage: React.FC = () => {
     },
     {
       q: 'Can I have multiple businesses?',
-      a: 'Our Professional and Enterprise plans natively support multi-branch and multi-location setups, allowing you to manage multiple locations or sub-accounts under one primary admin workspace.',
+      a: 'Each account is scoped to a single business workspace. If you run more than one business, you can create a separate account for each.',
     },
     {
       q: 'Do you offer annual billing?',
@@ -49,17 +49,22 @@ export const BillingPage: React.FC = () => {
 
   const comparisonRows = [
     { feature: 'Website Dashboard & CRM', starter: true, business: true, professional: true, enterprise: true },
-    { feature: 'Products, Services & Bookings', starter: true, business: true, professional: true, enterprise: true },
+    { feature: 'Products & Services Catalog', starter: true, business: true, professional: true, enterprise: true },
+    { feature: 'POS & Orders', starter: true, business: true, professional: true, enterprise: true },
+    { feature: 'Bookings & Appointments', starter: true, business: true, professional: true, enterprise: true },
     { feature: 'Contact Forms & Basic Analytics', starter: true, business: true, professional: true, enterprise: true },
-    { feature: 'Team Members & Staff Management', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Quotes, Invoices & Website Manager', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Marketing Tools & Custom Branding', starter: false, business: true, professional: true, enterprise: true },
-    { feature: 'Inventory Management & Advanced Analytics', starter: false, business: false, professional: true, enterprise: true },
-    { feature: 'Automations & AI Insights', starter: false, business: false, professional: true, enterprise: true },
+    { feature: 'Online Bookings & E-Commerce', starter: false, business: true, professional: true, enterprise: true },
+    { feature: 'Team Members & Staff Access', starter: false, business: true, professional: true, enterprise: true },
+    { feature: 'Invoices & PDFs', starter: false, business: true, professional: true, enterprise: true },
+    { feature: 'Website Manager & Custom Branding', starter: false, business: true, professional: true, enterprise: true },
+    { feature: 'Gallery & Reviews', starter: false, business: true, professional: true, enterprise: true },
+    { feature: 'Reports & Exports', starter: false, business: true, professional: true, enterprise: true },
+    { feature: 'Inventory Tracking', starter: false, business: false, professional: true, enterprise: true },
+    { feature: 'Advanced Analytics', starter: false, business: false, professional: true, enterprise: true },
     { feature: 'Priority Support', starter: false, business: false, professional: true, enterprise: true },
-    { feature: 'Multiple Businesses & Locations', starter: false, business: false, professional: false, enterprise: true },
-    { feature: 'White Label & API Access', starter: false, business: false, professional: false, enterprise: true },
-    { feature: 'Dedicated Support & Unlimited Staff', starter: false, business: false, professional: false, enterprise: true },
+    { feature: 'API Access', starter: false, business: false, professional: false, enterprise: true },
+    { feature: 'Unlimited Staff', starter: false, business: false, professional: false, enterprise: true },
+    { feature: 'Dedicated Support', starter: false, business: false, professional: false, enterprise: true },
   ];
 
   return (

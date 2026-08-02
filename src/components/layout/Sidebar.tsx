@@ -26,7 +26,11 @@ import {
 interface SidebarProps {
   mobileOpen: boolean;
   onCloseMobile: () => void;
+  role?: 'owner' | 'admin' | 'staff' | null;
 }
+
+/** Paths hidden from `staff`-role users (admin/settings areas). */
+export const STAFF_RESTRICTED_PATHS = ['/app/website', '/app/invoices', '/app/billing', '/app/settings'];
 
 export const navItems = [
   { label: 'Overview', path: '/app', icon: LayoutDashboard },
@@ -48,8 +52,11 @@ export const navItems = [
   { label: 'Settings', path: '/app/settings', icon: Settings },
 ];
 
-export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile }) => {
+export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, role }) => {
   const { businessName, businessLogo } = useData();
+  const visibleNav = role === 'staff'
+    ? navItems.filter((item) => !STAFF_RESTRICTED_PATHS.includes(item.path))
+    : navItems;
 
   return (
     <>
@@ -99,7 +106,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile }) =
 
         {/* Navigation list */}
         <div className="flex-1 overflow-y-auto px-3 py-4 space-y-1 scrollbar-thin">
-          {navItems.map((item) => {
+          {visibleNav.map((item) => {
             const Icon = item.icon;
             return (
               <NavLink

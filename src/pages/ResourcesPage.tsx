@@ -7,17 +7,17 @@ export const ResourcesPage: React.FC = () => {
     {
       type: 'Guide',
       title: 'How to scale your appointment & booking workflow in 2026',
-      desc: 'Learn automated scheduling strategies that cut no-shows by 80% and save 15+ hours weekly.',
+      desc: 'Practical scheduling habits that cut no-shows and keep your team calendar organized.',
     },
     {
       type: 'Case Study',
       title: 'How Apex Salon grew revenue by 42% using Business OS POS',
-      desc: 'A deep dive into integrated inventory, staff commission tracking, and online store sync.',
+      desc: 'A deep dive into integrated inventory, POS sales, and online store orders.',
     },
     {
       type: 'Documentation',
       title: 'Setting up custom PDF invoice templates & automatic tax receipts',
-      desc: 'Step-by-step tutorial on customizing invoice designs, currency, and multi-branch details.',
+      desc: 'Step-by-step tutorial on customizing invoice designs and currency.',
     },
   ];
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
 import { useData } from '../../context/DataContext';
+import { MY_GRAFIX_LOGO } from '../../constants';
 import { Sun, Moon } from 'lucide-react';
 
 export const PublicHeader: React.FC = () => {
@@ -22,13 +23,7 @@ export const PublicHeader: React.FC = () => {
         {/* Logo */}
         <NavLink to="/" className="flex items-center gap-3 group">
           <div className="w-10 h-10 flex items-center justify-center">
-            {businessLogo ? (
-              <img src={businessLogo} alt={businessName} className="w-full h-full object-contain" />
-            ) : (
-              <svg className="w-6 h-6 fill-current text-violet-600" viewBox="0 0 24 24">
-                <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
-              </svg>
-            )}
+            <img src={businessLogo || MY_GRAFIX_LOGO} alt={businessName} className="w-full h-full object-contain" />
           </div>
           <div>
             <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 block leading-none">

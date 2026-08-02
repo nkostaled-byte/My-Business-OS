@@ -16,3 +16,43 @@
     color: #f8fafc;
   }
 }
+
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .receipt-print-area,
+  .receipt-print-area * {
+    visibility: visible;
+  }
+  .receipt-print-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 80mm;
+    background: #fff;
+    color: #000;
+    padding: 4mm;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Courier New", monospace;
+    font-size: 11px;
+    line-height: 1.4;
+  }
+  .receipt-print-area h1 {
+    font-size: 13px;
+    text-align: center;
+    margin: 0 0 2mm;
+  }
+  .receipt-print-area .rc-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 4mm;
+  }
+  .receipt-print-area .rc-divider {
+    border-top: 1px dashed #000;
+    margin: 2mm 0;
+  }
+  .receipt-print-area .rc-total {
+    font-weight: bold;
+    font-size: 13px;
+  }
+}

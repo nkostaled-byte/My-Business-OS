@@ -1,15 +1,16 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
-  Calendar,
   ShoppingBag,
+  Calendar,
   Calculator,
+  Package,
   Boxes,
   Users,
   Receipt,
+  UserCheck,
+  Globe,
   BarChart3,
-  ShieldCheck,
-  Zap,
   ArrowRight,
 } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -18,33 +19,53 @@ export const FeaturesPage: React.FC = () => {
   const features = [
     {
       icon: ShoppingBag,
-      title: 'Point of Sale (POS) & E-Commerce',
-      desc: 'Seamlessly process transactions, accept payments, track inventory, and sync product stock across online and offline sales.',
+      title: 'E-Commerce & Online Store',
+      desc: 'Sell your products online through a website built and linked to your dashboard, with orders flowing straight into your business workspace.',
+    },
+    {
+      icon: Calculator,
+      title: 'Point of Sale (POS)',
+      desc: 'Run in-person sales at the register with products and services, apply discounts, print thermal receipts, and keep a complete order and payment history.',
     },
     {
       icon: Calendar,
-      title: 'Online Bookings & Calendar',
-      desc: 'Let clients book services, select team members, schedule appointments, and receive automated SMS/Email reminders.',
+      title: 'Online Bookings & Appointments',
+      desc: 'Let clients book services through your website, then manage appointments in calendar and list views, assign staff, and track every status.',
+    },
+    {
+      icon: Package,
+      title: 'Order Management & Fulfillment',
+      desc: 'Track orders from your online store and register, update status workflows, and manage fulfillment and payment history from one dashboard.',
     },
     {
       icon: Boxes,
-      title: 'Smart Inventory Management',
-      desc: 'Track low-stock alerts, supplier purchase orders, product variations, barcode scanning, and multi-location quantities.',
+      title: 'Inventory Tracking',
+      desc: 'Monitor stock levels, set reorder thresholds and unit costs, and get low-stock alerts, with quantities kept in sync as orders come in.',
     },
     {
       icon: Receipt,
-      title: 'Invoicing & Estimates',
-      desc: 'Generate branded PDF invoices, send automated payment links, handle tax calculations, and manage recurring billing.',
+      title: 'Invoicing with PDFs',
+      desc: 'Create invoices with line items, tax, and due dates, then download branded PDFs and email them straight to clients.',
     },
     {
       icon: Users,
-      title: 'Staff & Team Scheduling',
-      desc: 'Manage staff rosters, assign service permissions, calculate commissions, and track individual performance.',
+      title: 'Customers & CRM',
+      desc: 'Keep a central customer list with contact details, last visit, and notes so you can stay on top of repeat business.',
+    },
+    {
+      icon: UserCheck,
+      title: 'Staff & Team Access',
+      desc: 'Manage team members with roles and specialties, and invite staff with role-based dashboard access and clear permission limits.',
+    },
+    {
+      icon: Globe,
+      title: 'Website, Gallery, Reviews & Forms',
+      desc: 'Your website is built and linked to your dashboard, where you manage a photo gallery, client reviews, and form enquiries.',
     },
     {
       icon: BarChart3,
-      title: 'Real-Time Analytics & Reports',
-      desc: 'Gain instant clarity on revenue, net margins, top customers, popular services, and sales trends with exportable reports.',
+      title: 'Analytics & Reports',
+      desc: 'Track revenue, orders, bookings, and customers at a glance, with trend charts, top products, and exportable reports.',
     },
   ];
 
@@ -64,7 +85,7 @@ export const FeaturesPage: React.FC = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8">
         {features.map((feat, idx) => (
           <motion.div
             key={idx}

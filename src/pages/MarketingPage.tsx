@@ -208,12 +208,12 @@ export const MarketingPage: React.FC = () => {
               {
                 icon: ShoppingBag,
                 title: 'Order Management',
-                desc: 'Track online orders, store sales, status workflows, and fulfillment from a single dashboard.',
+                desc: 'Track online store and in-person orders, status workflows, and payment history from a single dashboard.',
               },
               {
                 icon: Calendar,
-                title: 'Appointment Bookings',
-                desc: 'Client self-scheduling, automated reminders, staff assignment, and calendar views.',
+                title: 'Online Appointments',
+                desc: 'Clients book through your website, then you manage appointments, assign staff, and track statuses.',
               },
               {
                 icon: Calculator,

@@ -1,6 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
+import { MY_GRAFIX_LOGO } from '../../constants';
 
 export const PublicFooter: React.FC = () => {
   const { businessName, businessLogo } = useData();
@@ -11,13 +12,7 @@ export const PublicFooter: React.FC = () => {
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 flex items-center justify-center text-white font-bold">
-              {businessLogo ? (
-                <img src={businessLogo} alt={businessName} className="w-full h-full object-contain" />
-              ) : (
-                <div className="w-8 h-8 bg-violet-600 flex items-center justify-center text-white font-bold">
-                  OS
-                </div>
-              )}
+              <img src={businessLogo || MY_GRAFIX_LOGO} alt={businessName} className="w-full h-full object-contain" />
             </div>
             <span className="text-lg font-bold text-white">{businessName || 'Business OS'}</span>
           </div>

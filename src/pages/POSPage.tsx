@@ -29,7 +29,7 @@ import {
 } from 'lucide-react';
 
 export const POSPage: React.FC = () => {
-  const { products, services, orders, addOrder, updateResource } = useData();
+  const { products, services, orders, businessName, addOrder, updateResource } = useData();
   const { addToast } = useToast();
 
   const [viewMode, setViewMode] = useState<'register' | 'history'>('register');
@@ -869,13 +869,7 @@ export const POSPage: React.FC = () => {
               <motion.button
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
-                onClick={() => {
-                  addToast({
-                    title: 'Print Command Sent',
-                    message: `Sending receipt ${selectedReceipt.orderNumber} to thermal printer...`,
-                    type: 'info',
-                  });
-                }}
+                onClick={() => window.print()}
                 className="flex-1 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-200 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <Printer className="w-4 h-4" />
@@ -893,6 +887,65 @@ export const POSPage: React.FC = () => {
             </div>
           </div>
         </Modal>
+      )}
+
+      {/* Printable Receipt (only visible when printing) */}
+      {selectedReceipt && (
+        <div className="receipt-print-area">
+          <h1>{businessName || 'My Business'}</h1>
+          <div className="rc-row">
+            <span>Receipt #:</span>
+            <span>{selectedReceipt.orderNumber}</span>
+          </div>
+          <div className="rc-row">
+            <span>Date:</span>
+            <span>{selectedReceipt.createdAt}</span>
+          </div>
+          <div className="rc-row">
+            <span>Customer:</span>
+            <span>{selectedReceipt.customerName}</span>
+          </div>
+          <div className="rc-row">
+            <span>Payment:</span>
+            <span className="uppercase">{selectedReceipt.paymentMethod || '—'}</span>
+          </div>
+
+          <div className="rc-divider"></div>
+
+          {selectedReceipt.items && selectedReceipt.items.length > 0 ? (
+            selectedReceipt.items.map((item, idx) => (
+              <div key={idx} className="rc-row">
+                <span>
+                  {item.name} ({item.quantity}x @ R{item.price.toFixed(2)})
+                </span>
+                <span>R{(item.quantity * item.price).toFixed(2)}</span>
+              </div>
+            ))
+          ) : (
+            <div className="rc-row">
+              <span>Counter Line Items ({selectedReceipt.itemsCount})</span>
+              <span>R{selectedReceipt.totalAmount.toFixed(2)}</span>
+            </div>
+          )}
+
+          <div className="rc-divider"></div>
+
+          <div className="rc-row">
+            <span>Subtotal:</span>
+            <span>R{(selectedReceipt.totalAmount / 1.15).toFixed(2)}</span>
+          </div>
+          <div className="rc-row">
+            <span>VAT (15%):</span>
+            <span>R{(selectedReceipt.totalAmount - selectedReceipt.totalAmount / 1.15).toFixed(2)}</span>
+          </div>
+          <div className="rc-row rc-total">
+            <span>TOTAL PAID:</span>
+            <span>R{selectedReceipt.totalAmount.toFixed(2)}</span>
+          </div>
+
+          <div className="rc-divider"></div>
+          <p style={{ textAlign: 'center', margin: 0 }}>Thank you for your business!</p>
+        </div>
       )}
     </div>
   );

@@ -5,7 +5,8 @@ import { useTheme } from '../context/ThemeContext';
 import { useToast } from '../context/ToastContext';
 import { useData } from '../context/DataContext';
 import api from '../lib/api-client';
-import { 
+import { Modal } from '../components/common/Modal';
+import {
   Building2, 
   User, 
   Globe, 
@@ -26,7 +27,8 @@ import {
   FileText,
   Banknote,
   Palette,
-  PenLine
+  PenLine,
+  Copy
 } from 'lucide-react';
 
 export const SettingsPage: React.FC = () => {
@@ -76,6 +78,15 @@ export const SettingsPage: React.FC = () => {
   const [saving, setSaving] = useState(false);
   const [loading, setLoading] = useState(true);
 
+  // Team members state
+  const [teamMembers, setTeamMembers] = useState<any[]>([]);
+  const [inviteName, setInviteName] = useState('');
+  const [inviteEmail, setInviteEmail] = useState('');
+  const [inviteRole, setInviteRole] = useState<'staff' | 'admin'>('staff');
+  const [inviting, setInviting] = useState(false);
+  const [inviteResult, setInviteResult] = useState<{ member: any; tempPassword: string } | null>(null);
+  const [removingId, setRemovingId] = useState<string | null>(null);
+
   // Load persisted settings on mount so saved values are shown.
   useEffect(() => {
     let cancelled = false;
@@ -108,6 +119,62 @@ export const SettingsPage: React.FC = () => {
     })();
     return () => { cancelled = true; };
   }, []);
+
+  // Load team members on mount
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const result = await api.get<any>('/api/dashboard/team_members');
+        if (!cancelled && result.success && Array.isArray(result.data)) {
+          setTeamMembers(result.data);
+        }
+      } catch {
+        // Silent — team list stays empty if the fetch fails.
+      }
+    })();
+    return () => { cancelled = true; };
+  }, []);
+
+  const loadTeam = async () => {
+    const result = await api.get<any>('/api/dashboard/team_members');
+    if (result.success && Array.isArray(result.data)) {
+      setTeamMembers(result.data);
+    }
+  };
+
+  const handleInvite = async () => {
+    if (!inviteName.trim() || !inviteEmail.trim()) return;
+    setInviting(true);
+    const result = await api.post<any>('/api/dashboard/team_members/invite', {
+      name: inviteName.trim(),
+      email: inviteEmail.trim(),
+      role: inviteRole,
+    });
+    setInviting(false);
+    if (result.success && result.data) {
+      setInviteResult(result.data);
+      setInviteName('');
+      setInviteEmail('');
+      setInviteRole('staff');
+      await loadTeam();
+      addToast({ title: 'Team Member Added', message: `${result.data.member.name} can now sign in.`, type: 'success' });
+    } else {
+      addToast({ title: 'Invite Failed', message: result.error || 'Could not invite the team member.', type: 'error' });
+    }
+  };
+
+  const handleRemoveMember = async (member: any) => {
+    setRemovingId(member.id);
+    const result = await api.del(`/api/dashboard/team_members/${member.id}`);
+    setRemovingId(null);
+    if (result.success) {
+      setTeamMembers((prev) => prev.filter((m) => m.id !== member.id));
+      addToast({ title: 'Member Removed', message: `${member.name} no longer has dashboard access.`, type: 'success' });
+    } else {
+      addToast({ title: 'Remove Failed', message: result.error || 'Could not remove the team member.', type: 'error' });
+    }
+  };
 
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -417,33 +484,87 @@ export const SettingsPage: React.FC = () => {
 
             {activeTab === 'team' && (
               <motion.div key="team" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-6">
-                <div className="flex items-center justify-between">
-                  <div>
-                    <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Team & Staff Permissions</h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">Manage staff members and access levels.</p>
-                  </div>
-                  <button 
-                    type="button" 
-                    onClick={() => navigate('/app/staff')}
-                    className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-md transition-all"
-                  >
-                    Manage Staff
-                  </button>
+                <div>
+                  <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Team & Staff Permissions</h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
+                    Invite staff and admins to log into the same dashboard. Staff are limited to operational pages (POS, inventory, orders) and cannot access settings or billing.
+                  </p>
                 </div>
 
-                <div className="space-y-3">
-                  {[
-                    { name: 'David Khumalo', role: 'Senior Stylist / Manager', email: 'david@grafix.co.za' },
-                    { name: 'Lerato Mokoena', role: 'Stylist / Consultant', email: 'lerato@grafix.co.za' },
-                  ].map((staff, idx) => (
-                    <div key={idx} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
-                      <div>
-                        <p className="font-bold text-slate-900 dark:text-slate-100 text-xs">{staff.name}</p>
-                        <p className="text-[11px] text-slate-500">{staff.role} • {staff.email}</p>
-                      </div>
-                      <span className="px-2.5 py-1 rounded-full text-[10px] font-bold uppercase bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300">Active</span>
+                {/* Invite Form */}
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500">Invite a Team Member</h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <input
+                      type="text"
+                      value={inviteName}
+                      onChange={(e) => setInviteName(e.target.value)}
+                      placeholder="Full name"
+                      className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                    />
+                    <input
+                      type="email"
+                      value={inviteEmail}
+                      onChange={(e) => setInviteEmail(e.target.value)}
+                      placeholder="name@example.com"
+                      className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                    />
+                    <div className="flex gap-2">
+                      <select
+                        value={inviteRole}
+                        onChange={(e) => setInviteRole(e.target.value as 'staff' | 'admin')}
+                        className="flex-1 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 cursor-pointer"
+                      >
+                        <option value="staff">Staff</option>
+                        <option value="admin">Admin</option>
+                      </select>
+                      <motion.button
+                        whileTap={{ scale: 0.98 }}
+                        type="button"
+                        onClick={handleInvite}
+                        disabled={inviting || !inviteName.trim() || !inviteEmail.trim()}
+                        className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-md disabled:opacity-50 cursor-pointer"
+                      >
+                        {inviting ? 'Inviting...' : 'Invite'}
+                      </motion.button>
                     </div>
-                  ))}
+                  </div>
+                </div>
+
+                {/* Team List */}
+                <div className="space-y-3">
+                  {teamMembers.length === 0 ? (
+                    <p className="text-xs text-slate-500 dark:text-slate-400 py-6 text-center">
+                      No team members yet. Invite someone above to share dashboard access.
+                    </p>
+                  ) : (
+                    teamMembers.map((member) => (
+                      <div key={member.id} className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800">
+                        <div>
+                          <p className="font-bold text-slate-900 dark:text-slate-100 text-xs">{member.name}</p>
+                          <p className="text-[11px] text-slate-500">{member.email}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
+                            member.role === 'admin'
+                              ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
+                              : 'bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300'
+                          }`}>
+                            {member.role}
+                          </span>
+                          <button
+                            type="button"
+                            onClick={() => handleRemoveMember(member)}
+                            disabled={removingId === member.id}
+                            className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer disabled:opacity-50"
+                            title="Remove access"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))
+                  )}
                 </div>
               </motion.div>
             )}
@@ -656,6 +777,57 @@ export const SettingsPage: React.FC = () => {
           </div>
         </form>
       </div>
+
+      {/* Temporary password modal after inviting a team member */}
+      <Modal
+        isOpen={Boolean(inviteResult)}
+        onClose={() => setInviteResult(null)}
+        title="Team Member Invited"
+        subtitle="Share this temporary password so they can sign in. Ask them to change it after first login."
+      >
+        <div className="space-y-4">
+          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+            <div className="flex justify-between text-xs">
+              <span className="text-slate-400">Email</span>
+              <span className="font-semibold text-slate-800 dark:text-slate-200">{inviteResult?.member.email}</span>
+            </div>
+            <div className="flex justify-between text-xs">
+              <span className="text-slate-400">Role</span>
+              <span className="font-semibold uppercase text-slate-800 dark:text-slate-200">{inviteResult?.member.role}</span>
+            </div>
+            <div className="flex justify-between items-center pt-2 border-t border-slate-200 dark:border-slate-700">
+              <span className="text-slate-400 text-xs">Temporary password</span>
+              <div className="flex items-center gap-2">
+                <span className="font-mono font-bold text-violet-600 dark:text-violet-400">{inviteResult?.tempPassword}</span>
+                <button
+                  type="button"
+                  onClick={() => {
+                    if (inviteResult) {
+                      navigator.clipboard?.writeText(inviteResult.tempPassword);
+                      addToast({ title: 'Copied', message: 'Temporary password copied to clipboard.', type: 'success' });
+                    }
+                  }}
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 transition-colors cursor-pointer"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            </div>
+          </div>
+          <p className="text-[11px] text-slate-500 dark:text-slate-400">
+            This password is shown only once. If lost, remove the member and invite them again.
+          </p>
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() => setInviteResult(null)}
+              className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs cursor-pointer"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </Modal>
     </div>
   );
 };

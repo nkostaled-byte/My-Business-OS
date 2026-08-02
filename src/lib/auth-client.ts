@@ -48,6 +48,7 @@ export interface AuthState {
   session: Session | null;
   clientId: string | null;
   businessName: string | null;
+  role: 'owner' | 'admin' | 'staff' | null;
   isAuthenticated: boolean;
   isLoading: boolean;
 }
@@ -57,6 +58,7 @@ export const DEFAULT_AUTH_STATE: AuthState = {
   session: null,
   clientId: null,
   businessName: null,
+  role: null,
   isAuthenticated: false,
   isLoading: true,
 };
@@ -131,21 +133,22 @@ function getPersistedClientLink(): { clientId: string | null; businessName: stri
  * Check if the authenticated user is already linked to a business.
  * Uses a lightweight GET endpoint — does NOT create anything.
  */
-export async function checkClientLink(): Promise<{ linked: boolean; clientId: string | null; businessName: string | null }> {
+export async function checkClientLink(): Promise<{ linked: boolean; clientId: string | null; businessName: string | null; role: 'owner' | 'admin' | 'staff' | null }> {
   const result = await api.get<any>('/api/claim-account/status');
   if (result.success) {
-    // Worker returns { success: true, linked: true, clientId: "...", businessName: "..." }
+    // Worker returns { success: true, linked: true, clientId: "...", businessName: "...", role: "..." }
     // The api client returns the entire body as `result`, so properties are on `result` directly
     const linked = result.linked === true;
     const clientId = result.clientId || null;
     const businessName = result.businessName || null;
+    const role = result.role || null;
     // Persist to localStorage for tab-switch resilience
     if (linked && clientId) {
       persistClientLink(clientId, businessName);
     }
-    return { linked, clientId, businessName };
+    return { linked, clientId, businessName, role };
   }
-  return { linked: false, clientId: null, businessName: null };
+  return { linked: false, clientId: null, businessName: null, role: null };
 }
 
 /**
@@ -223,6 +226,7 @@ export async function initializeAuth(): Promise<AuthState> {
         session: null,
         clientId: null,
         businessName: null,
+        role: null,
         isAuthenticated: false,
         isLoading: false,
       };
@@ -234,12 +238,14 @@ export async function initializeAuth(): Promise<AuthState> {
     // User is authenticated — resolve business ownership from the Worker (database)
     let clientId: string | null = null;
     let businessName: string | null = null;
+    let role: AuthState['role'] = null;
 
     try {
       const linkStatus = await checkClientLink();
       if (linkStatus.linked && linkStatus.clientId) {
         clientId = linkStatus.clientId;
         businessName = linkStatus.businessName;
+        role = linkStatus.role;
       }
     } catch (linkErr) {
       // If the Worker is unreachable (e.g. cold start, tab switch), fall back
@@ -259,6 +265,7 @@ export async function initializeAuth(): Promise<AuthState> {
       session,
       clientId,
       businessName,
+      role,
       isAuthenticated: true,
       isLoading: false,
     };
@@ -277,6 +284,7 @@ export async function initializeAuth(): Promise<AuthState> {
           session: null,
           clientId: null,
           businessName: null,
+          role: null,
           isAuthenticated: false,
           isLoading: false,
         };
@@ -288,11 +296,13 @@ export async function initializeAuth(): Promise<AuthState> {
       // Re-resolve business link from Worker on auth change
       let newClientId: string | null = null;
       let newBusinessName: string | null = null;
+      let newRole: AuthState['role'] = null;
       try {
         const linkStatus = await checkClientLink();
         if (linkStatus.linked && linkStatus.clientId) {
           newClientId = linkStatus.clientId;
           newBusinessName = linkStatus.businessName;
+          newRole = linkStatus.role;
         }
       } catch {
         // Worker unreachable — user will be redirected to onboarding
@@ -303,6 +313,7 @@ export async function initializeAuth(): Promise<AuthState> {
         session,
         clientId: newClientId,
         businessName: newBusinessName,
+        role: newRole,
         isAuthenticated: true,
         isLoading: false,
       };
@@ -318,6 +329,7 @@ export async function initializeAuth(): Promise<AuthState> {
       session: null,
       clientId: null,
       businessName: null,
+      role: null,
       isAuthenticated: false,
       isLoading: false,
     };
@@ -338,6 +350,7 @@ export async function setClientInfo(clientId: string, businessName: string): Pro
     ...currentAuthState,
     clientId,
     businessName,
+    role: 'owner',
   };
   currentAuthState = newState;
   notifyListeners(newState);
@@ -391,6 +404,7 @@ export async function signOut(): Promise<void> {
     session: null,
     clientId: null,
     businessName: null,
+    role: null,
     isAuthenticated: false,
     isLoading: false,
   };
@@ -412,6 +426,7 @@ export async function refreshAuthState(): Promise<AuthState> {
         session,
         clientId: null,
         businessName: null,
+        role: null,
         isAuthenticated: true,
         isLoading: false,
       }
@@ -420,6 +435,7 @@ export async function refreshAuthState(): Promise<AuthState> {
         session: null,
         clientId: null,
         businessName: null,
+        role: null,
         isAuthenticated: false,
         isLoading: false,
       };

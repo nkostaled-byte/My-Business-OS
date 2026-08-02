@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import { Outlet, useLocation, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Sidebar } from './Sidebar';
+import { Sidebar, STAFF_RESTRICTED_PATHS } from './Sidebar';
 import { Header } from './Header';
 import { ToastProvider } from '../../context/ToastContext';
 import { FloatingActionButton } from '../common/FloatingActionButton';
 
-export const DashboardLayout: React.FC = () => {
+export const DashboardLayout: React.FC<{ role?: 'owner' | 'admin' | 'staff' | null }> = ({ role }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+
+  // Staff cannot access admin/settings areas — bounce them back to Overview
+  if (role === 'staff' && STAFF_RESTRICTED_PATHS.includes(location.pathname)) {
+    return <Navigate to="/app" replace />;
+  }
 
   return (
     <ToastProvider>
       <div className="min-h-screen bg-slate-50/60 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors font-sans">
-        <Sidebar mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} />
+        <Sidebar mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} role={role} />
         
         <div className="lg:pl-64 flex flex-col min-h-screen">
           <Header onOpenMobileMenu={() => setMobileOpen(true)} />

@@ -132,7 +132,7 @@ export default function App() {
                 path="/app"
                 element={
                   <BusinessGuard authState={authState}>
-                    <DashboardLayout />
+                    <DashboardLayout role={authState.role} />
                   </BusinessGuard>
                 }
               >
