@@ -2,10 +2,12 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Plus, Calculator, Package, Calendar, Receipt, Sparkles, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { useData } from '../../context/DataContext';
 
 export const FloatingActionButton: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const { canAccess } = useData();
 
   const actions = [
     {
@@ -13,26 +15,30 @@ export const FloatingActionButton: React.FC = () => {
       icon: Calculator,
       color: 'bg-emerald-500 text-white',
       onClick: () => navigate('/app/pos'),
+      minPlan: 'starter',
     },
     {
       label: 'Add Product',
       icon: Package,
       color: 'bg-blue-500 text-white',
       onClick: () => navigate('/app/products'),
+      minPlan: 'starter',
     },
     {
       label: 'New Booking',
       icon: Calendar,
       color: 'bg-purple-500 text-white',
       onClick: () => navigate('/app/bookings'),
+      minPlan: 'starter',
     },
     {
       label: 'Create Invoice',
       icon: Receipt,
       color: 'bg-amber-500 text-white',
       onClick: () => navigate('/app/invoices'),
+      minPlan: 'business',
     },
-  ];
+  ].filter((act) => canAccess(act.minPlan));
 
   return (
     <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end">

@@ -17,6 +17,8 @@ import React, { createContext, useContext, useState, useCallback, useRef, useEff
 import api from '../lib/api-client';
 import { DashboardResource } from '../config/api';
 import { subscribeToAuth } from '../lib/auth-client';
+import { SubscriptionStatus } from '../lib/api-client';
+import { PLAN_TIERS, PLAN_NAMES, getPlanTier } from '../config/plans';
 import {
   DashboardStats,
   RevenueDataPoint,
@@ -111,6 +113,15 @@ interface DataContextType {
   setProfileEmail: (email: string) => void;
   profileAvatar: string;
   setProfileAvatar: (avatar: string) => void;
+
+  // Subscription / plan gating
+  subscription: SubscriptionStatus | null;
+  subscriptionLoading: boolean;
+  refreshSubscription: () => Promise<void>;
+  plan: string;
+  planName: string;
+  planTier: number;
+  canAccess: (requiredPlan: string) => boolean;
 }
 
 // ─── Resource Fetch Helpers ───────────────────────────────────────
@@ -128,6 +139,14 @@ async function fetchResource<T>(resource: DashboardResource, signal?: AbortSigna
 
 async function fetchMetrics(signal?: AbortSignal) {
   const result = await api.get<Record<string, unknown>>('/api/dashboard/metrics', { signal });
+  if (result.success && result.data) {
+    return result.data;
+  }
+  return null;
+}
+
+async function fetchSubscription(signal?: AbortSignal) {
+  const result = await api.get<SubscriptionStatus>('/api/paystack/status', { signal });
   if (result.success && result.data) {
     return result.data;
   }
@@ -174,6 +193,28 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [formsLoading, setFormsLoading] = useState(false);
   const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [invoicesLoading, setInvoicesLoading] = useState(false);
+
+  // Subscription / plan gating
+  const [subscription, setSubscription] = useState<SubscriptionStatus | null>(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(false);
+
+  const refreshSubscription = useCallback(async () => {
+    setSubscriptionLoading(true);
+    const data = await fetchSubscription();
+    setSubscription(data);
+    setSubscriptionLoading(false);
+    return;
+  }, []);
+
+  // Effective plan — a lapsed/cancelled subscription downgrades to Starter
+  const plan = subscription && subscription.subscription_active ? subscription.plan : 'starter';
+  const planTier = getPlanTier(plan);
+  const planName = PLAN_NAMES[plan] || plan;
+
+  const canAccess = useCallback(
+    (requiredPlan: string): boolean => getPlanTier(requiredPlan) <= planTier,
+    [planTier]
+  );
 
   // Derived inventory from products
   const inventory = products.map((p) => {
@@ -498,13 +539,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         if (!initialFetchDone.current) {
           initialFetchDone.current = true;
           fetchAllData();
+          refreshSubscription();
         }
       } else {
         initialFetchDone.current = false;
       }
     });
     return unsubscribe;
-  }, [fetchAllData]);
+  }, [fetchAllData, refreshSubscription]);
 
   // ─── Context Value ────────────────────────────────────────────
 
@@ -561,6 +603,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setProfileEmail,
     profileAvatar,
     setProfileAvatar,
+    subscription,
+    subscriptionLoading,
+    refreshSubscription,
+    plan,
+    planName,
+    planTier,
+    canAccess,
   };
 
   return (

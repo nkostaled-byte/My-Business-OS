@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, XCircle, Loader2, CreditCard } from 'lucide-react';
 import { api, type SubscriptionProduct } from '../lib/api-client';
+import { useData } from '../context/DataContext';
 
 type CallbackState =
   | { status: 'loading' }
@@ -14,6 +15,7 @@ export const PaystackCallbackPage: React.FC = () => {
   const reference = searchParams.get('reference') || '';
   const [state, setState] = useState<CallbackState>({ status: 'loading' });
   const verified = useRef(false);
+  const { refreshSubscription } = useData();
 
   useEffect(() => {
     if (verified.current) return;
@@ -25,6 +27,8 @@ export const PaystackCallbackPage: React.FC = () => {
 
     api.verifyPayment(reference).then((res) => {
       if (res.success && res.data) {
+        // Refresh plan gating immediately so the dashboard unlocks right away
+        refreshSubscription();
         setState({
           status: 'success',
           product: res.data.product || 'os',
@@ -35,7 +39,7 @@ export const PaystackCallbackPage: React.FC = () => {
         setState({ status: 'error', error: res.error || 'Could not verify payment.' });
       }
     });
-  }, [reference]);
+  }, [reference, refreshSubscription]);
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">

@@ -5,15 +5,24 @@ import { Sidebar, STAFF_RESTRICTED_PATHS } from './Sidebar';
 import { Header } from './Header';
 import { ToastProvider } from '../../context/ToastContext';
 import { FloatingActionButton } from '../common/FloatingActionButton';
+import { UpgradeRequired } from '../common/UpgradeRequired';
+import { useData } from '../../context/DataContext';
+import { getPageMinPlan, getPlanTier } from '../../config/plans';
 
 export const DashboardLayout: React.FC<{ role?: 'owner' | 'admin' | 'staff' | null }> = ({ role }) => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const { planTier } = useData();
 
   // Staff cannot access admin/settings areas — bounce them back to Overview
   if (role === 'staff' && STAFF_RESTRICTED_PATHS.includes(location.pathname)) {
     return <Navigate to="/app" replace />;
   }
+
+  // Feature locked by subscription plan — show upgrade prompt instead
+  const requiredPlan = getPageMinPlan(location.pathname);
+  const locked = getPlanTier(requiredPlan) > planTier;
+  const content = locked ? <UpgradeRequired requiredPlan={requiredPlan} /> : <Outlet />;
 
   return (
     <ToastProvider>
@@ -32,13 +41,13 @@ export const DashboardLayout: React.FC<{ role?: 'owner' | 'admin' | 'staff' | nu
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
               >
-                <Outlet />
+                {content}
               </motion.div>
             </AnimatePresence>
           </main>
         </div>
 
-        <FloatingActionButton />
+        {!locked && <FloatingActionButton />}
       </div>
     </ToastProvider>
   );

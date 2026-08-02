@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useData } from '../../context/DataContext';
+import { getPageMinPlan, getPlanTier, PLAN_NAMES } from '../../config/plans';
 import {
   LayoutDashboard,
   BarChart3,
@@ -53,10 +54,13 @@ export const navItems = [
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, role }) => {
-  const { businessName, businessLogo } = useData();
-  const visibleNav = role === 'staff'
-    ? navItems.filter((item) => !STAFF_RESTRICTED_PATHS.includes(item.path))
-    : navItems;
+  const { businessName, businessLogo, plan, planTier } = useData();
+  const visibleNav = navItems.filter((item) => {
+    // Hide admin/settings areas from staff
+    if (role === 'staff' && STAFF_RESTRICTED_PATHS.includes(item.path)) return false;
+    // Hide features not included in the current subscription plan
+    return getPlanTier(getPageMinPlan(item.path)) <= planTier;
+  });
 
   return (
     <>
@@ -142,6 +146,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
 
         {/* Bottom Upgrade Button */}
         <div className="p-3 border-t border-slate-100 dark:border-slate-800">
+          <div className="mb-2 flex items-center justify-between px-1">
+            <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
+              Current plan
+            </span>
+            <span className="text-[11px] font-bold text-violet-600 dark:text-violet-400">
+              {PLAN_NAMES[plan] || 'Starter'}
+            </span>
+          </div>
           <NavLink
             to="/app/billing"
             onClick={onCloseMobile}

@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useToast } from '../context/ToastContext';
+import { useData } from '../context/DataContext';
 import { PRICING_PLANS, HOSTING_PLANS, type PricingPlan } from '../data/pricingData';
 import { api, type SubscriptionStatus, type SubscriptionProduct } from '../lib/api-client';
 import {
@@ -16,6 +17,7 @@ import {
 
 export const BillingPage: React.FC = () => {
   const { addToast } = useToast();
+  const { refreshSubscription } = useData();
   const [isYearly, setIsYearly] = useState(false);
   const [openFaq, setOpenFaq] = useState<number | null>(0);
   const [status, setStatus] = useState<SubscriptionStatus | null>(null);
@@ -82,6 +84,7 @@ export const BillingPage: React.FC = () => {
           type: 'success',
         });
         loadStatus();
+        refreshSubscription();
       } else {
         addToast({
           title: 'Could not cancel',
