@@ -26,10 +26,10 @@ export const PLAN_NAMES: Record<string, string> = {
  * The Free tier includes Orders, Customers and Bookings.
  */
 export const PAGE_MIN_PLAN: Record<string, string> = {
+  '/app/analytics': 'free', // Analytics (available on Free)
   '/app/orders': 'free', // Orders
   '/app/customers': 'free', // Customers (CRM)
   '/app/bookings': 'free', // Bookings & Appointments
-  '/app/analytics': 'starter', // Basic Analytics
   '/app/pos': 'starter', // POS
   '/app/products': 'starter', // Products
   '/app/services': 'starter', // Services
