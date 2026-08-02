@@ -74,7 +74,7 @@ export const BillingPage: React.FC = () => {
         <div>
           <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs font-bold border border-violet-400/30">
             <ShieldCheck className="w-3.5 h-3.5 text-violet-400" />
-            Active Tier: Business Plan (R49/mo)
+            Active Tier: Business Plan (R249/mo)
           </span>
           <h2 className="text-xl sm:text-2xl font-extrabold mt-3">My Business OS Pro Workspace</h2>
           <p className="text-xs sm:text-sm text-violet-200 mt-1 max-w-xl">

@@ -613,7 +613,7 @@ export const SettingsPage: React.FC = () => {
                       <span className="text-[10px] font-extrabold uppercase tracking-widest bg-white/20 px-2.5 py-1 rounded-full">Current Plan</span>
                       <h4 className="text-xl font-extrabold mt-2">Professional Business OS</h4>
                     </div>
-                    <span className="text-2xl font-black">R499 <span className="text-xs font-normal">/mo</span></span>
+                    <span className="text-2xl font-black">R549 <span className="text-xs font-normal">/mo</span></span>
                   </div>
                   <p className="text-xs text-violet-200">Next billing date: August 24, 2026</p>
                 </div>

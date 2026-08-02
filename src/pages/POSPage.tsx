@@ -26,6 +26,7 @@ import {
   TrendingUp,
   FileText,
   DollarSign,
+  Package,
 } from 'lucide-react';
 
 export const POSPage: React.FC = () => {
@@ -346,14 +347,17 @@ export const POSPage: React.FC = () => {
                     >
                       <div>
                         <div className="relative h-24 rounded-xl overflow-hidden mb-2 bg-slate-100 dark:bg-slate-800">
-                          <img
-                            src={
-                              item.imageUrl ||
-                              'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=300&auto=format&fit=crop&q=80'
-                            }
-                            alt={item.name}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                          />
+                          {item.imageUrl ? (
+                            <img
+                              src={item.imageUrl}
+                              alt={item.name}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                            />
+                          ) : (
+                            <div className="w-full h-full flex items-center justify-center">
+                              <Package className="w-8 h-8 text-slate-300 dark:text-slate-600" />
+                            </div>
+                          )}
                           <span className="absolute top-1.5 right-1.5 px-2 py-0.5 rounded-md bg-slate-900/70 backdrop-blur-xs text-[10px] font-bold text-white uppercase tracking-wider">
                             {item.isService ? 'Service' : 'Product'}
                           </span>

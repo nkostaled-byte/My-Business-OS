@@ -5,10 +5,18 @@ import { useToast } from '../context/ToastContext';
 import { Order, OrderStatus } from '../types';
 import { DataTable, Column } from '../components/common/DataTable';
 import { Modal } from '../components/common/Modal';
-import { ShoppingBag, Eye } from 'lucide-react';
+import { ShoppingBag, Eye, Plus, Trash2 } from 'lucide-react';
+
+type OrderLineItem = {
+  description: string;
+  quantity: number;
+  price: number;
+  source: 'manual' | 'product' | 'service';
+  sourceId?: string;
+};
 
 export const OrdersPage: React.FC = () => {
-  const { orders, addOrder, updateResource, refreshResource } = useData();
+  const { orders, products, services, addOrder, updateResource, refreshResource } = useData();
   const { addToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -16,23 +24,75 @@ export const OrdersPage: React.FC = () => {
   // Create Form State
   const [customerName, setCustomerName] = useState('');
   const [customerEmail, setCustomerEmail] = useState('');
-  const [totalAmount, setTotalAmount] = useState('');
   const [status, setStatus] = useState<OrderStatus>('completed');
+  const [lineItems, setLineItems] = useState<OrderLineItem[]>([
+    { description: '', quantity: 1, price: 0, source: 'manual' },
+  ]);
+
+  const subtotal = lineItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
+  const itemCount = lineItems.reduce((sum, item) => sum + item.quantity, 0);
+
+  const addLineItem = () => {
+    setLineItems([...lineItems, { description: '', quantity: 1, price: 0, source: 'manual' }]);
+  };
+
+  const removeLineItem = (idx: number) => {
+    if (lineItems.length <= 1) return;
+    setLineItems(lineItems.filter((_, i) => i !== idx));
+  };
+
+  const updateLineItem = (idx: number, field: 'description' | 'quantity' | 'price', value: string | number) => {
+    const updated = [...lineItems];
+    (updated[idx] as any)[field] = value;
+    setLineItems(updated);
+  };
+
+  const pickCatalogItem = (idx: number, itemId: string) => {
+    if (!itemId) return;
+    const product = products.find((p) => p.id === itemId);
+    if (product) {
+      const updated = [...lineItems];
+      updated[idx] = { description: product.name, quantity: 1, price: product.price, source: 'product', sourceId: product.id };
+      setLineItems(updated);
+      return;
+    }
+    const svc = services.find((s) => s.id === itemId);
+    if (svc) {
+      const updated = [...lineItems];
+      updated[idx] = { description: svc.name, quantity: 1, price: svc.price, source: 'service', sourceId: svc.id };
+      setLineItems(updated);
+    }
+  };
+
+  const resetForm = () => {
+    setCustomerName('');
+    setCustomerEmail('');
+    setStatus('completed');
+    setLineItems([{ description: '', quantity: 1, price: 0, source: 'manual' }]);
+  };
 
   const handleCreateOrder = (e: React.FormEvent) => {
     e.preventDefault();
+    const validItems = lineItems.filter((item) => item.description.trim() && item.quantity > 0);
+    if (validItems.length === 0) {
+      addToast({ title: 'Validation Error', message: 'Add at least one item with a name and quantity.', type: 'error' });
+      return;
+    }
     addOrder({
       customerName,
       customerEmail,
-      totalAmount: parseFloat(totalAmount) || 0,
+      totalAmount: subtotal,
       status,
-      itemsCount: 1,
+      itemsCount: validItems.reduce((a, b) => a + b.quantity, 0),
+      items: validItems.map((item) => ({
+        name: item.description,
+        quantity: item.quantity,
+        price: item.price,
+      })),
     });
-    addToast({ title: 'Order Created', message: `Order for ${customerName} (R${totalAmount}) has been registered.`, type: 'success' });
+    addToast({ title: 'Order Created', message: `Order for ${customerName} (R${subtotal.toFixed(2)}) has been registered.`, type: 'success' });
     setIsModalOpen(false);
-    setCustomerName('');
-    setCustomerEmail('');
-    setTotalAmount('');
+    resetForm();
   };
 
   const handleStatusChange = async (order: Order, newStatus: OrderStatus) => {
@@ -155,10 +215,90 @@ export const OrdersPage: React.FC = () => {
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Customer Email</label>
             <input type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} placeholder="e.g. sipho@example.com" className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100" />
           </div>
+
           <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Total Amount (ZAR)</label>
-            <input type="number" required step="0.01" value={totalAmount} onChange={(e) => setTotalAmount(e.target.value)} placeholder="e.g. 1250" className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100" />
+            <div className="flex items-center justify-between mb-1">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">Items</label>
+              <button type="button" onClick={addLineItem} className="inline-flex items-center gap-1 text-xs font-bold text-violet-600 dark:text-violet-400 hover:underline cursor-pointer">
+                <Plus className="w-3.5 h-3.5" /> Add item
+              </button>
+            </div>
+            <div className="space-y-3">
+              {lineItems.map((item, idx) => (
+                <div key={idx} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={item.sourceId || ''}
+                      onChange={(e) => pickCatalogItem(idx, e.target.value)}
+                      className="flex-1 px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                    >
+                      <option value="">Select product or service…</option>
+                      {products.length > 0 && (
+                        <optgroup label="Products">
+                          {products.map((p) => (
+                            <option key={p.id} value={p.id}>{p.name} — R{p.price}</option>
+                          ))}
+                        </optgroup>
+                      )}
+                      {services.length > 0 && (
+                        <optgroup label="Services">
+                          {services.map((s) => (
+                            <option key={s.id} value={s.id}>{s.name} — R{s.price}</option>
+                          ))}
+                        </optgroup>
+                      )}
+                    </select>
+                    <button
+                      type="button"
+                      onClick={() => removeLineItem(idx)}
+                      className="p-2 rounded-lg text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/40 transition-colors cursor-pointer"
+                      title="Remove item"
+                    >
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                  <div className="grid grid-cols-3 gap-2">
+                    <div className="col-span-1">
+                      <input
+                        type="text"
+                        value={item.description}
+                        onChange={(e) => updateLineItem(idx, 'description', e.target.value)}
+                        placeholder="Item name"
+                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="number"
+                        min="1"
+                        value={item.quantity}
+                        onChange={(e) => updateLineItem(idx, 'quantity', parseInt(e.target.value) || 0)}
+                        placeholder="Qty"
+                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                      />
+                    </div>
+                    <div>
+                      <input
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        value={item.price}
+                        onChange={(e) => updateLineItem(idx, 'price', parseFloat(e.target.value) || 0)}
+                        placeholder="Price"
+                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                      />
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
+
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-xs text-slate-500 dark:text-slate-400">{itemCount} {itemCount === 1 ? 'item' : 'items'}</span>
+            <span className="font-extrabold text-slate-900 dark:text-slate-100">R{subtotal.toFixed(2)}</span>
+          </div>
+
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Status</label>
             <select value={status} onChange={(e) => setStatus(e.target.value as OrderStatus)} className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100">

@@ -1,10 +1,9 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { PRICING_PLANS } from '../data/pricingData';
 import {
   ArrowRight,
-  Play,
   CheckCircle2,
   Star,
   ShoppingBag,
@@ -21,7 +20,6 @@ import { useTheme } from '../context/ThemeContext';
 import { Sun, Moon } from 'lucide-react';
 
 export const MarketingPage: React.FC = () => {
-  const navigate = useNavigate();
   const { theme, toggleTheme } = useTheme();
   const { businessName, businessLogo } = useData();
 
@@ -59,14 +57,6 @@ export const MarketingPage: React.FC = () => {
                   <span>Start Free Trial</span>
                   <ArrowRight className="w-4 h-4" />
                 </NavLink>
-
-                <button
-                  onClick={() => navigate('/app')}
-                  className="inline-flex items-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-xs cursor-pointer transition-all"
-                >
-                  <Play className="w-4 h-4 fill-current text-violet-600" />
-                  <span>Watch Demo</span>
-                </button>
               </div>
 
               {/* Reassurance Checkmarks */}

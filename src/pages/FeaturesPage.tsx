@@ -9,7 +9,6 @@ import {
   Users,
   Receipt,
   UserCheck,
-  Globe,
   BarChart3,
   ArrowRight,
 } from 'lucide-react';
@@ -58,11 +57,6 @@ export const FeaturesPage: React.FC = () => {
       desc: 'Manage team members with roles and specialties, and invite staff with role-based dashboard access and clear permission limits.',
     },
     {
-      icon: Globe,
-      title: 'Website, Gallery, Reviews & Forms',
-      desc: 'Your website is built and linked to your dashboard, where you manage a photo gallery, client reviews, and form enquiries.',
-    },
-    {
       icon: BarChart3,
       title: 'Analytics & Reports',
       desc: 'Track revenue, orders, bookings, and customers at a glance, with trend charts, top products, and exportable reports.',
@@ -85,7 +79,7 @@ export const FeaturesPage: React.FC = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {features.map((feat, idx) => (
           <motion.div
             key={idx}

@@ -16,7 +16,7 @@ export const ResourcesPage: React.FC = () => {
     },
     {
       type: 'Documentation',
-      title: 'Setting up custom PDF invoice templates & automatic tax receipts',
+      title: 'Setting up custom PDF invoice templates',
       desc: 'Step-by-step tutorial on customizing invoice designs and currency.',
     },
   ];

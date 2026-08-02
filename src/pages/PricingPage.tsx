@@ -66,8 +66,8 @@ export const PricingPage: React.FC = () => {
     },
     {
       icon: Headphones,
-      title: '24/7 Support',
-      desc: "We're here to help you succeed, every step of the way.",
+      title: 'Friendly Support',
+      desc: "Our team is here to help when you need it.",
     },
   ];
 

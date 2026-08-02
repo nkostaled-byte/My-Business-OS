@@ -45,7 +45,7 @@ export const ContactPage: React.FC = () => {
     {
       icon: HelpCircle,
       title: 'Customer Support',
-      desc: 'Need technical assistance with your website, orders, or POS? We are here 24/7.',
+      desc: 'Need technical assistance with your website, orders, or POS? Reach out to our support team.',
       contact: 'support@mygrafixmedia.co.za'
     },
     {
