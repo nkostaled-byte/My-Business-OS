@@ -11,15 +11,16 @@ import { LeadPipeline } from '../components/leads/LeadPipeline';
 import { LeadAuditCenter } from '../components/leads/LeadAuditCenter';
 import { LeadForm } from '../components/leads/LeadForm';
 import { LeadDetailView } from '../components/leads/LeadDetailView';
-import { ScoreBadge, PriorityPill, StatusPill } from '../components/leads/LeadBase';
+import { LeadBusinessFinder } from '../components/leads/LeadBusinessFinder';
+import { ScoreBadge, PriorityPill, StatusPill, GooglePlaceBadge } from '../components/leads/LeadBase';
 import { EmptyState } from '../components/common/EmptyState';
 import {
   Sparkles, LayoutGrid, Database, Users, ArrowDownToLine, Search, Globe, Trash2,
-  BarChart3, PieChart, CircleDollarSign, Trophy, Plus,
+  BarChart3, PieChart, CircleDollarSign, Trophy, Plus, Compass,
 } from 'lucide-react';
 import type { Lead, LeadPipeline as PipelineData, LeadStatus } from '../types';
 
-type Tab = 'pipeline' | 'table' | 'overview';
+type Tab = 'pipeline' | 'table' | 'find' | 'overview';
 
 const STATUSES: LeadStatus[] = ['new', 'contacted', 'qualified', 'proposal', 'won', 'lost'];
 const STATUS_BAR: Record<LeadStatus, string> = {
@@ -43,6 +44,7 @@ export const LeadsPage: React.FC = () => {
   const [tab, setTab] = useState<Tab>('pipeline');
 
   const [auditOpen, setAuditOpen] = useState(false);
+  const [auditInitialUrl, setAuditInitialUrl] = useState('');
   const [createOpen, setCreateOpen] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
@@ -122,7 +124,7 @@ export const LeadsPage: React.FC = () => {
           <motion.button
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
-            onClick={() => setAuditOpen(true)}
+            onClick={() => { setAuditInitialUrl(''); setAuditOpen(true); }}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 cursor-pointer"
           >
             <Sparkles className="w-4 h-4" /> New Audit
@@ -159,6 +161,7 @@ export const LeadsPage: React.FC = () => {
         {([
           ['pipeline', 'Pipeline', LayoutGrid],
           ['table', 'Table', Database],
+          ['find', 'Find', Compass],
           ['overview', 'Overview', BarChartIcon],
         ] as [Tab, string, React.ComponentType<{ className?: string }>][]).map(([key, label, Icon]) => (
           <button key={key} onClick={() => setTab(key)} className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${tab === key ? 'bg-white dark:bg-slate-800 text-violet-600 dark:text-violet-400 shadow-xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>
@@ -178,10 +181,17 @@ export const LeadsPage: React.FC = () => {
 
       {tab === 'table' && <LeadsTable leads={leads} loading={loading} onSelect={setDetailId} onRefresh={loadAll} stageColor={stageColor} />}
 
+      {tab === 'find' && (
+        <LeadBusinessFinder
+          onOpenAudit={(website) => { setAuditInitialUrl(website); setAuditOpen(true); }}
+          onLeadSaved={loadAll}
+        />
+      )}
+
       {tab === 'overview' && <OverviewTab leads={leads} totals={totals} />}
 
       {/* Modals */}
-      <LeadAuditCenter isOpen={auditOpen} onClose={() => setAuditOpen(false)} onLeadSaved={() => { loadAll(); }} />
+      <LeadAuditCenter isOpen={auditOpen} onClose={() => setAuditOpen(false)} onLeadSaved={() => { loadAll(); }} initialUrl={auditInitialUrl} />
       <LeadForm isOpen={createOpen} onClose={() => setCreateOpen(false)} onSaved={() => { loadAll(); success('Lead created'); }} />
       <LeadDetailView leadId={detailId} onClose={() => setDetailId(null)} onUpdated={loadAll} />
     </div>
@@ -271,7 +281,7 @@ const LeadsTable: React.FC<{ leads: Lead[]; loading: boolean; onSelect: (id: str
               {filtered.map((l, i) => (
                 <motion.tr key={l.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15, delay: Math.min(i, 20) * 0.02 }} onClick={() => onSelect(l.id)} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors cursor-pointer">
                   <td className="py-3.5 px-4 sm:px-6">
-                    <div className="font-bold text-slate-900 dark:text-slate-100">{l.leadName}</div>
+                    <div className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">{l.leadName}<GooglePlaceBadge lead={l} /></div>
                     <div className="text-[11px] text-slate-400 flex items-center gap-1"><Globe className="w-3 h-3" />{l.domain || l.website || '—'}</div>
                   </td>
                   <td className="py-3.5 px-4"><StatusPill status={l.status} /></td>

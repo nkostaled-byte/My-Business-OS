@@ -9,10 +9,10 @@ import { Modal } from '../common/Modal';
 import { useToast } from '../../context/ToastContext';
 import { leadsApi, formatDateTime } from '../../lib/leads-api';
 import { EmptyState } from '../common/EmptyState';
-import { ScoreBadge, StatusPill, PriorityPill, OpportunityBadge, STATUS_LABEL, getInitials } from './LeadBase';
+import { ScoreBadge, StatusPill, PriorityPill, OpportunityBadge, STATUS_LABEL, getInitials, GooglePlaceBadge, getPlacesMeta } from './LeadBase';
 import {
   Globe, Mail, Phone, Target, MessageSquare, CheckSquare, Bell, FileText,
-  ClipboardCheck, Sparkles, AlertTriangle, TrendingUp, Check,
+  ClipboardCheck, Sparkles, AlertTriangle, TrendingUp, Check, Tag, Star, MapPin,
 } from 'lucide-react';
 import type { Lead, LeadPriority, LeadStatus, ScoreDeduction } from '../../types';
 
@@ -133,6 +133,7 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
                 <PriorityPill priority={lead.priority} />
                 <OpportunityBadge level={lead.opportunityLevel} />
                 <ScoreBadge score={lead.score} />
+                <GooglePlaceBadge lead={lead} />
               </div>
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500 dark:text-slate-400">
                 <span className="inline-flex items-center gap-1"><Globe className="w-3 h-3" />{lead.domain || lead.website || '—'}</span>
@@ -201,6 +202,20 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
                   </div>
                 ))}
               </div>
+              {(() => {
+                const p = getPlacesMeta(lead);
+                if (!p.placeId) return null;
+                return (
+                  <div className="mt-3 p-3 rounded-xl bg-violet-50 dark:bg-violet-950/40 border border-violet-100 dark:border-violet-900/60">
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-violet-500 dark:text-violet-400 block mb-1.5">Google Places</span>
+                    <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-700 dark:text-slate-200">
+                      {p.category && <span className="inline-flex items-center gap-1"><Tag className="w-3 h-3 text-violet-500" />{p.category}</span>}
+                      {p.rating != null && <span className="inline-flex items-center gap-1"><Star className="w-3 h-3 text-amber-500 fill-amber-500" />{p.rating.toFixed(1)}{(p.ratingCount ?? 0) > 0 && <span className="text-slate-400">({p.ratingCount} reviews)</span>}</span>}
+                      {p.lat != null && p.lng != null && <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3 text-violet-500" />{p.lat.toFixed(4)}, {p.lng.toFixed(4)}</span>}
+                    </div>
+                  </div>
+                );
+              })()}
               {lead.notes && (
                 <div className="mt-3 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700">
                   <span className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 block mb-1">Notes</span>

@@ -74,6 +74,7 @@ export const API = {
     followupById: (id: string, followId: string) => `/api/leads/${id}/followups/${followId}`,
     scan: '/api/leads/scan',
     audit: '/api/leads/audit',
+    findBusinesses: '/api/leads/find-businesses',
     searchBusinesses: '/api/leads/search/businesses',
     bulk: '/api/leads/bulk',
     export: '/api/leads/export',

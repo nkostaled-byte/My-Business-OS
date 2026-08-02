@@ -404,3 +404,17 @@ export interface AuditFullResponse {
   score: ScoreResult;
   ai: AiBrief;
 }
+
+export interface PlaceBusiness {
+  placeId: string;
+  name: string;
+  address: string;
+  phone?: string | null;
+  website?: string | null;
+  rating?: number | null;
+  ratingCount?: number | null;
+  category?: string | null;
+  types?: string[];
+  latitude?: number | null;
+  longitude?: number | null;
+}

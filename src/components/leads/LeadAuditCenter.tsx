@@ -3,7 +3,7 @@
  * recommended services and an AI sales brief, then lets the user save the
  * business as a lead (carrying the audit over).
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Modal } from '../common/Modal';
 import { useToast } from '../../context/ToastContext';
@@ -17,18 +17,24 @@ interface Props {
   isOpen: boolean;
   onClose: () => void;
   onLeadSaved: (lead: Lead) => void;
+  /** Prefill the audit URL field (e.g. from Google Places). */
+  initialUrl?: string;
 }
 
 const inputCls =
   'w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all';
 
-export const LeadAuditCenter: React.FC<Props> = ({ isOpen, onClose, onLeadSaved }) => {
+export const LeadAuditCenter: React.FC<Props> = ({ isOpen, onClose, onLeadSaved, initialUrl }) => {
   const { error } = useToast();
   const [url, setUrl] = useState('');
   const [businessName, setBusinessName] = useState('');
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<AuditFullResponse | null>(null);
   const [showLeadForm, setShowLeadForm] = useState(false);
+
+  useEffect(() => {
+    if (isOpen && initialUrl && !url) setUrl(initialUrl);
+  }, [isOpen, initialUrl, url]);
 
   const reset = () => {
     setResult(null);

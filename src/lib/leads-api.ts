@@ -24,6 +24,7 @@ import type {
   AuditFullResponse,
   LeadPriority,
   LeadStatus,
+  PlaceBusiness,
 } from '../types';
 
 export interface LeadListParams {
@@ -226,6 +227,12 @@ export const leadsApi = {
   async searchBusinesses(query: string): Promise<BusinessCandidate[]> {
     const res = await api.get<{ candidates?: BusinessCandidate[] }>(API.leads.searchBusinesses, { params: { q: query } });
     return (res.success && res.data?.candidates) ? res.data.candidates : [];
+  },
+
+  // ── Find businesses (Google Places) ─────────────────────────────
+  async findBusinesses(params?: { q?: string; location?: string; limit?: number }): Promise<PlaceBusiness[]> {
+    const res = await api.get<PlaceBusiness[]>(API.leads.findBusinesses, { params: params as Record<string, string> | undefined });
+    return res.success && res.data ? res.data : [];
   },
 
   // ── Bulk ─────────────────────────────────────────────────────────
