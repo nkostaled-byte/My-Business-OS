@@ -26,6 +26,7 @@ export const PLAN_NAMES: Record<string, string> = {
  * The Free tier includes Orders, Customers and Bookings.
  */
 export const PAGE_MIN_PLAN: Record<string, string> = {
+  '/app': 'free', // Overview
   '/app/analytics': 'free', // Analytics (available on Free)
   '/app/orders': 'free', // Orders
   '/app/customers': 'free', // Customers (CRM)
@@ -40,7 +41,8 @@ export const PAGE_MIN_PLAN: Record<string, string> = {
   '/app/reviews': 'business',
   '/app/website': 'business', // Website Manager
   '/app/invoices': 'business', // Invoices & PDFs
-  // Overview, Billing and Settings stay open to every plan
+  '/app/billing': 'free', // Billing
+  '/app/settings': 'free', // Settings
 };
 
 export function getPlanTier(plan: string | null | undefined): number {

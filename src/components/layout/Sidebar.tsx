@@ -64,6 +64,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
   navItems.forEach((item) => {
     // Hide admin/settings areas from staff
     if (role === 'staff' && STAFF_RESTRICTED_PATHS.includes(item.path)) return;
+    // Overview, Billing and Settings must always be reachable (the subscribe path)
+    if (['/app', '/app/billing', '/app/settings'].includes(item.path)) {
+      visibleNav.push(item);
+      return;
+    }
     // Features above the current plan stay visible but are locked behind an upgrade prompt
     if (getPlanTier(getPageMinPlan(item.path)) > planTier) {
       lockedNav.push(item);

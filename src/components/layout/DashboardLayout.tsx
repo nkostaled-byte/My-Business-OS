@@ -19,9 +19,13 @@ export const DashboardLayout: React.FC<{ role?: 'owner' | 'admin' | 'staff' | nu
     return <Navigate to="/app" replace />;
   }
 
+  // Pages that must ALWAYS be accessible (so users can always reach Billing
+  // to subscribe, Settings to manage the account, and the Overview dashboard).
+  const ALWAYS_OPEN = ['/app', '/app/billing', '/app/settings'];
+
   // Feature locked by subscription plan — show upgrade prompt instead
   const requiredPlan = getPageMinPlan(location.pathname);
-  const locked = getPlanTier(requiredPlan) > planTier;
+  const locked = !ALWAYS_OPEN.includes(location.pathname) && getPlanTier(requiredPlan) > planTier;
   const content = locked ? <UpgradeRequired requiredPlan={requiredPlan} /> : <Outlet />;
 
   return (
