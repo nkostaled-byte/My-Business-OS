@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { CheckCircle2, XCircle, Loader2, CreditCard } from 'lucide-react';
-import { api } from '../lib/api-client';
+import { api, type SubscriptionProduct } from '../lib/api-client';
 
 type CallbackState =
   | { status: 'loading' }
-  | { status: 'success'; plan: string; planName: string }
+  | { status: 'success'; product: SubscriptionProduct; plan: string; planName: string }
   | { status: 'error'; error: string };
 
 export const PaystackCallbackPage: React.FC = () => {
@@ -25,7 +25,12 @@ export const PaystackCallbackPage: React.FC = () => {
 
     api.verifyPayment(reference).then((res) => {
       if (res.success && res.data) {
-        setState({ status: 'success', plan: res.data.plan, planName: res.data.plan_name });
+        setState({
+          status: 'success',
+          product: res.data.product || 'os',
+          plan: res.data.plan,
+          planName: res.data.plan_name,
+        });
       } else {
         setState({ status: 'error', error: res.error || 'Could not verify payment.' });
       }
@@ -58,8 +63,18 @@ export const PaystackCallbackPage: React.FC = () => {
               Payment successful!
             </h1>
             <p className="text-sm text-slate-500 dark:text-slate-400 mt-2">
-              Your workspace is now on the{' '}
-              <span className="font-bold text-slate-900 dark:text-white">{state.planName}</span> plan.
+              {state.product === 'hosting' ? (
+                <>
+                  Your{' '}
+                  <span className="font-bold text-slate-900 dark:text-white">{state.planName}</span>{' '}
+                  subscription is now active.
+                </>
+              ) : (
+                <>
+                  Your workspace is now on the{' '}
+                  <span className="font-bold text-slate-900 dark:text-white">{state.planName}</span> plan.
+                </>
+              )}
             </p>
             <button
               type="button"

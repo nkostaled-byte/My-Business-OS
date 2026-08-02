@@ -90,6 +90,40 @@ export const PRICING_PLANS: PricingPlan[] = [
   },
 ];
 
+export const HOSTING_PLANS: PricingPlan[] = [
+  {
+    id: 'hosting-basic',
+    name: 'Basic Hosting',
+    tagline: 'For single websites & personal sites',
+    monthlyPrice: 99,
+    yearlyPrice: 79,
+    monthlyBillingText: 'Billed monthly',
+    yearlyBillingText: 'R948 billed annually',
+    features: ['1 Website', '20GB SSD Storage', 'Free SSL Certificate', 'Business Email', 'Basic Support'],
+    includedFromPrevious: '',
+  },
+  {
+    id: 'hosting-pro',
+    name: 'Pro Hosting',
+    tagline: 'For growing sites with higher traffic',
+    monthlyPrice: 199,
+    yearlyPrice: 159,
+    monthlyBillingText: 'Billed monthly',
+    yearlyBillingText: 'R1,908 billed annually',
+    badge: 'Most Popular',
+    isPopular: true,
+    features: [
+      'Unlimited Websites',
+      '100GB SSD Storage',
+      'Free SSL Certificates',
+      'Business Email',
+      'Daily Backups',
+      'Priority Support',
+    ],
+    includedFromPrevious: 'Everything in Basic +',
+  },
+];
+
 export async function fetchPricingPlans(): Promise<PricingPlan[]> {
   try {
     const res = await api.getPlans();

@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useToast } from '../context/ToastContext';
-import { PRICING_PLANS, type PricingPlan } from '../data/pricingData';
-import { api, type SubscriptionStatus } from '../lib/api-client';
+import { PRICING_PLANS, HOSTING_PLANS, type PricingPlan } from '../data/pricingData';
+import { api, type SubscriptionStatus, type SubscriptionProduct } from '../lib/api-client';
 import {
   Check,
   Minus,
@@ -11,6 +11,7 @@ import {
   Loader2,
   CreditCard,
   RefreshCw,
+  Globe,
 } from 'lucide-react';
 
 export const BillingPage: React.FC = () => {
@@ -41,10 +42,10 @@ export const BillingPage: React.FC = () => {
     loadStatus();
   }, [loadStatus]);
 
-  const handleCheckout = async (plan: PricingPlan) => {
+  const handleCheckout = async (plan: PricingPlan, product: SubscriptionProduct = 'os') => {
     setCheckoutLoading(plan.id);
     try {
-      const res = await api.createCheckout(plan.id, isYearly ? 'yearly' : 'monthly');
+      const res = await api.createCheckout(plan.id, isYearly ? 'yearly' : 'monthly', product);
       if (res.success && res.data?.authorization_url) {
         window.location.href = res.data.authorization_url;
       } else {
@@ -59,19 +60,25 @@ export const BillingPage: React.FC = () => {
     }
   };
 
-  const handleCancel = async () => {
-    const confirmed = window.confirm(
-      'Cancel your subscription? You will be downgraded to the Starter plan and automatic renewals will stop.'
-    );
+  const handleCancel = async (product: SubscriptionProduct = 'os') => {
+    const label = product === 'hosting' ? 'your hosting subscription' : 'your Business OS subscription';
+    const downgradeNote =
+      product === 'hosting'
+        ? ' Your hosted site will be suspended after the billing period ends.'
+        : ' You will be downgraded to the Starter plan and automatic renewals will stop.';
+    const confirmed = window.confirm(`Cancel ${label}?${downgradeNote}`);
     if (!confirmed) return;
 
     setCancelLoading(true);
     try {
-      const res = await api.cancelSubscription();
+      const res = await api.cancelSubscription(product);
       if (res.success) {
         addToast({
-          title: 'Subscription cancelled',
-          message: 'Your workspace is now on the Starter plan.',
+          title: product === 'hosting' ? 'Hosting subscription cancelled' : 'Subscription cancelled',
+          message:
+            product === 'hosting'
+              ? 'Your hosting subscription has been cancelled.'
+              : 'Your workspace is now on the Starter plan.',
           type: 'success',
         });
         loadStatus();
@@ -89,6 +96,8 @@ export const BillingPage: React.FC = () => {
 
   const currentPlan = status?.plan || 'starter';
   const currentPlanName = status?.plan_name || 'Starter';
+  const hostingCurrentPlan = status?.hosting_plan || null;
+  const hostingCurrentName = status?.hosting_plan_name || 'Hosting';
 
   const faqData = [
     {
@@ -361,6 +370,143 @@ export const BillingPage: React.FC = () => {
             </motion.div>
           );
         })}
+      </div>
+
+      {/* Web Hosting Section */}
+      <div className="space-y-8">
+        <div className="text-center space-y-4 max-w-3xl mx-auto">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 text-xs font-bold shadow-xs">
+            <Globe className="w-3.5 h-3.5" />
+            <span>Web hosting plans</span>
+          </div>
+
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
+            Host your website with us
+          </h2>
+
+          <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Separate from your Business OS subscription. Choose a hosting tier for your live website — each with its own billing and renewal.
+          </p>
+        </div>
+
+        {/* Hosting status line */}
+        <div className="max-w-3xl mx-auto">
+          {status?.hosting_subscription_active ? (
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50/60 dark:bg-emerald-950/30 px-5 py-4">
+              <div className="flex items-center gap-3">
+                <Globe className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <p className="text-xs text-emerald-800 dark:text-emerald-200">
+                  <span className="font-bold">{hostingCurrentName}</span> hosting is active and renews automatically on{' '}
+                  {status.hosting_expires_at
+                    ? new Date(status.hosting_expires_at).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })
+                    : 'the next billing cycle'}
+                  .
+                </p>
+              </div>
+              <button
+                type="button"
+                disabled={cancelLoading}
+                onClick={() => handleCancel('hosting')}
+                className="px-4 py-2 rounded-xl text-[11px] font-bold text-emerald-800 dark:text-emerald-200 border border-emerald-300 dark:border-emerald-700 hover:bg-emerald-100 dark:hover:bg-emerald-950/40 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-wait shrink-0"
+              >
+                {cancelLoading ? 'Cancelling…' : 'Cancel Hosting'}
+              </button>
+            </div>
+          ) : (
+            <p className="text-center text-xs text-slate-500 dark:text-slate-400">
+              You don't have an active hosting subscription yet. Pick a tier below to get started.
+            </p>
+          )}
+        </div>
+
+        {/* Hosting plan cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-6 max-w-3xl mx-auto items-stretch">
+          {HOSTING_PLANS.map((plan) => {
+            const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
+            const billingText = isYearly ? plan.yearlyBillingText : plan.monthlyBillingText;
+            const isCurrent = plan.id === hostingCurrentPlan;
+
+            return (
+              <motion.div
+                key={plan.id}
+                whileHover={{ y: -4 }}
+                className={`rounded-[28px] p-6 border flex flex-col justify-between transition-all relative ${
+                  plan.isPopular
+                    ? 'border-2 border-emerald-500 bg-white dark:bg-slate-900 shadow-2xl shadow-emerald-500/10'
+                    : 'border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-lg'
+                }`}
+              >
+                {plan.badge && (
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-[10px] font-extrabold uppercase tracking-wider shadow-md">
+                    {plan.badge}
+                  </div>
+                )}
+
+                <div>
+                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
+                    {plan.name}
+                  </h3>
+                  <p className="text-xs text-slate-500 dark:text-slate-400 font-medium mt-0.5">
+                    {plan.tagline}
+                  </p>
+
+                  <div className="my-4">
+                    <div className="flex items-baseline gap-1">
+                      <span className="text-3xl font-extrabold text-slate-900 dark:text-slate-100">R{price}</span>
+                      <span className="text-slate-500 text-xs">/month</span>
+                    </div>
+                    <p className="text-[10px] text-slate-400 mt-0.5">{billingText}</p>
+                  </div>
+
+                  <div className="w-full h-px bg-slate-100 dark:bg-slate-800 my-4" />
+
+                  <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300 font-medium mb-6">
+                    {plan.features.map((feat, i) => (
+                      <li key={i} className="flex items-center gap-2">
+                        <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                        <span>{feat}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  {isCurrent && status?.hosting_subscription_active ? (
+                    <button
+                      type="button"
+                      disabled
+                      className="w-full py-3 rounded-xl text-xs font-bold text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 cursor-default"
+                    >
+                      Active Plan
+                    </button>
+                  ) : isCurrent ? (
+                    <button
+                      type="button"
+                      disabled={checkoutLoading !== null}
+                      onClick={() => handleCheckout(plan, 'hosting')}
+                      className="w-full py-3 rounded-xl text-xs font-bold text-emerald-600 dark:text-emerald-400 border-2 border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+                    >
+                      {checkoutLoading === plan.id ? 'Starting…' : 'Reactivate Hosting'}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={checkoutLoading !== null}
+                      onClick={() => handleCheckout(plan, 'hosting')}
+                      className={`w-full py-3 rounded-xl text-xs font-bold transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
+                        plan.isPopular
+                          ? 'text-white bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500'
+                          : 'text-emerald-600 dark:text-emerald-400 border-2 border-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-950/40'
+                      }`}
+                    >
+                      {checkoutLoading === plan.id ? 'Starting…' : `Get ${plan.name}`}
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
       </div>
 
       {/* Payment note */}

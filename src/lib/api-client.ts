@@ -95,12 +95,27 @@ export interface SubscriptionStatus {
   subscription_active: boolean;
   has_subscription: boolean;
   customer_code: string | null;
+  hosting_plan: string | null;
+  hosting_plan_name: string | null;
+  hosting_started_at: string | null;
+  hosting_expires_at: string | null;
+  hosting_subscription_active: boolean;
+  hosting_has_subscription: boolean;
 }
 
+export type SubscriptionProduct = 'os' | 'hosting';
+
 export interface CheckoutResult {
+  product?: SubscriptionProduct;
   authorization_url: string;
   reference: string;
   access_code?: string;
+}
+
+export interface VerifyResult {
+  product?: SubscriptionProduct;
+  plan: string;
+  plan_name: string;
 }
 
 type RequestOptions = Omit<RequestInit, 'body'> & {
@@ -435,26 +450,35 @@ export const api = {
   },
 
   /**
+   * Fetch the web hosting plan catalog (public endpoint)
+   * GET /api/pricing/hosting
+   */
+  async getHostingPlans(): Promise<ApiResponse<PlanInfo[]>> {
+    return this.get<PlanInfo[]>('/api/pricing/hosting');
+  },
+
+  /**
    * Start a Paystack subscription checkout for a plan
    * POST /api/paystack/checkout
    */
   async createCheckout(
     planId: string,
-    billing: 'monthly' | 'yearly' = 'monthly'
+    billing: 'monthly' | 'yearly' = 'monthly',
+    product: SubscriptionProduct = 'os'
   ): Promise<ApiResponse<CheckoutResult>> {
-    return this.post<CheckoutResult>('/api/paystack/checkout', { plan: planId, billing });
+    return this.post<CheckoutResult>('/api/paystack/checkout', { plan: planId, billing, product });
   },
 
   /**
    * Verify a Paystack transaction and activate the plan
    * GET /api/paystack/verify?reference=...
    */
-  async verifyPayment(reference: string): Promise<ApiResponse<{ plan: string; plan_name: string }>> {
-    return this.get('/api/paystack/verify', { params: { reference } });
+  async verifyPayment(reference: string): Promise<ApiResponse<VerifyResult>> {
+    return this.get<VerifyResult>('/api/paystack/verify', { params: { reference } });
   },
 
   /**
-   * Get the workspace's current subscription status
+   * Get the workspace's current subscription status (OS + hosting)
    * GET /api/paystack/status
    */
   async getSubscriptionStatus(): Promise<ApiResponse<SubscriptionStatus>> {
@@ -462,11 +486,13 @@ export const api = {
   },
 
   /**
-   * Cancel the active subscription (downgrades to Starter)
+   * Cancel a product subscription (default: OS plan, which downgrades to Starter)
    * POST /api/paystack/cancel
    */
-  async cancelSubscription(): Promise<ApiResponse<{ plan: string; subscription_active: boolean }>> {
-    return this.post('/api/paystack/cancel', {});
+  async cancelSubscription(
+    product: SubscriptionProduct = 'os'
+  ): Promise<ApiResponse<{ plan?: string; subscription_active?: boolean; hosting_plan?: string | null }>> {
+    return this.post('/api/paystack/cancel', { product });
   },
 };
 
