@@ -99,7 +99,7 @@ export const HOSTING_PLANS: PricingPlan[] = [
     yearlyPrice: 79,
     monthlyBillingText: 'Billed monthly',
     yearlyBillingText: 'R948 billed annually',
-    features: ['1 Website', '20GB SSD Storage', 'Free SSL Certificate', 'Business Email', 'Basic Support'],
+    features: ['1 Website', 'Unlimited file storage', 'Free SSL Certificate', 'Business Email', 'Basic Support'],
     includedFromPrevious: '',
   },
   {
@@ -114,7 +114,7 @@ export const HOSTING_PLANS: PricingPlan[] = [
     isPopular: true,
     features: [
       'Unlimited Websites',
-      '100GB SSD Storage',
+      'Unlimited file storage',
       'Free SSL Certificates',
       'Business Email',
       'Daily Backups',

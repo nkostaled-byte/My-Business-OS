@@ -212,7 +212,7 @@ export const BillingPage: React.FC = () => {
             >
               <span className="inline-flex items-center gap-1.5">
                 <RefreshCw className="w-3.5 h-3.5" />
-                Reactivate Plan
+                {status?.has_subscription ? 'Reactivate Plan' : 'Choose a Plan'}
               </span>
             </button>
           )}

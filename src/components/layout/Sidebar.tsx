@@ -1,5 +1,5 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useData } from '../../context/DataContext';
 import { getPageMinPlan, getPlanTier, PLAN_NAMES } from '../../config/plans';
@@ -21,6 +21,7 @@ import {
   Settings,
   Calculator,
   Globe,
+  Lock,
   X,
 } from 'lucide-react';
 
@@ -55,12 +56,28 @@ export const navItems = [
 
 export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, role }) => {
   const { businessName, businessLogo, plan, planTier } = useData();
-  const visibleNav = navItems.filter((item) => {
+  const [upgradePlan, setUpgradePlan] = useState<string | null>(null);
+
+  // Items that are hidden entirely (role-based) vs. visible-but-locked (plan-based).
+  const visibleNav: typeof navItems = [];
+  const lockedNav: typeof navItems = [];
+  navItems.forEach((item) => {
     // Hide admin/settings areas from staff
-    if (role === 'staff' && STAFF_RESTRICTED_PATHS.includes(item.path)) return false;
-    // Hide features not included in the current subscription plan
-    return getPlanTier(getPageMinPlan(item.path)) <= planTier;
+    if (role === 'staff' && STAFF_RESTRICTED_PATHS.includes(item.path)) return;
+    // Features above the current plan stay visible but are locked behind an upgrade prompt
+    if (getPlanTier(getPageMinPlan(item.path)) > planTier) {
+      lockedNav.push(item);
+      return;
+    }
+    visibleNav.push(item);
   });
+
+  const openUpgrade = (item: (typeof navItems)[number]) => {
+    setUpgradePlan(getPageMinPlan(item.path));
+    onCloseMobile();
+  };
+
+  const upgradeRequiredName = upgradePlan ? PLAN_NAMES[upgradePlan] || upgradePlan : '';
 
   return (
     <>
@@ -142,6 +159,31 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
               </NavLink>
             );
           })}
+
+          {lockedNav.length > 0 && (
+            <div className="pt-2 mt-2 border-t border-slate-100 dark:border-slate-800">
+              <p className="px-3 pb-1 text-[10px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                Locked features
+              </p>
+              {lockedNav.map((item) => {
+                const Icon = item.icon;
+                const required = PLAN_NAMES[getPageMinPlan(item.path)] || getPageMinPlan(item.path);
+                return (
+                  <button
+                    key={item.path}
+                    type="button"
+                    onClick={() => openUpgrade(item)}
+                    title={`Requires the ${required} plan`}
+                    className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-400 dark:text-slate-600 w-full text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer"
+                  >
+                    <Icon className="w-4 h-4 shrink-0" />
+                    <span className="flex-1">{item.label}</span>
+                    <Lock className="w-3 h-3 shrink-0" />
+                  </button>
+                );
+              })}
+            </div>
+          )}
         </div>
 
         {/* Bottom Upgrade Button */}
@@ -163,6 +205,60 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
           </NavLink>
         </div>
       </aside>
+
+      {/* Upgrade prompt modal */}
+      <AnimatePresence>
+        {upgradePlan && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm"
+              onClick={() => setUpgradePlan(null)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: -8 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -8 }}
+              transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
+            >
+              <div className="max-w-md w-full text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-2xl px-6 py-8 pointer-events-auto">
+                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-violet-100 dark:bg-violet-950/50 flex items-center justify-center">
+                  <Lock className="w-7 h-7 text-violet-600 dark:text-violet-400" />
+                </div>
+                <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
+                  This feature requires the {upgradeRequiredName} plan
+                </h3>
+                <p className="mt-2 text-sm text-slate-500 dark:text-slate-400">
+                  You're currently on the{' '}
+                  <span className="font-semibold text-slate-700 dark:text-slate-200">
+                    {PLAN_NAMES[plan] || 'Starter'}
+                  </span>{' '}
+                  plan. Upgrade to unlock {upgradeRequiredName === 'Business' ? 'team management, invoices, gallery, reviews and website tools' : 'advanced features'} and more.
+                </p>
+                <div className="mt-6 flex items-center justify-center gap-3">
+                  <Link
+                    to="/app/billing"
+                    onClick={() => setUpgradePlan(null)}
+                    className="inline-block px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 transition-all cursor-pointer"
+                  >
+                    View Plans &amp; Upgrade
+                  </Link>
+                  <button
+                    type="button"
+                    onClick={() => setUpgradePlan(null)}
+                    className="px-5 py-2.5 rounded-xl text-sm font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                  >
+                    Not now
+                  </button>
+                </div>
+              </div>
+            </motion.div>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 };
