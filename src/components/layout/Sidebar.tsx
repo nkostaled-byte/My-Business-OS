@@ -249,7 +249,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
                   <Link
                     to="/app/billing"
                     onClick={() => setUpgradePlan(null)}
-                    className="inline-block px-5 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 transition-all cursor-pointer"
+                    className="inline-block px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-all cursor-pointer"
                   >
                     View Plans &amp; Upgrade
                   </Link>

@@ -29,7 +29,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-      className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col justify-between h-full"
+      className="p-6 rounded-xl bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 shadow-panel flex flex-col justify-between h-full"
     >
       <div className="flex items-center justify-between mb-4">
         <div>
@@ -43,7 +43,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
         <select
           value={period}
           onChange={(e) => setPeriod(e.target.value)}
-          className="px-3 py-1.5 rounded-xl text-xs font-medium bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-200 focus:outline-hidden cursor-pointer"
+          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white dark:bg-[#12161c] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 shadow-panel focus:outline-hidden cursor-pointer"
         >
           <option>This Month</option>
           <option>Last Quarter</option>
@@ -69,11 +69,11 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
             <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
               <defs>
                 <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#7C3AED" stopOpacity={0.35} />
-                  <stop offset="95%" stopColor="#7C3AED" stopOpacity={0.0} />
+                  <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.28} />
+                  <stop offset="95%" stopColor="#4F46E5" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.5} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" opacity={0.4} />
               <XAxis
                 dataKey="date"
                 axisLine={false}
@@ -92,9 +92,9 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
                   if (active && payload && payload.length) {
                     const item = payload[0].payload as RevenueDataPoint;
                     return (
-                      <div className="bg-slate-900 text-white dark:bg-slate-800 p-3 rounded-xl shadow-xl text-xs space-y-1">
-                        <p className="font-bold border-b border-slate-700 pb-1">{item.date}</p>
-                        <p className="text-violet-300 font-semibold">
+                      <div className="bg-slate-900 text-white dark:bg-[#12161c] p-3 rounded-lg shadow-popover text-xs space-y-1">
+                        <p className="font-bold border-b border-slate-700 dark:border-white/10 pb-1">{item.date}</p>
+                        <p className="text-indigo-300 font-semibold">
                           Revenue: {currencyPrefix}
                           {item.revenue.toLocaleString()}
                         </p>
@@ -110,11 +110,11 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
               <Area
                 type="monotone"
                 dataKey="revenue"
-                stroke="#7C3AED"
+                stroke="#4F46E5"
                 strokeWidth={3}
                 fillOpacity={1}
                 fill="url(#revenueGradient)"
-                activeDot={{ r: 6, fill: '#7C3AED', stroke: '#FFF', strokeWidth: 2 }}
+                activeDot={{ r: 6, fill: '#4F46E5', stroke: '#FFF', strokeWidth: 2 }}
                 isAnimationActive={true}
                 animationDuration={1200}
                 animationEasing="ease-in-out"

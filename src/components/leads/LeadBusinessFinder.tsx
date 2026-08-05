@@ -10,7 +10,7 @@ import { useToast } from '../../context/ToastContext';
 import { leadsApi } from '../../lib/leads-api';
 import { EmptyState } from '../common/EmptyState';
 import {
-  Search, MapPin, Star, Phone, Globe, Sparkles, Plus, Loader, Building2,
+  Search, MapPin, Star, Phone, Globe, SearchCheck, Plus, Loader, Building2,
 } from 'lucide-react';
 import type { PlaceBusiness } from '../../types';
 
@@ -177,7 +177,7 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
                     onClick={() => onOpenAudit(b.website!)}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 cursor-pointer"
                   >
-                    <Sparkles className="w-3.5 h-3.5" /> Audit site
+                    <SearchCheck className="w-3.5 h-3.5" /> Audit site
                   </button>
                 ) : (
                   <span className="text-[10px] text-slate-400 inline-flex items-center gap-1">

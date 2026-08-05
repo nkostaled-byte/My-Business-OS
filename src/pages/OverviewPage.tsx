@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useData } from '../context/DataContext';
 import { StatCard } from '../components/dashboard/StatCard';
 import { RevenueChart } from '../components/dashboard/RevenueChart';
@@ -7,6 +7,7 @@ import { TopProductsList } from '../components/dashboard/TopProductsList';
 import { RecentBookingsWidget } from '../components/dashboard/RecentBookingsWidget';
 import { BusinessHealthCard } from '../components/dashboard/BusinessHealthCard';
 import { DashboardUpgradeCard } from '../components/dashboard/DashboardUpgradeCard';
+import { CalendarDays } from 'lucide-react';
 import {
   DollarSign,
   ShoppingBag,
@@ -24,30 +25,45 @@ export const OverviewPage: React.FC = () => {
     products,
     businessHealth,
     isLoading,
+    profileName,
+    businessName,
   } = useData();
 
   const [dateRange, setDateRange] = useState('This Month');
 
+  const greeting = useMemo(() => {
+    const h = new Date().getHours();
+    if (h < 12) return 'Good morning';
+    if (h < 18) return 'Good afternoon';
+    return 'Good evening';
+  }, []);
+
+  const today = new Date().toLocaleDateString('en-ZA', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+  const displayName = profileName ? profileName.split(' ')[0] : businessName || 'there';
+
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
-      {/* Top Banner / Header Greeting */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      {/* Header */}
+      <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4">
         <div>
-          <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-            Welcome back, Nkosinathi!
+          <p className="text-xs font-medium text-slate-400 dark:text-slate-500 flex items-center gap-1.5">
+            <CalendarDays className="w-3.5 h-3.5" />
+            {today}
+          </p>
+          <h1 className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100">
+            {greeting}, {displayName}
           </h1>
-          <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Here's what's happening with your business today.
+          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1.5">
+            Here's what's happening with {businessName || 'your business'} today.
           </p>
         </div>
 
         <div className="flex items-center gap-3">
-
           <div className="relative">
             <select
               value={dateRange}
               onChange={(e) => setDateRange(e.target.value)}
-              className="px-3.5 py-2 rounded-xl text-xs font-medium bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 shadow-2xs focus:outline-hidden cursor-pointer"
+              className="px-3.5 py-2 rounded-lg text-xs font-medium bg-white dark:bg-[#0e1116] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 shadow-panel focus:outline-hidden cursor-pointer"
             >
               <option>This Month</option>
               <option>Last Month</option>

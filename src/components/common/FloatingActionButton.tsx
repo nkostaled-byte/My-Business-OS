@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Calculator, Package, Calendar, Receipt, Sparkles, X } from 'lucide-react';
+import { Plus, Calculator, Package, Calendar, Receipt, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
 

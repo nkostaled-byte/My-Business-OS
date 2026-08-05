@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { Upload, Image as ImageIcon, Link, X, Check, Sparkles, Loader2 } from 'lucide-react';
+import { Upload, Image as ImageIcon, Link, X, Check, Loader2 } from 'lucide-react';
 import api from '../../lib/api-client';
 
 interface ImagePreset {
@@ -242,7 +242,7 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
       {presets.length > 0 && (
         <div className="pt-1">
           <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 flex items-center gap-1 mb-1.5">
-            <Sparkles className="w-3 h-3 text-amber-500" /> Sample Stock Photos:
+            <ImageIcon className="w-3 h-3 text-amber-500" /> Sample Stock Photos:
           </span>
           <div className="flex flex-wrap gap-1.5">
             {presets.map((preset, idx) => (

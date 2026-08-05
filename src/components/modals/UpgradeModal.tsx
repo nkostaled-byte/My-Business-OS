@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Modal } from '../common/Modal';
 import { PRICING_PLANS } from '../../data/pricingData';
-import { Check, Sparkles, Shield } from 'lucide-react';
+import { Check, Zap, Shield } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 import { api } from '../../lib/api-client';
 
@@ -44,7 +44,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
         {/* Header & Toggle */}
         <div className="text-center space-y-3 pb-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 text-xs font-extrabold border border-violet-200 dark:border-violet-800">
-            <Sparkles className="w-3.5 h-3.5" />
+            <Zap className="w-3.5 h-3.5" />
             <span>Unlock Advanced My Grafix OS Capabilities</span>
           </div>
           <p className="text-xs text-slate-500 dark:text-slate-400 max-w-md mx-auto">

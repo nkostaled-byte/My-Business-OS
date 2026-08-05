@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PRICING_PLANS } from '../../data/pricingData';
-import { Sparkles, ArrowRight, Zap } from 'lucide-react';
+import { Zap, ArrowRight } from 'lucide-react';
 import { UpgradeModal } from '../modals/UpgradeModal';
 
 export const DashboardUpgradeCard: React.FC = () => {
@@ -12,19 +12,19 @@ export const DashboardUpgradeCard: React.FC = () => {
 
   return (
     <>
-      <div className="rounded-3xl bg-gradient-to-r from-violet-900 via-purple-900 to-indigo-950 text-white p-6 sm:p-8 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-violet-700/40">
+      <div className="rounded-xl bg-slate-900 dark:bg-[#12161c] text-white p-6 sm:p-8 shadow-panel relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-white/5">
         {/* Background Decorative Glow */}
-        <div className="absolute -right-10 -bottom-10 w-60 h-60 bg-violet-600/20 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute -right-10 -bottom-10 w-60 h-60 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
 
         <div className="space-y-2 relative z-10">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs font-bold border border-violet-400/30">
-            <Sparkles className="w-3.5 h-3.5 text-violet-400" />
-            <span>Workspace Upgrade Recommendation</span>
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-slate-200 text-xs font-semibold border border-white/10">
+            <Zap className="w-3.5 h-3.5 text-indigo-300" />
+            <span>Upgrade recommendation</span>
           </div>
-          <h3 className="text-xl sm:text-2xl font-extrabold tracking-tight">
-            Unlock {nextPlan.name} Capabilities
+          <h3 className="text-xl sm:text-2xl font-bold tracking-tight">
+            Unlock {nextPlan.name} capabilities
           </h3>
-          <p className="text-xs sm:text-sm text-violet-200 max-w-xl leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-300 max-w-xl leading-relaxed">
             You are currently on the <strong className="text-white">{currentPlan.name}</strong> plan (R{currentPlan.monthlyPrice}/mo). Upgrade to <strong className="text-white">{nextPlan.name}</strong> (R{nextPlan.monthlyPrice}/mo) to unlock {nextPlan.features.slice(0, 3).join(', ')}, and more!
           </p>
         </div>
@@ -33,9 +33,9 @@ export const DashboardUpgradeCard: React.FC = () => {
           <button
             type="button"
             onClick={() => setIsModalOpen(true)}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-2xl text-xs sm:text-sm font-extrabold text-violet-950 bg-white hover:bg-violet-50 shadow-xl transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-lg text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 transition-colors cursor-pointer"
           >
-            <span>Upgrade to {nextPlan.name} (R{nextPlan.monthlyPrice}/mo)</span>
+            <span>Upgrade (R{nextPlan.monthlyPrice}/mo)</span>
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>

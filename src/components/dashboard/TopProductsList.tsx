@@ -19,7 +19,7 @@ export const TopProductsList: React.FC<TopProductsListProps> = ({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-      className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col justify-between h-full"
+      className="p-6 rounded-xl bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 shadow-panel flex flex-col justify-between h-full"
     >
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
@@ -27,7 +27,7 @@ export const TopProductsList: React.FC<TopProductsListProps> = ({
         </h3>
         <NavLink
           to="/app/products"
-          className="text-xs font-semibold text-violet-600 dark:text-violet-400 hover:underline"
+          className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
         >
           View all
         </NavLink>
@@ -41,14 +41,14 @@ export const TopProductsList: React.FC<TopProductsListProps> = ({
           className="my-auto py-8"
         />
       ) : (
-        <div className="divide-y divide-slate-100 dark:divide-slate-800/80 my-auto">
+        <div className="divide-y divide-slate-100 dark:divide-white/5 my-auto">
           {products.slice(0, 3).map((prod, index) => (
             <motion.div
               key={prod.id}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.2, delay: index * 0.05 }}
-              className="py-3 flex items-center justify-between gap-3 group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 px-2 rounded-xl transition-colors"
+              className="py-3 flex items-center justify-between gap-3 group hover:bg-slate-50/60 dark:hover:bg-white/5 px-2 rounded-lg transition-colors"
             >
               <div className="flex items-center gap-3">
                 <img
@@ -57,7 +57,7 @@ export const TopProductsList: React.FC<TopProductsListProps> = ({
                     'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=150&auto=format&fit=crop&q=80'
                   }
                   alt={prod.name}
-                  className="w-10 h-10 rounded-xl object-cover border border-slate-200 dark:border-slate-800 shrink-0 group-hover:scale-105 transition-transform"
+                  className="w-10 h-10 rounded-lg object-cover border border-slate-200 dark:border-white/10 shrink-0 group-hover:scale-105 transition-transform"
                 />
                 <div>
                   <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">

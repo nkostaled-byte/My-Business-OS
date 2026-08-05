@@ -14,13 +14,13 @@ export const RecentBookingsWidget: React.FC<RecentBookingsWidgetProps> = ({ book
   ] as Booking[];
 
   return (
-    <div className="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs h-full space-y-4">
+    <div className="p-6 rounded-xl bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 shadow-panel h-full space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Recent Bookings</h3>
-        <NavLink to="/app/bookings" className="text-xs font-semibold text-violet-600 dark:text-violet-400 hover:underline">View all</NavLink>
+        <NavLink to="/app/bookings" className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">View all</NavLink>
       </div>
 
-      <div className="divide-y divide-slate-100 dark:divide-slate-800">
+      <div className="divide-y divide-slate-100 dark:divide-white/5">
         {recentBookings.map(b => (
             <div key={b.id} className="py-3.5 flex items-center justify-between text-xs">
                 <div>
@@ -31,7 +31,7 @@ export const RecentBookingsWidget: React.FC<RecentBookingsWidgetProps> = ({ book
                   b.status === 'completed' 
                     ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' 
                     : b.status === 'upcoming' || b.status === 'in-progress'
-                    ? 'bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 border border-violet-200 dark:border-violet-800' 
+                    ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20' 
                     : 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800'
                 }`}>
                     {b.status}

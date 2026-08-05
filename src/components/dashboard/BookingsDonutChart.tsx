@@ -15,8 +15,8 @@ export const BookingsDonutChart: React.FC<BookingsDonutChartProps> = ({ overview
 
   const chartData = hasData
     ? [
-        { name: 'Completed', value: overview.completed, color: '#7C3AED' },
-        { name: 'Upcoming', value: overview.upcoming, color: '#8B5CF6' },
+        { name: 'Completed', value: overview.completed, color: '#4F46E5' },
+        { name: 'Upcoming', value: overview.upcoming, color: '#22D3EE' },
         { name: 'Cancelled', value: overview.cancelled, color: '#F43F5E' },
       ]
     : [];
@@ -26,7 +26,7 @@ export const BookingsDonutChart: React.FC<BookingsDonutChartProps> = ({ overview
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-      className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col justify-between h-full"
+      className="p-6 rounded-xl bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 shadow-panel flex flex-col justify-between h-full"
     >
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
@@ -34,7 +34,7 @@ export const BookingsDonutChart: React.FC<BookingsDonutChartProps> = ({ overview
         </h3>
         <NavLink
           to="/app/bookings"
-          className="text-xs font-semibold text-violet-600 dark:text-violet-400 hover:underline"
+          className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
         >
           View all
         </NavLink>

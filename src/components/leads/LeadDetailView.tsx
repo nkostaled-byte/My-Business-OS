@@ -12,7 +12,7 @@ import { EmptyState } from '../common/EmptyState';
 import { ScoreBadge, StatusPill, PriorityPill, OpportunityBadge, STATUS_LABEL, getInitials, GooglePlaceBadge, getPlacesMeta, recommendedLabel } from './LeadBase';
 import {
   Globe, Mail, Phone, Target, MessageSquare, CheckSquare, Bell, FileText,
-  ClipboardCheck, Sparkles, AlertTriangle, TrendingUp, Check, Tag, Star, MapPin,
+  ClipboardCheck, BrainCircuit, AlertTriangle, TrendingUp, Check, Tag, Star, MapPin,
 } from 'lucide-react';
 import type { Lead, LeadPriority, LeadStatus, ScoreDeduction } from '../../types';
 
@@ -253,8 +253,8 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
               {lead.aiSummary && (
                 <div className="p-4 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/30 border border-violet-200/60 dark:border-violet-900">
                   <div className="flex items-center gap-2 mb-2">
-                    <Sparkles className="w-4 h-4 text-violet-500" />
-                    <span className="text-xs font-bold text-violet-700 dark:text-violet-300">Sales angle</span>
+                    <BrainCircuit className="w-4 h-4 text-indigo-500" />
+                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Sales angle</span>
                   </div>
                   <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-200">{lead.aiSummary}</p>
                 </div>

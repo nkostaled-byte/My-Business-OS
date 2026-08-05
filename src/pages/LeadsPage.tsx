@@ -15,7 +15,7 @@ import { LeadBusinessFinder } from '../components/leads/LeadBusinessFinder';
 import { ScoreBadge, PriorityPill, StatusPill, GooglePlaceBadge } from '../components/leads/LeadBase';
 import { EmptyState } from '../components/common/EmptyState';
 import {
-  Sparkles, LayoutGrid, Database, Users, ArrowDownToLine, Search, Globe, Trash2,
+  SearchCheck, LayoutGrid, Database, Users, ArrowDownToLine, Search, Globe, Trash2,
   BarChart3, PieChart, CircleDollarSign, Trophy, Plus, Compass,
 } from 'lucide-react';
 import type { Lead, LeadPipeline as PipelineData, LeadStatus } from '../types';
@@ -127,7 +127,7 @@ export const LeadsPage: React.FC = () => {
             onClick={() => { setAuditInitialUrl(''); setAuditOpen(true); }}
             className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 cursor-pointer"
           >
-            <Sparkles className="w-4 h-4" /> New Audit
+            <SearchCheck className="w-4 h-4" /> New Audit
           </motion.button>
           <motion.button
             whileHover={{ scale: 1.02 }}

@@ -21,9 +21,9 @@ export const RecentActivityFeed: React.FC<RecentActivityFeedProps> = ({ activiti
   const getActivityIcon = (type: ActivityItem['type']) => {
     switch (type) {
       case 'order':
-        return <ShoppingBag className="w-4 h-4 text-violet-600 dark:text-violet-400" />;
+        return <ShoppingBag className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />;
       case 'booking':
-        return <Calendar className="w-4 h-4 text-purple-600 dark:text-purple-400" />;
+        return <Calendar className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />;
       case 'payment':
         return <CreditCard className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />;
       case 'customer':
@@ -40,7 +40,7 @@ export const RecentActivityFeed: React.FC<RecentActivityFeedProps> = ({ activiti
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-      className="p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col justify-between h-full"
+      className="p-6 rounded-xl bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 shadow-panel flex flex-col justify-between h-full"
     >
       <div className="flex items-center justify-between mb-4">
         <div>
@@ -53,7 +53,7 @@ export const RecentActivityFeed: React.FC<RecentActivityFeedProps> = ({ activiti
         </div>
         <NavLink
           to="/app/orders"
-          className="text-xs font-semibold text-violet-600 dark:text-violet-400 hover:underline"
+          className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
         >
           View all
         </NavLink>
@@ -67,17 +67,17 @@ export const RecentActivityFeed: React.FC<RecentActivityFeedProps> = ({ activiti
           className="my-auto py-8"
         />
       ) : (
-        <div className="divide-y divide-slate-100 dark:divide-slate-800/80 my-auto">
+        <div className="divide-y divide-slate-100 dark:divide-white/5 my-auto">
           {activities.slice(0, 5).map((act, index) => (
             <motion.div
               key={act.id}
               initial={{ opacity: 0, x: -10 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.2, delay: index * 0.05 }}
-              className="py-3 flex items-start justify-between gap-3 group hover:bg-slate-50/50 dark:hover:bg-slate-800/30 px-2 rounded-xl transition-colors"
+              className="py-3 flex items-start justify-between gap-3 group hover:bg-slate-50/60 dark:hover:bg-white/5 px-2 rounded-lg transition-colors"
             >
               <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
+                <div className="w-8 h-8 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center shrink-0 mt-0.5 group-hover:scale-105 transition-transform">
                   {getActivityIcon(act.type)}
                 </div>
                 <div>
