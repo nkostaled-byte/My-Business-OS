@@ -20,7 +20,7 @@ interface Props {
 }
 
 const inputCls =
-  'w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all';
+  'w-full px-3.5 py-2.5 rounded-lg bg-white dark:bg-[#12161c] border border-slate-200/80 dark:border-white/10 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 transition-all';
 
 export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }) => {
   const { success, error } = useToast();
@@ -81,7 +81,7 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
   return (
     <div className="space-y-4">
       {/* Search bar */}
-      <form onSubmit={search} className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs p-4 sm:p-5">
+      <form onSubmit={search} className="bg-white dark:bg-[#0e1116] rounded-xl border border-slate-200/70 dark:border-white/10 shadow-panel p-4 sm:p-5">
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_240px_auto] gap-2">
           <input
             autoFocus
@@ -103,19 +103,19 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
             whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={searching || !query.trim()}
-            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 disabled:opacity-60 cursor-pointer"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 active:scale-[0.98] transition-all disabled:opacity-60 cursor-pointer"
           >
             {searching ? <Loader className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
             {searching ? 'Searching…' : 'Find Businesses'}
           </motion.button>
         </div>
-        <div className="flex flex-wrap items-center gap-4 mt-3 pt-3 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex flex-wrap items-center gap-4 mt-3 pt-3 border-t border-slate-100 dark:border-white/5">
           <label className="inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 cursor-pointer select-none">
             <input
               type="checkbox"
               checked={noWebsiteOnly}
               onChange={(e) => setNoWebsiteOnly(e.target.checked)}
-              className="w-3.5 h-3.5 accent-violet-600 cursor-pointer"
+              className="w-3.5 h-3.5 accent-indigo-600 cursor-pointer"
             />
             <Globe className="w-3.5 h-3.5 text-slate-400" />
             Only businesses without a website
@@ -142,10 +142,10 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.18 }}
-              className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs p-4 flex flex-col"
+              className="bg-white dark:bg-[#0e1116] rounded-xl border border-slate-200/70 dark:border-white/10 shadow-panel p-4 flex flex-col"
             >
               <div className="flex items-start gap-3">
-                <div className="w-10 h-10 rounded-xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
                   <Building2 className="w-5 h-5" />
                 </div>
                 <div className="flex-1 min-w-0">
@@ -171,11 +171,11 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
                 </div>
               </div>
 
-              <div className="mt-3 pt-3 flex items-center justify-between gap-2 border-t border-slate-100 dark:border-slate-800">
+              <div className="mt-3 pt-3 flex items-center justify-between gap-2 border-t border-slate-100 dark:border-white/5">
                 {b.website ? (
                   <button
                     onClick={() => onOpenAudit(b.website!)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-sm shadow-violet-500/20 cursor-pointer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 cursor-pointer"
                   >
                     <Sparkles className="w-3.5 h-3.5" /> Audit site
                   </button>
@@ -187,7 +187,7 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
                 <button
                   onClick={() => saveAsLead(b)}
                   disabled={savingId === b.placeId}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 disabled:opacity-60 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-emerald-700 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-900 hover:bg-emerald-50 dark:hover:bg-emerald-950/40 disabled:opacity-60 cursor-pointer"
                 >
                   {savingId === b.placeId ? <Loader className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
                   Save as lead

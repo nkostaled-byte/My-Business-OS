@@ -44,7 +44,7 @@ export const LeadPipeline: React.FC<Props> = ({ stages, total, onSelectLead, onC
             if (dragging) moveToStage(dragging, stage.name);
           }}
           className={`w-72 shrink-0 flex flex-col bg-slate-100/70 dark:bg-slate-900/40 rounded-2xl border ${
-            overStage === stage.name ? 'border-violet-400 dark:border-violet-500 bg-violet-50 dark:bg-violet-950/40' : 'border-slate-200/80 dark:border-slate-800'
+            overStage === stage.name ? 'border-indigo-400 dark:border-indigo-500 bg-indigo-50/40 dark:bg-indigo-500/5' : 'border-slate-200/70 dark:border-white/10'
           } transition-colors`}
         >
           <div className="flex items-center gap-2 px-3 py-2.5">
@@ -78,7 +78,7 @@ export const LeadPipeline: React.FC<Props> = ({ stages, total, onSelectLead, onC
       {/* Add stage / create lead pad */}
       <div className="w-72 shrink-0 rounded-2xl border border-dashed border-slate-300 dark:border-slate-700 flex flex-col items-center justify-center p-4 gap-2">
         <p className="text-[11px] text-slate-400">{total} lead{total === 1 ? '' : 's'} in pipeline</p>
-        <button onClick={onOpenCreate} className="text-xs font-semibold text-violet-600 dark:text-violet-400 hover:underline cursor-pointer">+ New lead</button>
+        <button onClick={onOpenCreate} className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer">+ New lead</button>
       </div>
     </div>
   );

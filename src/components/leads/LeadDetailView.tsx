@@ -176,7 +176,7 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
               ['tasks', 'Tasks', CheckSquare],
               ['followups', 'Follow-ups', Bell],
             ] as [Tab, string, React.ComponentType<{ className?: string }>][]).map(([key, label, Icon]) => (
-              <button key={key} onClick={() => setTab(key)} className={`flex items-center gap-1.5 px-3 py-2 rounded-t-lg border-b-2 -mb-px cursor-pointer ${tab === key ? 'border-violet-500 text-violet-600 dark:text-violet-400' : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}>
+              <button key={key} onClick={() => setTab(key)} className={`flex items-center gap-1.5 px-3 py-2 rounded-t-lg border-b-2 -mb-px cursor-pointer ${tab === key ? 'border-indigo-500 text-indigo-600 dark:text-indigo-400' : 'border-transparent text-slate-400 hover:text-slate-600 dark:hover:text-slate-300'}`}>
                 <Icon className="w-3.5 h-3.5" />
                 {label}
               </button>

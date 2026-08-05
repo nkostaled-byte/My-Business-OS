@@ -23,12 +23,12 @@ export const MotionCard: React.FC<MotionCardProps> = ({
       whileHover={
         enableHover
           ? {
-              y: -3,
-              boxShadow: '0 12px 30px -10px rgba(0,0,0,0.08), 0 4px 12px -2px rgba(0,0,0,0.04)',
+              y: -2,
+              boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px -6px rgba(15,23,42,0.12)',
             }
           : undefined
       }
-      className={`bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-2xl transition-colors ${className}`}
+      className={`bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 rounded-xl shadow-panel transition-colors ${className}`}
       {...props}
     >
       {children}

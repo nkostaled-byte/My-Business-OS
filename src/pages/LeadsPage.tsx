@@ -125,7 +125,7 @@ export const LeadsPage: React.FC = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => { setAuditInitialUrl(''); setAuditOpen(true); }}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 cursor-pointer"
           >
             <Sparkles className="w-4 h-4" /> New Audit
           </motion.button>
@@ -133,14 +133,14 @@ export const LeadsPage: React.FC = () => {
             whileHover={{ scale: 1.02 }}
             whileTap={{ scale: 0.98 }}
             onClick={() => setCreateOpen(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-slate-900 dark:bg-white dark:text-slate-900 hover:bg-slate-700 dark:hover:bg-slate-200 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold text-white bg-slate-900 dark:bg-white dark:text-slate-900 hover:bg-slate-700 dark:hover:bg-slate-200 cursor-pointer"
           >
             <Plus className="w-4 h-4" /> New Lead
           </motion.button>
           <button
             onClick={handleExport}
             disabled={exporting}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800 disabled:opacity-50 cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg text-xs font-semibold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-white/10 hover:bg-slate-50 dark:hover:bg-white/5 disabled:opacity-50 cursor-pointer"
           >
             {exporting ? <span className="w-4 h-4 border-2 border-slate-400 border-t-transparent rounded-full animate-spin" /> : <ArrowDownToLine className="w-4 h-4" />}
             CSV
@@ -170,10 +170,10 @@ export const LeadsPage: React.FC = () => {
             className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
               key === 'find'
                 ? tab === 'find'
-                  ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-md shadow-violet-500/25'
-                  : 'text-violet-600 dark:text-violet-400 hover:bg-white dark:hover:bg-slate-800'
+                  ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-panel'
+                  : 'text-indigo-600 dark:text-indigo-400 hover:bg-white dark:hover:bg-white/5'
                 : tab === key
-                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs'
+                  ? 'bg-white dark:bg-[#0e1116] text-slate-900 dark:text-slate-100 shadow-panel'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`}
           >
@@ -212,16 +212,16 @@ export const LeadsPage: React.FC = () => {
 
 const StatCard: React.FC<{ icon: React.ComponentType<{ className?: string }>; label: string; value: number; tone: 'violet' | 'emerald' | 'amber' }> = ({ icon: Icon, label, value, tone }) => {
   const toneCls =
-    tone === 'violet' ? 'bg-violet-100 dark:bg-violet-950/50 text-violet-600 dark:text-violet-400'
-    : tone === 'emerald' ? 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400'
-    : 'bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400';
+    tone === 'violet' ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
+    : tone === 'emerald' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+    : 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400';
   return (
-    <div className="flex items-center gap-3 p-4 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs">
-      <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${toneCls}`}>
+    <div className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 shadow-panel">
+      <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${toneCls}`}>
         <Icon className="w-5 h-5" />
       </div>
       <div>
-        <p className="text-xl font-extrabold text-slate-900 dark:text-white leading-none">{value}</p>
+        <p className="text-xl font-bold text-slate-900 dark:text-white leading-none">{value}</p>
         <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1">{label}</p>
       </div>
     </div>
@@ -258,8 +258,8 @@ const LeadsTable: React.FC<{ leads: Lead[]; loading: boolean; onSelect: (id: str
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
-      <div className="p-4 sm:p-5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800">
+    <div className="bg-white dark:bg-[#0e1116] rounded-xl border border-slate-200/70 dark:border-white/10 shadow-panel overflow-hidden">
+      <div className="p-4 sm:p-5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 border-b border-slate-100 dark:border-white/5">
         <div className="relative flex-1 max-w-sm">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search leads..." className={inputCls + ' pl-9'} />
@@ -325,8 +325,8 @@ const OverviewTab: React.FC<{ leads: Lead[]; totals: { total: number; byStatus: 
   const recent = leads.slice(0, 5);
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs p-5">
-        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2"><PieChart className="w-4 h-4 text-violet-500" /> Pipeline breakdown</h3>
+      <div className="lg:col-span-2 bg-white dark:bg-[#0e1116] rounded-xl border border-slate-200/70 dark:border-white/10 shadow-panel p-5">
+        <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2"><PieChart className="w-4 h-4 text-indigo-500" /> Pipeline breakdown</h3>
         {totals.total === 0 ? (
           <p className="text-xs text-slate-400">No leads yet.</p>
         ) : (
@@ -350,7 +350,7 @@ const OverviewTab: React.FC<{ leads: Lead[]; totals: { total: number; byStatus: 
         )}
       </div>
 
-      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs p-5">
+      <div className="bg-white dark:bg-[#0e1116] rounded-xl border border-slate-200/70 dark:border-white/10 shadow-panel p-5">
         <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2"><Trophy className="w-4 h-4 text-amber-500" /> Recent leads</h3>
         {recent.length === 0 ? (
           <p className="text-xs text-slate-400">Run an audit to qualify your first lead.</p>

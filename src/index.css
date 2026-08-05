@@ -2,18 +2,65 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ─────────────────────────────────────────────────────────────
+   Design System — "Neutral + indigo" (Stripe/Apple inspired)
+   ───────────────────────────────────────────────────────────── */
+@theme {
+  --font-sans: "Inter", -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", system-ui, sans-serif;
+
+  /* Soft, diffuse elevation shadows instead of heavy hard shadows */
+  --shadow-panel:
+    0 1px 2px rgb(15 23 42 / 0.04),
+    0 1px 3px rgb(15 23 42 / 0.06);
+  --shadow-panel-hover:
+    0 2px 4px rgb(15 23 42 / 0.05),
+    0 12px 28px -6px rgb(15 23 42 / 0.12);
+  --shadow-popover:
+    0 4px 8px rgb(15 23 42 / 0.06),
+    0 18px 40px -8px rgb(15 23 42 / 0.18);
+
+  --shadow-glow-accent: 0 0 0 1px rgb(79 70 229 / 0.12), 0 4px 14px -2px rgb(79 70 229 / 0.25);
+}
+
 @layer base {
   html {
     color-scheme: light dark;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
   body {
-    background-color: #f8fafc;
+    background-color: #f7f8fa;
     color: #0f172a;
     min-height: 100vh;
   }
   .dark body {
-    background-color: #020617;
-    color: #f8fafc;
+    background-color: #0a0c0f;
+    color: #e8eaed;
+  }
+
+  /* Accent-colored selection, not the default blue */
+  ::selection {
+    background: rgb(79 70 229 / 0.16);
+  }
+  .dark ::selection {
+    background: rgb(99 102 241 / 0.35);
+  }
+
+  /* Subtle scrollbars so panels don't look chunky */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: rgb(148 163 184 / 0.35);
+    border-radius: 999px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: rgb(148 163 184 / 0.55);
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
   }
 }
 

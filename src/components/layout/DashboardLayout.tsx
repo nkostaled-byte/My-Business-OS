@@ -30,7 +30,7 @@ export const DashboardLayout: React.FC<{ role?: 'owner' | 'admin' | 'staff' | nu
 
   return (
     <ToastProvider>
-      <div className="min-h-screen bg-slate-50/60 dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors font-sans">
+      <div className="min-h-screen bg-[#f7f8fa] dark:bg-[#0a0c0f] text-slate-900 dark:text-slate-100 transition-colors font-sans">
         <Sidebar mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} role={role} />
         
         <div className="lg:pl-64 flex flex-col min-h-screen">

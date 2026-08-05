@@ -39,7 +39,7 @@ export const GooglePlaceBadge: React.FC<{ lead: Lead; className?: string }> = ({
   return (
     <span
       title={`Discovered via Google Places${meta.category ? ` · ${meta.category}` : ''}`}
-      className={`inline-flex items-center gap-1 rounded-lg bg-violet-50 dark:bg-violet-950/40 border border-violet-200/70 dark:border-violet-900/60 px-1.5 py-0.5 text-[10px] font-semibold text-violet-700 dark:text-violet-300 ${className}`}
+      className={`inline-flex items-center gap-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 border border-indigo-100 dark:border-indigo-500/20 px-1.5 py-0.5 text-[10px] font-semibold text-indigo-700 dark:text-indigo-300 ${className}`}
     >
       <svg viewBox="0 0 24 24" className="w-3 h-3 shrink-0" aria-hidden="true">
         <path fill="#4285F4" d="M21.35 11.1h-9.17v2.73h6.51c-.33 3.81-3.5 5.44-6.5 5.44-3.9 0-7.04-3.1-7.04-7s3.14-7 7.04-7c1.93 0 3.34.88 4.17 1.62l1.95-1.94C16.65 3.15 14.56 2.15 12.2 2.15c-5.11 0-9.2 4.09-9.2 9.2s4.09 9.2 9.2 9.2c4.81 0 8.79-3.18 8.79-8.53 0-.66-.08-1.15-.19-1.92z"/>
@@ -77,7 +77,7 @@ export const PRIORITY_STYLE: Record<LeadPriority, string> = {
 };
 
 export const STATUS_STYLE: Record<LeadStatus, string> = {
-  new: 'bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400',
+  new: 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400',
   contacted: 'bg-sky-100 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400',
   qualified: 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400',
   proposal: 'bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400',
@@ -141,7 +141,7 @@ export const StageDot: React.FC<{ color?: string }> = ({ color = 'violet' }) => 
     green: 'bg-emerald-500',
     rose: 'bg-rose-500',
   };
-  return <span className={`inline-block w-2 h-2 rounded-full shrink-0 ${map[color] || 'bg-violet-500'}`} />;
+  return <span className={`inline-block w-2 h-2 rounded-full shrink-0 ${map[color] || 'bg-indigo-500'}`} />;
 };
 
 export const getInitials = (name: string) =>

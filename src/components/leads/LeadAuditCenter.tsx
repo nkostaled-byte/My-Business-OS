@@ -88,12 +88,12 @@ export const LeadAuditCenter: React.FC<Props> = ({ isOpen, onClose, onLeadSaved,
               <input className={inputCls} value={businessName} onChange={(e) => setBusinessName(e.target.value)} placeholder="e.g. Sandton Coffee Co." disabled={running} />
             </div>
             <div className="flex items-center gap-2 text-[11px] text-slate-400">
-              <ShieldCheck className="w-4 h-4 text-violet-500" />
+              <ShieldCheck className="w-4 h-4 text-indigo-500" />
               The audit checks SEO, lead capture, trust signals, tech stack and more — and scores the opportunity (0–100).
             </div>
             <div className="pt-2 flex justify-end gap-2">
               <button type="button" onClick={close} className="px-4 py-2 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer">Cancel</button>
-              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={running || !url.trim()} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 disabled:opacity-60 cursor-pointer">
+              <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" disabled={running || !url.trim()} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 cursor-pointer">
                 {running ? (
                   <><span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" /> Auditing…</>
                 ) : (
@@ -162,8 +162,8 @@ const AuditResultView = ({ result, onCreateLead, onNew, onClose, businessName }:
       {ai && (
         <div className="p-4 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/30 border border-violet-200/60 dark:border-violet-900">
           <div className="flex items-center gap-2 mb-1.5">
-            <Sparkles className="w-4 h-4 text-violet-500" />
-            <span className="text-xs font-bold text-violet-700 dark:text-violet-300">AI sales angle</span>
+            <Sparkles className="w-4 h-4 text-indigo-500" />
+            <span className="text-xs font-bold text-slate-700 dark:text-slate-300">AI sales angle</span>
           </div>
           <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-200">{ai.salesMessage}</p>
         </div>
@@ -173,7 +173,7 @@ const AuditResultView = ({ result, onCreateLead, onNew, onClose, businessName }:
         <div>
           <h5 className="text-[10px] font-semibold uppercase tracking-wide text-slate-400 mb-2 flex items-center gap-1.5"><ClipboardCheck className="w-3.5 h-3.5" /> Recommended services</h5>
           <div className="flex flex-wrap gap-1.5">
-            {score.recommendedServices.map((s, i) => <span key={typeof s === 'string' ? s : (s.id || i)} className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-400">{recommendedLabel(s)}</span>)}
+            {score.recommendedServices.map((s, i) => <span key={typeof s === 'string' ? s : (s.id || i)} className="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-700 dark:text-indigo-300">{recommendedLabel(s)}</span>)}
           </div>
         </div>
       )}
@@ -228,7 +228,7 @@ const AuditResultView = ({ result, onCreateLead, onNew, onClose, businessName }:
           <button onClick={onNew} className="px-4 py-2 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer">New audit</button>
           <button onClick={onClose} className="px-4 py-2 rounded-xl text-xs font-medium text-slate-500 cursor-pointer">Close</button>
         </div>
-        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={onCreateLead} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 cursor-pointer">
+        <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={onCreateLead} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-white bg-slate-900 dark:bg-white dark:text-slate-900 hover:bg-slate-700 dark:hover:bg-slate-200 cursor-pointer">
           <ExternalLink className="w-4 h-4" /> Save as lead
         </motion.button>
       </div>

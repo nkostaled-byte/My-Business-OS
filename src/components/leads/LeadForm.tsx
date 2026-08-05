@@ -138,7 +138,7 @@ export const LeadForm: React.FC<Props> = ({ isOpen, onClose, onSaved, audit, web
             whileTap={{ scale: 0.98 }}
             type="submit"
             disabled={saving}
-            className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 disabled:opacity-60 cursor-pointer"
+            className="px-4 py-2 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 cursor-pointer"
           >
             {saving ? 'Saving...' : 'Create Lead'}
           </motion.button>

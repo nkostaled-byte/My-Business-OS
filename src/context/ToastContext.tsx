@@ -68,7 +68,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="pointer-events-auto relative overflow-hidden rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 p-4 shadow-xl shadow-slate-900/10 dark:shadow-black/40 flex items-start gap-3"
+              className="pointer-events-auto relative overflow-hidden rounded-xl bg-white dark:bg-[#12161c] border border-slate-200/80 dark:border-white/10 p-4 shadow-popover flex items-start gap-3"
             >
               {/* Type Accent */}
               <div className="shrink-0 mt-0.5">
@@ -88,7 +88,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                   </div>
                 )}
                 {toast.type === 'info' && (
-                  <div className="w-8 h-8 rounded-xl bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                     <Info className="w-4 h-4" />
                   </div>
                 )}
@@ -126,7 +126,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
                     ? 'bg-rose-500'
                     : toast.type === 'warning'
                     ? 'bg-amber-500'
-                    : 'bg-violet-500'
+                    : 'bg-indigo-500'
                 }`}
               />
             </motion.div>

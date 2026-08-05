@@ -104,7 +104,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
 
       {/* Sidebar container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-white dark:bg-slate-900 border-r border-slate-200/80 dark:border-slate-800 flex flex-col justify-between transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-white dark:bg-[#0e1116] border-r border-slate-200/70 dark:border-white/5 flex flex-col justify-between transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -143,22 +143,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
                 end={item.path === '/app'}
                 onClick={onCloseMobile}
                 className={({ isActive }) =>
-                  `relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium transition-colors ${
+                  `relative flex items-center gap-3 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium transition-colors ${
                     isActive
-                      ? 'bg-violet-50 dark:bg-violet-950/50 text-violet-600 dark:text-violet-400 font-semibold'
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-slate-800/60 hover:text-slate-900 dark:hover:text-slate-200'
+                      ? 'text-slate-900 dark:text-slate-50'
+                      : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-white/5 hover:text-slate-900 dark:hover:text-slate-200'
                   }`
                 }
               >
                 {({ isActive }) => (
                   <>
-                    <Icon className="w-4 h-4 shrink-0 relative z-10" />
+                    <Icon className={`w-4 h-4 shrink-0 relative z-10 ${isActive ? 'text-indigo-600 dark:text-indigo-400' : ''}`} />
                     <span className="relative z-10">{item.label}</span>
                     {isActive && (
                       <motion.div
                         layoutId="activeNavIndicator"
                         transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                        className="absolute inset-0 bg-violet-50 dark:bg-violet-950/60 rounded-xl"
+                        className="absolute inset-0 bg-slate-50 dark:bg-white/5 rounded-lg"
                       />
                     )}
                   </>
@@ -199,14 +199,14 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
             <span className="text-[11px] font-semibold uppercase tracking-wide text-slate-400 dark:text-slate-500">
               Current plan
             </span>
-            <span className="text-[11px] font-bold text-violet-600 dark:text-violet-400">
+            <span className="text-[11px] font-semibold text-indigo-600 dark:text-indigo-400">
               {PLAN_NAMES[plan] || 'Free'}
             </span>
           </div>
           <NavLink
             to="/app/billing"
             onClick={onCloseMobile}
-            className="block w-full py-2.5 text-center text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 rounded-xl shadow-md shadow-violet-500/20 active:scale-[0.98] transition-all cursor-pointer"
+            className="block w-full py-2.5 text-center text-xs font-semibold text-white bg-slate-900 hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200 rounded-lg active:scale-[0.98] transition-all cursor-pointer"
           >
             Upgrade Now
           </NavLink>
