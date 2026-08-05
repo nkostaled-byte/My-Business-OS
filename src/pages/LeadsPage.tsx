@@ -41,7 +41,7 @@ export const LeadsPage: React.FC = () => {
   const [pipelineData, setPipelineData] = useState<PipelineData | null>(null);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [loading, setLoading] = useState(true);
-  const [tab, setTab] = useState<Tab>('pipeline');
+  const [tab, setTab] = useState<Tab>('find');
 
   const [auditOpen, setAuditOpen] = useState(false);
   const [auditInitialUrl, setAuditInitialUrl] = useState('');
@@ -159,12 +159,24 @@ export const LeadsPage: React.FC = () => {
       {/* Tabs */}
       <div className="flex gap-1 p-1 w-fit rounded-2xl bg-slate-100 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800">
         {([
+          ['find', 'Find', Compass],
           ['pipeline', 'Pipeline', LayoutGrid],
           ['table', 'Table', Database],
-          ['find', 'Find', Compass],
           ['overview', 'Overview', BarChartIcon],
         ] as [Tab, string, React.ComponentType<{ className?: string }>][]).map(([key, label, Icon]) => (
-          <button key={key} onClick={() => setTab(key)} className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${tab === key ? 'bg-white dark:bg-slate-800 text-violet-600 dark:text-violet-400 shadow-xs' : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'}`}>
+          <button
+            key={key}
+            onClick={() => setTab(key)}
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-colors cursor-pointer ${
+              key === 'find'
+                ? tab === 'find'
+                  ? 'bg-gradient-to-r from-violet-600 to-purple-600 text-white shadow-md shadow-violet-500/25'
+                  : 'text-violet-600 dark:text-violet-400 hover:bg-white dark:hover:bg-slate-800'
+                : tab === key
+                  ? 'bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 shadow-xs'
+                  : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+            }`}
+          >
             <Icon className="w-4 h-4" /> {label}
           </button>
         ))}

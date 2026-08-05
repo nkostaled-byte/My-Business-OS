@@ -30,7 +30,7 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
   const [result, setResult] = useState<PlaceBusiness[] | null>(null);
   const [searchedOnce, setSearchedOnce] = useState(false);
   const [savingId, setSavingId] = useState<string | null>(null);
-  const [noWebsiteOnly, setNoWebsiteOnly] = useState(true);
+  const [noWebsiteOnly, setNoWebsiteOnly] = useState(false);
 
   const visible = result ? (noWebsiteOnly ? result.filter((b) => !b.website) : result) : result;
 
