@@ -40,7 +40,7 @@ export const GalleryPage: React.FC = () => {
 
         <button
           onClick={() => setIsUploadOpen(true)}
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer"
         >
           <Upload className="w-4 h-4" />
           <span>Upload Media</span>
@@ -48,7 +48,7 @@ export const GalleryPage: React.FC = () => {
       </div>
 
       {gallery.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800">
+        <div className="glass-panel rounded-2xl p-6">
           <EmptyState
             icon={ImageIcon}
             title="Gallery is empty"
@@ -99,7 +99,7 @@ export const GalleryPage: React.FC = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               placeholder="e.g. Studio Interior Showcase"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
@@ -113,7 +113,7 @@ export const GalleryPage: React.FC = () => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="e.g. Salon, Products, Before/After"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
@@ -127,11 +127,11 @@ export const GalleryPage: React.FC = () => {
               value={imageUrl}
               onChange={(e) => setImageUrl(e.target.value)}
               placeholder="https://images.unsplash.com/..."
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
-          <div className="pt-3 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
+          <div className="pt-3 flex justify-end gap-2 border-t border-slate-200/50 dark:border-white/5">
             <button
               type="button"
               onClick={() => setIsUploadOpen(false)}
@@ -141,7 +141,7 @@ export const GalleryPage: React.FC = () => {
             </button>
             <button
               type="submit"
-              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20"
+              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20"
             >
               Upload Photo
             </button>

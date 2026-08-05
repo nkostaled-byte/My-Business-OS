@@ -18,7 +18,7 @@ export const CompanyPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-md">
+        <div className="glass-panel p-8 rounded-3xl">
           <ShieldCheck className="w-10 h-10 text-violet-600 mb-4" />
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Security & Reliability</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -26,7 +26,7 @@ export const CompanyPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-md">
+        <div className="glass-panel p-8 rounded-3xl">
           <Heart className="w-10 h-10 text-violet-600 mb-4" />
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Customer First</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
@@ -34,7 +34,7 @@ export const CompanyPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-md">
+        <div className="glass-panel p-8 rounded-3xl">
           <Award className="w-10 h-10 text-violet-600 mb-4" />
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Constant Innovation</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">

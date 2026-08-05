@@ -39,7 +39,7 @@ export const ResourcesPage: React.FC = () => {
         {articles.map((art, idx) => (
           <div
             key={idx}
-            className="p-8 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-md hover:shadow-xl transition-all flex flex-col justify-between"
+            className="glass-panel p-8 rounded-3xl transition-all flex flex-col justify-between"
           >
             <div>
               <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-violet-100 dark:bg-violet-950 text-violet-600 dark:text-violet-400 mb-4">

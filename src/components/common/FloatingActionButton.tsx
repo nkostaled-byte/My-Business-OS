@@ -78,9 +78,9 @@ export const FloatingActionButton: React.FC = () => {
                     act.onClick();
                     setIsOpen(false);
                   }}
-                  className="flex items-center gap-2.5 px-3.5 py-2 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-xl text-slate-800 dark:text-slate-100 text-xs font-semibold cursor-pointer group"
+                  className="flex items-center gap-2.5 px-3.5 py-2 rounded-xl glass-strong text-slate-800 dark:text-slate-100 text-xs font-semibold cursor-pointer group"
                 >
-                  <span className="group-hover:text-violet-600 dark:group-hover:text-violet-400 transition-colors">
+                  <span className="group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                     {act.label}
                   </span>
                   <div
@@ -99,10 +99,10 @@ export const FloatingActionButton: React.FC = () => {
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.92 }}
         onClick={() => setIsOpen(!isOpen)}
-        className={`relative z-40 w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-violet-600/30 cursor-pointer transition-colors ${
+        className={`relative z-40 w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-500/30 cursor-pointer transition-colors ${
           isOpen
             ? 'bg-slate-800 dark:bg-slate-700'
-            : 'bg-gradient-to-tr from-violet-600 via-purple-600 to-indigo-500'
+            : 'bg-indigo-600 hover:bg-indigo-500'
         }`}
         title="Quick Actions"
       >

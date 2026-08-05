@@ -18,7 +18,7 @@ export const ReviewsPage: React.FC = () => {
       </div>
 
       {reviews.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800">
+        <div className="glass-panel rounded-2xl p-6">
           <EmptyState
             icon={Star}
             title="No client reviews yet"
@@ -30,7 +30,7 @@ export const ReviewsPage: React.FC = () => {
           {reviews.map((rev) => (
             <div
               key={rev.id}
-              className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3"
+              className="p-5 rounded-2xl glass-panel space-y-3"
             >
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
@@ -57,9 +57,9 @@ export const ReviewsPage: React.FC = () => {
               </p>
 
               {rev.serviceOrProduct && (
-                <div className="pt-2 flex items-center justify-between border-t border-slate-100 dark:border-slate-800 text-[11px] text-slate-400">
+                <div className="pt-2 flex items-center justify-between border-t border-slate-200/50 dark:border-white/5 text-[11px] text-slate-400">
                   <span>Service: {rev.serviceOrProduct}</span>
-                  <span className="text-violet-600 dark:text-violet-400 flex items-center gap-1 font-semibold">
+                  <span className="text-indigo-600 dark:text-indigo-400 flex items-center gap-1 font-semibold">
                     <MessageSquare className="w-3 h-3" /> Reply
                   </span>
                 </div>

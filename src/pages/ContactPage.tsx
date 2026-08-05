@@ -124,7 +124,7 @@ export const ContactPage: React.FC = () => {
             {contactCards.map((c, idx) => {
               const Icon = c.icon;
               return (
-                <div key={idx} className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3 hover:border-violet-500/50 transition-colors flex flex-col justify-between">
+                <div key={idx} className="glass-panel rounded-3xl p-6 space-y-3 hover:border-indigo-400/50 transition-colors flex flex-col justify-between">
                   <div className="space-y-3">
                     <div className="w-10 h-10 rounded-2xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center">
                       <Icon className="w-5 h-5" />
@@ -146,7 +146,7 @@ export const ContactPage: React.FC = () => {
       <section className="py-20 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
           {/* Form */}
-          <div className="lg:col-span-2 bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-10 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-6">
+          <div className="lg:col-span-2 glass-panel rounded-3xl p-8 sm:p-10 space-y-6">
             <div>
               <h2 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">Send us a message</h2>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">Fill out the form below and our team will respond promptly.</p>
@@ -163,7 +163,7 @@ export const ContactPage: React.FC = () => {
                       placeholder="John Doe"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
+                      className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
                     />
                   </div>
                   <div>
@@ -173,7 +173,7 @@ export const ContactPage: React.FC = () => {
                       placeholder="My Business"
                       value={formData.businessName}
                       onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
+                      className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
                     />
                   </div>
                 </div>
@@ -187,7 +187,7 @@ export const ContactPage: React.FC = () => {
                       placeholder="john@business.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
+                      className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
                     />
                   </div>
                   <div>
@@ -197,7 +197,7 @@ export const ContactPage: React.FC = () => {
                       placeholder="+27 82 555 0192"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
+                      className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
                     />
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export const ContactPage: React.FC = () => {
                   <select
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
+                    className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
                   >
                     <option>General Enquiry</option>
                     <option>Sales & Pricing</option>
@@ -224,7 +224,7 @@ export const ContactPage: React.FC = () => {
                     placeholder="Tell us how we can help you..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
+                    className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
                   />
                 </div>
 
@@ -254,7 +254,7 @@ export const ContactPage: React.FC = () => {
 
           {/* Office Details & Hours */}
           <div className="space-y-6">
-            <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-6">
+            <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
               <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Headquarters</h3>
               
               <div className="space-y-4 text-xs">
@@ -308,7 +308,7 @@ export const ContactPage: React.FC = () => {
 
           <div className="space-y-4">
             {faqs.map((faq, idx) => (
-              <div key={idx} className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2">
+              <div key={idx} className="glass-panel rounded-2xl p-6 space-y-2">
                 <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{faq.q}</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{faq.a}</p>
               </div>

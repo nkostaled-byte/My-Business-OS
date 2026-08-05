@@ -74,7 +74,7 @@ export const SecurityPage: React.FC = () => {
           </div>
 
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto">
-            Enterprise-grade <span className="text-violet-600 dark:text-violet-400">Security</span>
+            Enterprise-grade <span className="text-indigo-600 dark:text-indigo-400">Security</span>
           </h1>
 
           <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 max-w-2xl mx-auto leading-relaxed">
@@ -95,7 +95,7 @@ export const SecurityPage: React.FC = () => {
             {securityCards.map((c, idx) => {
               const Icon = c.icon;
               return (
-                <div key={idx} className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4 hover:border-violet-500/50 transition-colors">
+                <div key={idx} className="glass-panel rounded-3xl p-8 space-y-4 hover:border-indigo-500/50 transition-colors">
                   <div className="w-12 h-12 rounded-2xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center">
                     <Icon className="w-6 h-6" />
                   </div>
@@ -117,7 +117,7 @@ export const SecurityPage: React.FC = () => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {complianceCards.map((comp, idx) => (
-            <div key={idx} className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-3">
+            <div key={idx} className="glass-panel rounded-3xl p-6 space-y-3">
               <div className="flex items-center gap-2 text-emerald-600 dark:text-emerald-400">
                 <CheckCircle2 className="w-5 h-5" />
                 <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{comp.title}</h3>
@@ -138,7 +138,7 @@ export const SecurityPage: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {bestPractices.map((bp, idx) => (
-              <div key={idx} className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 space-y-2">
+              <div key={idx} className="glass-panel rounded-3xl p-6 space-y-2">
                 <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">{bp.title}</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{bp.desc}</p>
               </div>
@@ -149,7 +149,7 @@ export const SecurityPage: React.FC = () => {
 
       {/* Responsible Disclosure */}
       <section className="py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 sm:p-10 border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="glass-panel rounded-3xl p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 text-[10px] font-bold uppercase">
               <ShieldAlert className="w-3.5 h-3.5" /> Responsible Disclosure

@@ -43,7 +43,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
       <div className="space-y-6 max-h-[80vh] overflow-y-auto pr-1">
         {/* Header & Toggle */}
         <div className="text-center space-y-3 pb-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-50 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 text-xs font-extrabold border border-violet-200 dark:border-violet-800">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold border border-indigo-200 dark:border-indigo-800">
             <Zap className="w-3.5 h-3.5" />
             <span>Unlock Advanced My Grafix OS Capabilities</span>
           </div>
@@ -65,7 +65,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
               type="button"
               onClick={() => setIsYearly(!isYearly)}
               className={`relative inline-flex h-6 w-12 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out ${
-                isYearly ? 'bg-violet-600' : 'bg-slate-300 dark:bg-slate-700'
+                isYearly ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-700'
               }`}
             >
               <span
@@ -102,14 +102,14 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
             return (
               <div
                 key={plan.id}
-                className={`rounded-2xl p-5 border flex flex-col justify-between transition-all relative ${
+                className={`glass-panel rounded-2xl p-5 flex flex-col justify-between transition-all relative ${
                   plan.isPopular
-                    ? 'border-2 border-violet-600 dark:border-violet-500 bg-violet-50/30 dark:bg-violet-950/20 shadow-lg shadow-violet-500/10'
-                    : 'border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900'
+                    ? 'border-2 border-indigo-500 shadow-indigo-500/10'
+                    : ''
                 }`}
               >
                 {plan.badge && (
-                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-violet-600 text-white text-[9px] font-extrabold uppercase tracking-wider shadow-xs">
+                  <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-full bg-indigo-600 text-white text-[9px] font-extrabold uppercase tracking-wider shadow-xs">
                     {plan.badge}
                   </div>
                 )}
@@ -142,7 +142,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
                   <div className="w-full h-px bg-slate-200/60 dark:bg-slate-800" />
 
                   {plan.includedFromPrevious && (
-                    <span className="text-[11px] font-bold text-violet-600 dark:text-violet-400 block">
+                    <span className="text-[11px] font-bold text-indigo-600 dark:text-indigo-400 block">
                       {plan.includedFromPrevious}
                     </span>
                   )}
@@ -150,7 +150,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
                   <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300">
                     {plan.features.map((feat, i) => (
                       <li key={i} className="flex items-center gap-2">
-                        <Check className="w-3.5 h-3.5 text-violet-600 shrink-0" />
+                        <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -181,7 +181,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
                       disabled={loadingPlanId !== null}
                       className={`w-full py-2.5 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
                         plan.isPopular
-                          ? 'text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-violet-500/20'
+                          ? 'text-white bg-indigo-600 hover:bg-indigo-500 shadow-indigo-500/20'
                           : 'text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700'
                       }`}
                     >
@@ -195,9 +195,9 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
         </div>
 
         {/* Security / Guarantee Footer */}
-        <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between text-xs text-slate-500">
+        <div className="glass-subtle p-4 rounded-2xl flex items-center justify-between text-xs text-slate-500">
           <div className="flex items-center gap-2">
-            <Shield className="w-4 h-4 text-violet-600" />
+            <Shield className="w-4 h-4 text-indigo-600" />
             <span>Secure 256-bit SSL checkout powered by Cloudflare</span>
           </div>
           <span className="font-semibold text-slate-700 dark:text-slate-300">Cancel anytime</span>

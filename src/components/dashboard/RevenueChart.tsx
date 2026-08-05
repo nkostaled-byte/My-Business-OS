@@ -29,7 +29,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-      className="p-6 rounded-xl bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 shadow-panel flex flex-col justify-between h-full"
+      className="p-6 rounded-xl glass-panel flex flex-col justify-between h-full"
     >
       <div className="flex items-center justify-between mb-4">
         <div>
@@ -43,7 +43,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
         <select
           value={period}
           onChange={(e) => setPeriod(e.target.value)}
-          className="px-3 py-1.5 rounded-lg text-xs font-medium bg-white dark:bg-[#12161c] border border-slate-200 dark:border-white/10 text-slate-700 dark:text-slate-200 shadow-panel focus:outline-hidden cursor-pointer"
+          className="px-3 py-1.5 rounded-lg text-xs font-medium glass-subtle text-slate-700 dark:text-slate-200 focus:outline-hidden cursor-pointer"
         >
           <option>This Month</option>
           <option>Last Quarter</option>

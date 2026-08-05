@@ -20,7 +20,7 @@ interface Props {
 }
 
 const inputCls =
-  'w-full px-3.5 py-2.5 rounded-lg bg-white dark:bg-[#12161c] border border-slate-200/80 dark:border-white/10 text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 transition-all';
+  'w-full px-3.5 py-2.5 rounded-lg glass-subtle text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 transition-all';
 
 export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }) => {
   const { success, error } = useToast();
@@ -81,7 +81,7 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
   return (
     <div className="space-y-4">
       {/* Search bar */}
-      <form onSubmit={search} className="bg-white dark:bg-[#0e1116] rounded-xl border border-slate-200/70 dark:border-white/10 shadow-panel p-4 sm:p-5">
+      <form onSubmit={search} className="glass-panel rounded-xl p-4 sm:p-5">
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_240px_auto] gap-2">
           <input
             autoFocus
@@ -109,7 +109,7 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
             {searching ? 'Searching…' : 'Find Businesses'}
           </motion.button>
         </div>
-        <div className="flex flex-wrap items-center gap-4 mt-3 pt-3 border-t border-slate-100 dark:border-white/5">
+        <div className="flex flex-wrap items-center gap-4 mt-3 pt-3 border-t border-slate-200/50 dark:border-white/5">
           <label className="inline-flex items-center gap-2 text-xs text-slate-600 dark:text-slate-300 cursor-pointer select-none">
             <input
               type="checkbox"
@@ -142,7 +142,7 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.18 }}
-              className="bg-white dark:bg-[#0e1116] rounded-xl border border-slate-200/70 dark:border-white/10 shadow-panel p-4 flex flex-col"
+              className="glass-panel rounded-xl p-4 flex flex-col"
             >
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
@@ -171,7 +171,7 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
                 </div>
               </div>
 
-              <div className="mt-3 pt-3 flex items-center justify-between gap-2 border-t border-slate-100 dark:border-white/5">
+              <div className="mt-3 pt-3 flex items-center justify-between gap-2 border-t border-slate-200/50 dark:border-white/5">
                 {b.website ? (
                   <button
                     onClick={() => onOpenAudit(b.website!)}

@@ -89,9 +89,9 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm overflow-hidden flex flex-col h-[750px]">
+    <div className="glass-panel rounded-3xl overflow-hidden flex flex-col h-[750px]">
       {/* Sub-tabs for Builder */}
-      <div className="flex items-center gap-1 p-2 bg-slate-50 dark:bg-slate-950/55 border-b border-slate-200 dark:border-slate-800 overflow-x-auto scrollbar-none">
+      <div className="flex items-center gap-1 p-2 bg-slate-50 dark:bg-slate-950/55 border-b border-slate-200/50 dark:border-white/5 overflow-x-auto scrollbar-none">
         {[
           { id: 'branding', label: 'Branding', icon: Palette },
           { id: 'fields', label: 'Fields', icon: Layout },
@@ -108,7 +108,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-white dark:bg-slate-800 text-violet-600 dark:text-violet-400 shadow-xs border border-slate-200/60 dark:border-slate-700'
+                  ? 'glass-subtle text-indigo-600 dark:text-indigo-400'
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
@@ -183,7 +183,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                     type="text"
                     value={config.primaryColor}
                     onChange={(e) => updateConfig({ primaryColor: e.target.value })}
-                    className="flex-1 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-slate-100"
+                    className="flex-1 px-3 py-2 rounded-xl glass-subtle text-xs font-mono text-slate-900 dark:text-slate-100"
                   />
                 </div>
               </div>
@@ -203,7 +203,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                     type="text"
                     value={config.buttonColor}
                     onChange={(e) => updateConfig({ buttonColor: e.target.value })}
-                    className="flex-1 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-slate-100"
+                    className="flex-1 px-3 py-2 rounded-xl glass-subtle text-xs font-mono text-slate-900 dark:text-slate-100"
                   />
                 </div>
               </div>
@@ -223,7 +223,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                     type="text"
                     value={config.buttonHoverColor}
                     onChange={(e) => updateConfig({ buttonHoverColor: e.target.value })}
-                    className="flex-1 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-slate-100"
+                    className="flex-1 px-3 py-2 rounded-xl glass-subtle text-xs font-mono text-slate-900 dark:text-slate-100"
                   />
                 </div>
               </div>
@@ -243,7 +243,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                     type="text"
                     value={config.backgroundColor}
                     onChange={(e) => updateConfig({ backgroundColor: e.target.value })}
-                    className="flex-1 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-slate-100"
+                    className="flex-1 px-3 py-2 rounded-xl glass-subtle text-xs font-mono text-slate-900 dark:text-slate-100"
                   />
                 </div>
               </div>
@@ -258,7 +258,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                 <select
                   value={config.borderRadius}
                   onChange={(e) => updateConfig({ borderRadius: e.target.value })}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-slate-100"
+                  className="w-full px-3 py-2.5 rounded-xl glass-subtle text-xs font-medium text-slate-900 dark:text-slate-100"
                 >
                   <option value="rounded-lg">Subtle (8px)</option>
                   <option value="rounded-xl">Standard (12px)</option>
@@ -274,7 +274,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                 <select
                   value={config.fontSize}
                   onChange={(e) => updateConfig({ fontSize: e.target.value })}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-slate-100"
+                  className="w-full px-3 py-2.5 rounded-xl glass-subtle text-xs font-medium text-slate-900 dark:text-slate-100"
                 >
                   <option value="text-xs">Compact</option>
                   <option value="text-sm">Standard (14px)</option>
@@ -378,7 +378,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                 type="text"
                 value={config.buttonText}
                 onChange={(e) => updateConfig({ buttonText: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs font-medium text-slate-900 dark:text-slate-100"
               />
             </div>
 
@@ -398,7 +398,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                     type="text"
                     value={config.buttonTextColor}
                     onChange={(e) => updateConfig({ buttonTextColor: e.target.value })}
-                    className="flex-1 px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono text-slate-900 dark:text-slate-100"
+                    className="flex-1 px-3 py-2 rounded-xl glass-subtle text-xs font-mono text-slate-900 dark:text-slate-100"
                   />
                 </div>
               </div>
@@ -410,7 +410,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                 <select
                   value={config.buttonWidth}
                   onChange={(e) => updateConfig({ buttonWidth: e.target.value as any })}
-                  className="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-slate-100"
+                  className="w-full px-3 py-2.5 rounded-xl glass-subtle text-xs font-medium text-slate-900 dark:text-slate-100"
                 >
                   <option value="full">Full Width (100%)</option>
                   <option value="auto">Auto Width</option>
@@ -439,7 +439,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                 type="text"
                 value={config.successHeading}
                 onChange={(e) => updateConfig({ successHeading: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs font-medium text-slate-900 dark:text-slate-100"
               />
             </div>
 
@@ -451,7 +451,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                 rows={3}
                 value={config.successBody}
                 onChange={(e) => updateConfig({ successBody: e.target.value })}
-                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium text-slate-900 dark:text-slate-100 resize-none"
+                className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs font-medium text-slate-900 dark:text-slate-100 resize-none"
               />
             </div>
           </div>

@@ -26,7 +26,7 @@ export const BookingsDonutChart: React.FC<BookingsDonutChartProps> = ({ overview
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-      className="p-6 rounded-xl bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 shadow-panel flex flex-col justify-between h-full"
+      className="p-6 rounded-xl glass-panel flex flex-col justify-between h-full"
     >
       <div className="flex items-center justify-between mb-2">
         <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">

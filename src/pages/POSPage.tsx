@@ -259,7 +259,7 @@ export const POSPage: React.FC = () => {
             onClick={() => setViewMode('register')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
               viewMode === 'register'
-                ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-xs'
+                ? 'glass-panel text-indigo-600 dark:text-indigo-400'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
@@ -270,7 +270,7 @@ export const POSPage: React.FC = () => {
             onClick={() => setViewMode('history')}
             className={`flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
               viewMode === 'history'
-                ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-xs'
+                ? 'glass-panel text-indigo-600 dark:text-indigo-400'
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
@@ -297,7 +297,7 @@ export const POSPage: React.FC = () => {
             {/* Left Column: Search, Category Filters, Item Grid (8 cols) */}
             <div className="lg:col-span-7 xl:col-span-8 space-y-4">
               {/* Top Filter Bar */}
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 glass-panel p-4 rounded-2xl">
                 <div className="relative flex-1">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                   <input
@@ -305,7 +305,7 @@ export const POSPage: React.FC = () => {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search catalog products & services..."
-                    className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+                    className="w-full pl-9 pr-4 py-2 glass-subtle rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100"
                   />
                 </div>
 
@@ -328,7 +328,7 @@ export const POSPage: React.FC = () => {
 
               {/* Item Catalog Grid */}
               {filteredCatalog.length === 0 ? (
-                <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800">
+                <div className="glass-panel rounded-2xl p-6">
                   <EmptyState
                     icon={Calculator}
                     title="POS Catalog is Empty"
@@ -343,7 +343,7 @@ export const POSPage: React.FC = () => {
                       whileHover={{ scale: 1.01, y: -2 }}
                       whileTap={{ scale: 0.98 }}
                       onClick={() => addToCart(item)}
-                      className="bg-white dark:bg-slate-900 p-3 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-violet-400 dark:hover:border-violet-600 transition-all cursor-pointer flex flex-col justify-between group"
+                      className="glass-panel p-3 rounded-2xl hover:border-indigo-400 dark:hover:border-indigo-600 transition-all cursor-pointer flex flex-col justify-between group"
                     >
                       <div>
                         <div className="relative h-24 rounded-xl overflow-hidden mb-2 bg-slate-100 dark:bg-slate-800">
@@ -369,7 +369,7 @@ export const POSPage: React.FC = () => {
                       </div>
 
                       <div className="mt-3 flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-800">
-                        <span className="text-xs font-extrabold text-violet-600 dark:text-violet-400">
+                        <span className="text-xs font-extrabold text-indigo-600 dark:text-indigo-400">
                           R{item.price.toLocaleString()}
                         </span>
                         <div className="w-6 h-6 rounded-lg bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center group-hover:bg-violet-600 group-hover:text-white transition-colors">
@@ -383,7 +383,7 @@ export const POSPage: React.FC = () => {
             </div>
 
             {/* Right Column: Cart Panel & Checkout (4-5 cols) */}
-            <div className="lg:col-span-5 xl:col-span-4 bg-white dark:bg-slate-900 rounded-2xl p-5 border border-slate-200/80 dark:border-slate-800 shadow-lg space-y-4">
+            <div className="lg:col-span-5 xl:col-span-4 glass-panel rounded-2xl p-5 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                 <h3 className="text-base font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                   <Receipt className="w-5 h-5 text-violet-600" />
@@ -476,7 +476,7 @@ export const POSPage: React.FC = () => {
                         onChange={(e) =>
                           setDiscountPercent(Math.max(0, Math.min(100, Number(e.target.value))))
                         }
-                        className="w-12 px-1.5 py-0.5 text-right rounded-md bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-bold"
+                        className="w-12 px-1.5 py-0.5 text-right rounded-md glass-subtle text-xs font-bold"
                       />
                       <span>% (-R{discountAmount.toFixed(0)})</span>
                     </div>
@@ -489,7 +489,7 @@ export const POSPage: React.FC = () => {
 
                   <div className="flex justify-between text-base font-extrabold text-slate-900 dark:text-slate-100 pt-2 border-t border-slate-200 dark:border-slate-700">
                     <span>Total</span>
-                    <span className="text-violet-600 dark:text-violet-400">
+                    <span className="text-indigo-600 dark:text-indigo-400">
                       R{grandTotal.toFixed(2)}
                     </span>
                   </div>
@@ -498,7 +498,7 @@ export const POSPage: React.FC = () => {
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={() => setIsCheckoutOpen(true)}
-                    className="w-full py-3 mt-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 cursor-pointer"
+                    className="w-full py-3 mt-2 rounded-xl text-xs sm:text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer"
                   >
                     Proceed to Payment
                   </motion.button>
@@ -584,7 +584,7 @@ export const POSPage: React.FC = () => {
             </div>
 
             {/* Filter Controls & Search */}
-            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 glass-panel p-4 rounded-2xl">
               <div className="relative flex-1">
                 <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
@@ -592,7 +592,7 @@ export const POSPage: React.FC = () => {
                   value={historySearch}
                   onChange={(e) => setHistorySearch(e.target.value)}
                   placeholder="Search receipt # or customer..."
-                  className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+                  className="w-full pl-9 pr-4 py-2 glass-subtle rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100"
                 />
               </div>
 
@@ -604,7 +604,7 @@ export const POSPage: React.FC = () => {
                       onClick={() => setHistoryPaymentFilter(pm)}
                       className={`px-3 py-1 rounded-lg text-xs font-semibold capitalize transition-all cursor-pointer ${
                         historyPaymentFilter === pm
-                          ? 'bg-white dark:bg-slate-900 text-violet-600 dark:text-violet-400 shadow-xs'
+                          ? 'glass-panel text-indigo-600 dark:text-indigo-400'
                           : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
                       }`}
                     >
@@ -619,7 +619,7 @@ export const POSPage: React.FC = () => {
 
             {/* Transactions List */}
             {filteredHistoryOrders.length === 0 ? (
-              <div className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800">
+              <div className="glass-panel rounded-3xl p-8">
                 <EmptyState
                   icon={History}
                   title="No POS Transactions Found"
@@ -627,11 +627,11 @@ export const POSPage: React.FC = () => {
                 />
               </div>
             ) : (
-              <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
+              <div className="glass-panel rounded-3xl overflow-hidden">
                 <div className="overflow-x-auto">
                   <table className="w-full text-left border-collapse">
                     <thead>
-                      <tr className="border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                      <tr className="border-b border-slate-200/50 dark:border-white/5 bg-slate-50/60 dark:bg-white/5 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                         <th className="py-3.5 px-4 sm:px-6">Receipt #</th>
                         <th className="py-3.5 px-4">Date & Time</th>
                         <th className="py-3.5 px-4">Customer</th>
@@ -641,14 +641,14 @@ export const POSPage: React.FC = () => {
                         <th className="py-3.5 px-4 sm:px-6 text-right">Action</th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60 text-xs sm:text-sm">
+                    <tbody className="divide-y divide-slate-200/50 dark:divide-white/5 text-xs sm:text-sm">
                       {filteredHistoryOrders.map((order, idx) => (
                         <motion.tr
                           key={order.id}
                           initial={{ opacity: 0, y: 6 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ duration: 0.15, delay: idx * 0.03 }}
-                          className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors"
+                          className="hover:bg-white/50 dark:hover:bg-white/5 transition-colors"
                         >
                           <td className="py-4 px-4 sm:px-6 font-mono font-bold text-slate-900 dark:text-slate-100">
                             {order.orderNumber}
@@ -691,7 +691,7 @@ export const POSPage: React.FC = () => {
       {/* Checkout Payment Modal */}
       {isCheckoutOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 max-w-md w-full shadow-2xl border border-slate-200 dark:border-slate-800 space-y-5 animate-in zoom-in-95">
+          <div className="glass-strong rounded-3xl p-6 max-w-md w-full space-y-5 animate-in zoom-in-95">
             {!saleCompleted ? (
               <>
                 <div className="text-center">
@@ -739,7 +739,7 @@ export const POSPage: React.FC = () => {
                     whileHover={{ scale: 1.02 }}
                     whileTap={{ scale: 0.98 }}
                     onClick={handleCompleteSale}
-                    className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 cursor-pointer"
+                    className="flex-1 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer"
                   >
                     Complete Sale
                   </motion.button>
@@ -861,7 +861,7 @@ export const POSPage: React.FC = () => {
                 </div>
                 <div className="flex justify-between text-sm font-extrabold text-slate-900 dark:text-slate-100 pt-2 border-t border-slate-200 dark:border-slate-700">
                   <span>TOTAL PAID:</span>
-                  <span className="text-violet-600 dark:text-violet-400">
+                  <span className="text-indigo-600 dark:text-indigo-400">
                     R{selectedReceipt.totalAmount.toFixed(2)}
                   </span>
                 </div>

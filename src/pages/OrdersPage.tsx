@@ -209,28 +209,28 @@ export const OrdersPage: React.FC = () => {
         <form onSubmit={handleCreateOrder} className="space-y-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Customer Name</label>
-            <input type="text" required value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="e.g. Sipho Dlamini" className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100" />
+            <input type="text" required value={customerName} onChange={(e) => setCustomerName(e.target.value)} placeholder="e.g. Sipho Dlamini" className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100" />
           </div>
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Customer Email</label>
-            <input type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} placeholder="e.g. sipho@example.com" className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100" />
+            <input type="email" value={customerEmail} onChange={(e) => setCustomerEmail(e.target.value)} placeholder="e.g. sipho@example.com" className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100" />
           </div>
 
           <div>
             <div className="flex items-center justify-between mb-1">
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">Items</label>
-              <button type="button" onClick={addLineItem} className="inline-flex items-center gap-1 text-xs font-bold text-violet-600 dark:text-violet-400 hover:underline cursor-pointer">
+              <button type="button" onClick={addLineItem} className="inline-flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer">
                 <Plus className="w-3.5 h-3.5" /> Add item
               </button>
             </div>
             <div className="space-y-3">
               {lineItems.map((item, idx) => (
-                <div key={idx} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+                <div key={idx} className="p-3 rounded-xl glass-subtle space-y-2">
                   <div className="flex items-center gap-2">
                     <select
                       value={item.sourceId || ''}
                       onChange={(e) => pickCatalogItem(idx, e.target.value)}
-                      className="flex-1 px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                      className="flex-1 px-3 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
                     >
                       <option value="">Select product or service…</option>
                       {products.length > 0 && (
@@ -264,7 +264,7 @@ export const OrdersPage: React.FC = () => {
                         value={item.description}
                         onChange={(e) => updateLineItem(idx, 'description', e.target.value)}
                         placeholder="Item name"
-                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                        className="w-full px-3 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
                       />
                     </div>
                     <div>
@@ -274,7 +274,7 @@ export const OrdersPage: React.FC = () => {
                         value={item.quantity}
                         onChange={(e) => updateLineItem(idx, 'quantity', parseInt(e.target.value) || 0)}
                         placeholder="Qty"
-                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                        className="w-full px-3 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
                       />
                     </div>
                     <div>
@@ -285,7 +285,7 @@ export const OrdersPage: React.FC = () => {
                         value={item.price}
                         onChange={(e) => updateLineItem(idx, 'price', parseFloat(e.target.value) || 0)}
                         placeholder="Price"
-                        className="w-full px-3 py-2 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                        className="w-full px-3 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
                       />
                     </div>
                   </div>
@@ -301,15 +301,15 @@ export const OrdersPage: React.FC = () => {
 
           <div>
             <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Status</label>
-            <select value={status} onChange={(e) => setStatus(e.target.value as OrderStatus)} className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100">
+            <select value={status} onChange={(e) => setStatus(e.target.value as OrderStatus)} className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100">
               <option value="completed">Completed</option>
               <option value="processing">Processing</option>
               <option value="pending">Pending</option>
             </select>
           </div>
-          <div className="pt-3 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
+          <div className="pt-3 flex justify-end gap-2 border-t border-slate-200/50 dark:border-white/5">
             <button type="button" onClick={() => setIsModalOpen(false)} className="px-4 py-2 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer">Cancel</button>
-            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer">Save Order</motion.button>
+            <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} type="submit" className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer">Save Order</motion.button>
           </div>
         </form>
       </Modal>
@@ -339,7 +339,7 @@ export const OrdersPage: React.FC = () => {
             </div>
 
             {selectedOrder.items && selectedOrder.items.length > 0 && (
-              <div className="border-t border-slate-100 dark:border-slate-800 pt-4">
+              <div className="border-t border-slate-200/50 dark:border-white/5 pt-4">
                 <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Items</h4>
                 <div className="space-y-2">
                   {selectedOrder.items.map((item, idx) => (
@@ -353,14 +353,14 @@ export const OrdersPage: React.FC = () => {
             )}
 
             {selectedOrder.paymentMethod && (
-              <div className="border-t border-slate-100 dark:border-slate-800 pt-4 flex justify-between text-xs">
+              <div className="border-t border-slate-200/50 dark:border-white/5 pt-4 flex justify-between text-xs">
                 <span className="text-slate-400 font-medium">Payment Method</span>
                 <span className="font-semibold uppercase">{selectedOrder.paymentMethod}</span>
               </div>
             )}
 
             {/* Status change */}
-            <div className="border-t border-slate-100 dark:border-slate-800 pt-4">
+            <div className="border-t border-slate-200/50 dark:border-white/5 pt-4">
               <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Change Status</h4>
               <div className="flex flex-wrap gap-2">
                 {statusFlow[selectedOrder.status]?.length === 0 ? (

@@ -282,10 +282,10 @@ export const OnboardingPage: React.FC = () => {
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setStep('create')}
-                  className="text-left p-6 sm:p-8 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-violet-300 dark:hover:border-violet-700 shadow-sm hover:shadow-xl hover:shadow-violet-500/5 transition-all duration-200 cursor-pointer group"
+                  className="text-left p-6 sm:p-8 rounded-2xl glass-panel border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-400/50 transition-all duration-200 cursor-pointer group"
                 >
-                  <div className="w-12 h-12 rounded-xl bg-violet-100 dark:bg-violet-950/60 flex items-center justify-center mb-4 group-hover:bg-violet-200 dark:group-hover:bg-violet-900/60 transition-colors">
-                    <Building2 className="w-6 h-6 text-violet-600 dark:text-violet-400" />
+                  <div className="w-12 h-12 rounded-xl bg-indigo-100 dark:bg-indigo-950/60 flex items-center justify-center mb-4 group-hover:bg-indigo-200 dark:group-hover:bg-indigo-900/60 transition-colors">
+                    <Building2 className="w-6 h-6 text-indigo-600 dark:text-indigo-400" />
                   </div>
                   <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
                     Create New Business
@@ -293,7 +293,7 @@ export const OnboardingPage: React.FC = () => {
                   <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
                     Start using My Grafix OS immediately. You can connect a My Grafix Media website later.
                   </p>
-                  <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-violet-600 dark:text-violet-400 group-hover:gap-2 transition-all">
+                  <div className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:gap-2 transition-all">
                     <span>Create Business</span>
                     <ArrowLeft className="w-3.5 h-3.5 rotate-180" />
                   </div>
@@ -303,7 +303,7 @@ export const OnboardingPage: React.FC = () => {
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => setStep('claim')}
-                  className="text-left p-6 sm:p-8 rounded-2xl bg-white dark:bg-slate-900 border-2 border-slate-200 dark:border-slate-800 hover:border-emerald-300 dark:hover:border-emerald-700 shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-200 cursor-pointer group"
+                  className="text-left p-6 sm:p-8 rounded-2xl glass-panel border-2 border-slate-200 dark:border-slate-800 hover:border-indigo-400/50 transition-all duration-200 cursor-pointer group"
                 >
                   <div className="w-12 h-12 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 flex items-center justify-center mb-4 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-900/60 transition-colors">
                     <KeyRound className="w-6 h-6 text-emerald-600 dark:text-emerald-400" />
@@ -351,7 +351,7 @@ export const OnboardingPage: React.FC = () => {
                     await signOut();
                     await signInWithGoogle();
                   }}
-                  className="inline-flex items-center gap-1.5 text-xs font-medium text-violet-500 hover:text-violet-600 dark:hover:text-violet-400 transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs font-medium text-indigo-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors cursor-pointer"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   <span>Switch Google Account</span>
@@ -368,7 +368,7 @@ export const OnboardingPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80 dark:border-slate-800"
+              className="glass-strong rounded-3xl p-6 sm:p-8"
             >
               <button
                 onClick={goBack}
@@ -420,7 +420,7 @@ export const OnboardingPage: React.FC = () => {
                       value={businessName}
                       onChange={(e) => setBusinessName(e.target.value)}
                       placeholder="e.g. Premium Barbershop &amp; Spa"
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
                     />
                   </div>
                 </div>
@@ -434,7 +434,7 @@ export const OnboardingPage: React.FC = () => {
                     <select
                       value={businessType}
                       onChange={(e) => setBusinessType(e.target.value)}
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all appearance-none"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all appearance-none"
                     >
                       <option value="">Select your business type</option>
                       {BUSINESS_TYPES.map((t) => (
@@ -454,7 +454,7 @@ export const OnboardingPage: React.FC = () => {
                       <select
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
-                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all appearance-none"
+                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all appearance-none"
                       >
                         {COUNTRIES.map((c) => (
                           <option key={c.code} value={c.code}>{c.name}</option>
@@ -472,7 +472,7 @@ export const OnboardingPage: React.FC = () => {
                       <select
                         value={currency}
                         onChange={(e) => setCurrency(e.target.value)}
-                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all appearance-none"
+                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all appearance-none"
                       >
                         {CURRENCIES.map((c) => (
                           <option key={c.code} value={c.code}>{c.label}</option>
@@ -491,7 +491,7 @@ export const OnboardingPage: React.FC = () => {
                     <select
                       value={timezone}
                       onChange={(e) => setTimezone(e.target.value)}
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all appearance-none"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all appearance-none"
                     >
                       {TIMEZONES.map((tz) => (
                         <option key={tz} value={tz}>{tz.replace('_', ' ')}</option>
@@ -512,7 +512,7 @@ export const OnboardingPage: React.FC = () => {
                         value={businessEmail}
                         onChange={(e) => setBusinessEmail(e.target.value)}
                         placeholder={userEmail || "business@example.com"}
-                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
+                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
                       />
                     </div>
                   </div>
@@ -528,7 +528,7 @@ export const OnboardingPage: React.FC = () => {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="+27 82 123 4567"
-                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
+                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
                       />
                     </div>
                   </div>
@@ -543,7 +543,7 @@ export const OnboardingPage: React.FC = () => {
                     value={logoUrl}
                     onChange={(e) => setLogoUrl(e.target.value)}
                     placeholder="https://example.com/logo.png"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
                   />
                 </div>
 
@@ -579,7 +579,7 @@ export const OnboardingPage: React.FC = () => {
                     whileTap={{ scale: 0.99 }}
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full py-3 rounded-xl text-xs sm:text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-lg shadow-violet-500/20 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+                    className="w-full py-3 rounded-xl text-xs sm:text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-lg shadow-indigo-500/20 active:scale-[0.98] transition-all cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
                     {isSubmitting ? (
                       <>
@@ -606,7 +606,7 @@ export const OnboardingPage: React.FC = () => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -12 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-              className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/80 dark:border-slate-800"
+              className="glass-strong rounded-3xl p-6 sm:p-8"
             >
               <button
                 onClick={goBack}
@@ -665,7 +665,7 @@ export const OnboardingPage: React.FC = () => {
                       value={claimCode}
                       onChange={(e) => setClaimCode(e.target.value)}
                       placeholder="e.g. ABC123XYZ"
-                      className="w-full pl-10 pr-3.5 py-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/30 transition-all uppercase tracking-widest font-mono"
+                      className="w-full pl-10 pr-3.5 py-3 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-emerald-500/30 transition-all uppercase tracking-widest font-mono"
                       maxLength={20}
                     />
                   </div>

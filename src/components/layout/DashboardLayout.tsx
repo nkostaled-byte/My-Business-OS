@@ -6,6 +6,7 @@ import { Header } from './Header';
 import { ToastProvider } from '../../context/ToastContext';
 import { FloatingActionButton } from '../common/FloatingActionButton';
 import { UpgradeRequired } from '../common/UpgradeRequired';
+import { AppBackdrop } from '../common/AppBackdrop';
 import { useData } from '../../context/DataContext';
 import { getPageMinPlan, getPlanTier } from '../../config/plans';
 
@@ -30,10 +31,11 @@ export const DashboardLayout: React.FC<{ role?: 'owner' | 'admin' | 'staff' | nu
 
   return (
     <ToastProvider>
-      <div className="min-h-screen bg-[#f7f8fa] dark:bg-[#0a0c0f] text-slate-900 dark:text-slate-100 transition-colors font-sans">
+      <div className="relative min-h-screen bg-[#f7f8fa] dark:bg-[#0a0c0f] text-slate-900 dark:text-slate-100 transition-colors font-sans">
+        <AppBackdrop />
         <Sidebar mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} role={role} />
         
-        <div className="lg:pl-64 flex flex-col min-h-screen">
+        <div className="relative z-10 lg:pl-64 flex flex-col min-h-screen">
           <Header onOpenMobileMenu={() => setMobileOpen(true)} />
           
           <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto overflow-x-hidden">

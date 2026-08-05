@@ -255,7 +255,7 @@ export const BillingPage: React.FC = () => {
               {!isYearly && (
                 <motion.div
                   layoutId="dashBillingToggle"
-                  className="absolute inset-0 bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200/60 dark:border-slate-700"
+                  className="absolute inset-0 glass-panel rounded-xl"
                   transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                 />
               )}
@@ -274,12 +274,12 @@ export const BillingPage: React.FC = () => {
               {isYearly && (
                 <motion.div
                   layoutId="dashBillingToggle"
-                  className="absolute inset-0 bg-white dark:bg-slate-900 rounded-xl shadow-md border border-slate-200/60 dark:border-slate-700"
+                  className="absolute inset-0 glass-panel rounded-xl"
                   transition={{ type: 'spring', stiffness: 500, damping: 35 }}
                 />
               )}
               <span className="relative z-10">Yearly</span>
-              <span className="relative z-10 px-2 py-0.5 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 text-white text-[10px] font-extrabold uppercase tracking-wide">
+              <span className="relative z-10 px-2 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] font-extrabold uppercase tracking-wide">
                 Save 20%
               </span>
             </button>
@@ -300,12 +300,12 @@ export const BillingPage: React.FC = () => {
               whileHover={{ y: -4 }}
               className={`rounded-[28px] p-6 border flex flex-col justify-between transition-all relative ${
                 plan.isPopular
-                  ? 'border-2 border-violet-600 dark:border-violet-500 bg-white dark:bg-slate-900 shadow-2xl shadow-violet-500/20'
-                  : 'border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-lg'
+                  ? 'border-2 border-indigo-600 dark:border-indigo-500 glass-panel shadow-2xl shadow-indigo-500/20'
+                  : 'glass-panel'
               }`}
             >
               {plan.badge && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 text-white text-[10px] font-extrabold uppercase tracking-wider shadow-md">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] font-extrabold uppercase tracking-wider shadow-md">
                   {plan.badge}
                 </div>
               )}
@@ -338,7 +338,7 @@ export const BillingPage: React.FC = () => {
                 <div className="w-full h-px bg-slate-100 dark:bg-slate-800 my-4" />
 
                 {plan.includedFromPrevious && (
-                  <span className="text-[10px] font-bold text-violet-600 dark:text-violet-400 block mb-2">
+                  <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 block mb-2">
                     {plan.includedFromPrevious}
                   </span>
                 )}
@@ -382,7 +382,7 @@ export const BillingPage: React.FC = () => {
                     className={`w-full py-3 rounded-xl text-xs font-bold transition-colors cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
                       isCurrent
                         ? 'text-slate-500 dark:text-slate-400 bg-slate-100 dark:bg-slate-800'
-                        : 'text-violet-600 dark:text-violet-400 border-2 border-violet-600 dark:border-violet-500 hover:bg-violet-50 dark:hover:bg-violet-950/40'
+                        : 'text-indigo-600 dark:text-indigo-400 border-2 border-indigo-600 dark:border-indigo-500 hover:bg-indigo-50 dark:hover:bg-indigo-500/10'
                     }`}
                   >
                     {checkoutLoading === plan.id ? 'Starting…' : `Switch to ${plan.name}`}
@@ -454,8 +454,8 @@ export const BillingPage: React.FC = () => {
                 whileHover={{ y: -4 }}
                 className={`rounded-[28px] p-6 border flex flex-col justify-between transition-all relative ${
                   plan.isPopular
-                    ? 'border-2 border-emerald-500 bg-white dark:bg-slate-900 shadow-2xl shadow-emerald-500/10'
-                    : 'border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-lg'
+                    ? 'border-2 border-emerald-500 glass-panel shadow-2xl shadow-emerald-500/10'
+                    : 'glass-panel'
                 }`}
               >
                 {plan.badge && (
@@ -548,25 +548,25 @@ export const BillingPage: React.FC = () => {
           </p>
         </div>
 
-        <div className="bg-white dark:bg-slate-900 rounded-[28px] border border-slate-200/80 dark:border-slate-800 shadow-xl overflow-hidden">
+        <div className="glass-panel rounded-[28px] overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse">
               <thead>
-                  <tr className="border-b border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-800/50 text-xs font-bold text-slate-900 dark:text-white">
+                  <tr className="border-b border-slate-200/50 dark:border-white/5 bg-slate-50/60 dark:bg-white/5 text-xs font-bold text-slate-900 dark:text-white">
                     <th className="py-5 px-6 sm:px-8 w-2/5">Capability</th>
                     <th className="py-5 px-4 text-center w-[15%]">Free</th>
                     <th className="py-5 px-4 text-center w-[15%]">Starter</th>
-                    <th className="py-5 px-4 text-center w-[15%] text-violet-600 bg-violet-50/50 dark:bg-violet-950/30">
+                    <th className="py-5 px-4 text-center w-[15%] text-indigo-600 bg-indigo-50/40 dark:bg-indigo-500/10">
                       Business
                     </th>
                     <th className="py-5 px-4 text-center w-[15%]">Professional</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800 text-xs sm:text-sm">
+                <tbody className="divide-y divide-slate-200/50 dark:divide-white/5 text-xs sm:text-sm">
                   {comparisonRows.map((row, idx) => (
                     <tr
                       key={idx}
-                      className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
+                      className="hover:bg-white/50 dark:hover:bg-white/5 transition-colors"
                     >
                       <td className="py-4 px-6 sm:px-8 font-semibold text-slate-800 dark:text-slate-200">
                         {row.feature}
@@ -585,7 +585,7 @@ export const BillingPage: React.FC = () => {
                           <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
                         )}
                       </td>
-                      <td className="py-4 px-4 text-center bg-violet-50/20 dark:bg-violet-950/10">
+                      <td className="py-4 px-4 text-center bg-indigo-50/20 dark:bg-indigo-500/10">
                         {row.business ? (
                           <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
                         ) : (
@@ -619,12 +619,12 @@ export const BillingPage: React.FC = () => {
             return (
               <div
                 key={idx}
-                className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden"
+                className="glass-panel rounded-2xl overflow-hidden"
               >
                 <button
                   type="button"
                   onClick={() => setOpenFaq(isOpen ? null : idx)}
-                  className="w-full p-4 text-left flex items-center justify-between gap-4 font-bold text-sm text-slate-900 dark:text-white cursor-pointer hover:text-violet-600 transition-colors"
+                  className="w-full p-4 text-left flex items-center justify-between gap-4 font-bold text-sm text-slate-900 dark:text-white cursor-pointer hover:text-indigo-600 transition-colors"
                 >
                   <span>{faq.q}</span>
                   <ChevronDown

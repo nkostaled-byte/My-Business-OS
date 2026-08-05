@@ -33,7 +33,7 @@ const STATUS_BAR: Record<LeadStatus, string> = {
 };
 
 const inputCls =
-  'w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all';
+  'w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all';
 
 export const LeadsPage: React.FC = () => {
   const { success, error } = useToast();
@@ -173,7 +173,7 @@ export const LeadsPage: React.FC = () => {
                   ? 'bg-slate-900 text-white dark:bg-white dark:text-slate-900 shadow-panel'
                   : 'text-indigo-600 dark:text-indigo-400 hover:bg-white dark:hover:bg-white/5'
                 : tab === key
-                  ? 'bg-white dark:bg-[#0e1116] text-slate-900 dark:text-slate-100 shadow-panel'
+                  ? 'glass-panel text-slate-900 dark:text-slate-100'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
             }`}
           >
@@ -216,7 +216,7 @@ const StatCard: React.FC<{ icon: React.ComponentType<{ className?: string }>; la
     : tone === 'emerald' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
     : 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400';
   return (
-    <div className="flex items-center gap-3 p-4 rounded-xl bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 shadow-panel">
+    <div className="flex items-center gap-3 p-4 rounded-xl glass-panel">
       <div className={`w-10 h-10 rounded-lg flex items-center justify-center ${toneCls}`}>
         <Icon className="w-5 h-5" />
       </div>
@@ -258,13 +258,13 @@ const LeadsTable: React.FC<{ leads: Lead[]; loading: boolean; onSelect: (id: str
   };
 
   return (
-    <div className="bg-white dark:bg-[#0e1116] rounded-xl border border-slate-200/70 dark:border-white/10 shadow-panel overflow-hidden">
+    <div className="glass-panel rounded-xl overflow-hidden">
       <div className="p-4 sm:p-5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 border-b border-slate-100 dark:border-white/5">
         <div className="relative flex-1 max-w-sm">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search leads..." className={inputCls + ' pl-9'} />
         </div>
-        <select value={status} onChange={(e) => setStatus(e.target.value)} className="self-end sm:self-auto px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-700 dark:text-slate-200 cursor-pointer">
+        <select value={status} onChange={(e) => setStatus(e.target.value)} className="self-end sm:self-auto px-3 py-2 rounded-xl glass-subtle text-xs text-slate-700 dark:text-slate-200 cursor-pointer">
           <option value="">All statuses</option>
           {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
         </select>
@@ -278,7 +278,7 @@ const LeadsTable: React.FC<{ leads: Lead[]; loading: boolean; onSelect: (id: str
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs sm:text-sm">
             <thead>
-              <tr className="bg-slate-50/80 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-medium">
+              <tr className="bg-slate-50/60 dark:bg-white/5 border-b border-slate-200/50 dark:border-white/5 text-slate-500 dark:text-slate-400 font-medium">
                 <th className="py-3 px-4 sm:px-6">Lead</th>
                 <th className="py-3 px-4">Status</th>
                 <th className="py-3 px-4">Stage</th>
@@ -289,9 +289,9 @@ const LeadsTable: React.FC<{ leads: Lead[]; loading: boolean; onSelect: (id: str
                 <th className="py-3 px-4"></th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+            <tbody className="divide-y divide-slate-200/50 dark:divide-white/5">
               {filtered.map((l, i) => (
-                <motion.tr key={l.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15, delay: Math.min(i, 20) * 0.02 }} onClick={() => onSelect(l.id)} className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors cursor-pointer">
+                <motion.tr key={l.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15, delay: Math.min(i, 20) * 0.02 }} onClick={() => onSelect(l.id)} className="hover:bg-white/50 dark:hover:bg-white/5 transition-colors cursor-pointer">
                   <td className="py-3.5 px-4 sm:px-6">
                     <div className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">{l.leadName}<GooglePlaceBadge lead={l} /></div>
                     <div className="text-[11px] text-slate-400 flex items-center gap-1"><Globe className="w-3 h-3" />{l.domain || l.website || '—'}</div>
@@ -325,7 +325,7 @@ const OverviewTab: React.FC<{ leads: Lead[]; totals: { total: number; byStatus: 
   const recent = leads.slice(0, 5);
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-      <div className="lg:col-span-2 bg-white dark:bg-[#0e1116] rounded-xl border border-slate-200/70 dark:border-white/10 shadow-panel p-5">
+      <div className="lg:col-span-2 glass-panel rounded-xl p-5">
         <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2"><PieChart className="w-4 h-4 text-indigo-500" /> Pipeline breakdown</h3>
         {totals.total === 0 ? (
           <p className="text-xs text-slate-400">No leads yet.</p>
@@ -350,7 +350,7 @@ const OverviewTab: React.FC<{ leads: Lead[]; totals: { total: number; byStatus: 
         )}
       </div>
 
-      <div className="bg-white dark:bg-[#0e1116] rounded-xl border border-slate-200/70 dark:border-white/10 shadow-panel p-5">
+      <div className="glass-panel rounded-xl p-5">
         <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-4 flex items-center gap-2"><Trophy className="w-4 h-4 text-amber-500" /> Recent leads</h3>
         {recent.length === 0 ? (
           <p className="text-xs text-slate-400">Run an audit to qualify your first lead.</p>

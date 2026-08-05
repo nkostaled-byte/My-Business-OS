@@ -16,8 +16,8 @@ export const UpgradeRequired: React.FC<UpgradeRequiredProps> = ({ requiredPlan }
   return (
     <div className="min-h-[60vh] flex items-center justify-center">
       <div className="max-w-md w-full text-center px-4">
-        <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-violet-100 dark:bg-violet-950/50 flex items-center justify-center">
-          <Lock className="w-8 h-8 text-violet-600 dark:text-violet-400" />
+        <div className="w-16 h-16 mx-auto mb-5 rounded-2xl bg-indigo-50 dark:bg-indigo-500/10 flex items-center justify-center">
+          <Lock className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />
         </div>
         <h1 className="text-xl font-extrabold text-slate-900 dark:text-white">
           This feature requires the {requiredName} plan
@@ -28,7 +28,7 @@ export const UpgradeRequired: React.FC<UpgradeRequiredProps> = ({ requiredPlan }
         </p>
         <Link
           to="/app/billing"
-          className="mt-6 inline-block px-6 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 transition-all cursor-pointer"
+          className="mt-6 inline-block px-6 py-3 rounded-xl text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 transition-all cursor-pointer"
         >
           View Plans &amp; Upgrade
         </Link>

@@ -168,7 +168,7 @@ export const InventoryPage: React.FC = () => {
               value={stock}
               onChange={(e) => setStock(e.target.value)}
               placeholder="0"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
@@ -183,7 +183,7 @@ export const InventoryPage: React.FC = () => {
                 value={minThreshold}
                 onChange={(e) => setMinThreshold(e.target.value)}
                 placeholder="10"
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
               />
             </div>
 
@@ -198,12 +198,12 @@ export const InventoryPage: React.FC = () => {
                 value={unitCost}
                 onChange={(e) => setUnitCost(e.target.value)}
                 placeholder="0.00"
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
               />
             </div>
           </div>
 
-          <div className="pt-3 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
+          <div className="pt-3 flex justify-end gap-2 border-t border-slate-200/50 dark:border-white/5">
             <button
               type="button"
               onClick={closeModal}
@@ -216,7 +216,7 @@ export const InventoryPage: React.FC = () => {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={saving}
-              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer disabled:opacity-60"
+              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer disabled:opacity-60"
             >
               {saving ? 'Saving...' : 'Save Stock'}
             </motion.button>

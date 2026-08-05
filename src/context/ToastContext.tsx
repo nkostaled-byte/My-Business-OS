@@ -68,7 +68,7 @@ export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ childre
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -10, scale: 0.95 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="pointer-events-auto relative overflow-hidden rounded-xl bg-white dark:bg-[#12161c] border border-slate-200/80 dark:border-white/10 p-4 shadow-popover flex items-start gap-3"
+              className="pointer-events-auto relative overflow-hidden rounded-xl glass-strong p-4 flex items-start gap-3"
             >
               {/* Type Accent */}
               <div className="shrink-0 mt-0.5">

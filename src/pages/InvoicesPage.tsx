@@ -335,7 +335,7 @@ export const InvoicesPage: React.FC = () => {
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
                 placeholder="e.g. Apex Beauty Suppliers"
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
               />
             </div>
             <div>
@@ -348,7 +348,7 @@ export const InvoicesPage: React.FC = () => {
                 value={clientEmail}
                 onChange={(e) => setClientEmail(e.target.value)}
                 placeholder="billing@apexbeauty.co.za"
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
               />
             </div>
           </div>
@@ -362,7 +362,7 @@ export const InvoicesPage: React.FC = () => {
               <button
                 type="button"
                 onClick={addLineItem}
-                className="text-[11px] font-bold text-violet-600 hover:text-violet-700 dark:text-violet-400 cursor-pointer"
+                className="text-[11px] font-bold text-indigo-600 hover:text-indigo-700 dark:text-indigo-400 cursor-pointer"
               >
                 + Add Item
               </button>
@@ -405,13 +405,13 @@ export const InvoicesPage: React.FC = () => {
                       value={item.description}
                       onChange={(e) => updateLineItem(idx, 'description', e.target.value)}
                       placeholder="Item description"
-                      className="flex-1 min-w-0 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                      className="flex-1 min-w-0 px-3 py-1.5 rounded-lg glass-subtle text-xs text-slate-900 dark:text-slate-100"
                     />
                   ) : item.source === 'product' ? (
                     <select
                       value={item.sourceId || ''}
                       onChange={(e) => pickProduct(idx, e.target.value)}
-                      className="flex-1 min-w-0 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                      className="flex-1 min-w-0 px-3 py-1.5 rounded-lg glass-subtle text-xs text-slate-900 dark:text-slate-100"
                     >
                       <option value="">Select product...</option>
                       {products
@@ -426,7 +426,7 @@ export const InvoicesPage: React.FC = () => {
                     <select
                       value={item.sourceId || ''}
                       onChange={(e) => pickService(idx, e.target.value)}
-                      className="flex-1 min-w-0 px-3 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                      className="flex-1 min-w-0 px-3 py-1.5 rounded-lg glass-subtle text-xs text-slate-900 dark:text-slate-100"
                     >
                       <option value="">Select service...</option>
                       {services
@@ -444,7 +444,7 @@ export const InvoicesPage: React.FC = () => {
                     min={1}
                     value={item.quantity}
                     onChange={(e) => updateLineItem(idx, 'quantity', Math.max(1, parseInt(e.target.value) || 1))}
-                    className="w-14 px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-center text-slate-900 dark:text-slate-100"
+                    className="w-14 px-2 py-1.5 rounded-lg glass-subtle text-xs text-center text-slate-900 dark:text-slate-100"
                     title="Qty"
                   />
                   <input
@@ -453,7 +453,7 @@ export const InvoicesPage: React.FC = () => {
                     step={0.01}
                     value={item.price}
                     onChange={(e) => updateLineItem(idx, 'price', parseFloat(e.target.value) || 0)}
-                    className="w-20 px-2 py-1.5 rounded-lg bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-right text-slate-900 dark:text-slate-100"
+                    className="w-20 px-2 py-1.5 rounded-lg glass-subtle text-xs text-right text-slate-900 dark:text-slate-100"
                     title="Price"
                   />
                   <span className="text-[11px] font-semibold text-slate-500 w-14 text-right flex-shrink-0">
@@ -503,7 +503,7 @@ export const InvoicesPage: React.FC = () => {
               <select
                 value={status}
                 onChange={(e) => setStatus(e.target.value as InvoiceStatus)}
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
               >
                 <option value="sent">Sent</option>
                 <option value="draft">Draft</option>
@@ -519,7 +519,7 @@ export const InvoicesPage: React.FC = () => {
                 required
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
               />
             </div>
           </div>
@@ -589,7 +589,7 @@ export const InvoicesPage: React.FC = () => {
                 <span className="text-slate-400 block mb-1 flex items-center gap-1">
                   <DollarSign className="w-3.5 h-3.5" /> Amount
                 </span>
-                <span className="font-extrabold text-lg text-violet-600 dark:text-violet-400">
+                <span className="font-extrabold text-lg text-indigo-600 dark:text-indigo-400">
                   R{(selectedInvoice.total ?? selectedInvoice.amount ?? 0).toLocaleString()}
                 </span>
               </div>

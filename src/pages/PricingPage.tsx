@@ -154,7 +154,7 @@ export const PricingPage: React.FC = () => {
             className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-white tracking-tight leading-[1.1]"
           >
             Simple, transparent pricing built for{' '}
-            <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-500 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 bg-clip-text text-transparent">
               your growth
             </span>
           </motion.h1>
@@ -188,7 +188,7 @@ export const PricingPage: React.FC = () => {
               type="button"
               onClick={() => setIsYearly(!isYearly)}
               className={`relative inline-flex h-7 w-14 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
-                isYearly ? 'bg-violet-600' : 'bg-slate-300 dark:bg-slate-700'
+                isYearly ? 'bg-indigo-600' : 'bg-slate-300 dark:bg-slate-700'
               }`}
             >
               <span
@@ -225,14 +225,14 @@ export const PricingPage: React.FC = () => {
             return (
               <div
                 key={plan.id}
-                className={`rounded-3xl p-5 sm:p-6 flex flex-col justify-between transition-all relative ${
+                className={`glass-panel rounded-3xl p-5 sm:p-6 flex flex-col justify-between transition-all relative ${
                   plan.isPopular
-                    ? 'border-2 border-violet-600 dark:border-violet-500 bg-white dark:bg-slate-900 shadow-2xl shadow-violet-500/20 lg:-translate-y-2'
-                    : 'border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-xl'
+                    ? 'border-2 border-indigo-500 shadow-indigo-500/20 lg:-translate-y-2'
+                    : ''
                 }`}
               >
                 {plan.badge && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 text-white text-[10px] font-extrabold tracking-wider uppercase shadow-md">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] font-extrabold tracking-wider uppercase shadow-md">
                     {plan.badge}
                   </div>
                 )}
@@ -258,7 +258,7 @@ export const PricingPage: React.FC = () => {
                   <div className="w-full h-px bg-slate-100 dark:bg-slate-800 my-4" />
 
                   {plan.includedFromPrevious && (
-                    <span className="text-[10px] font-bold text-violet-600 dark:text-violet-400 block mb-2">
+                    <span className="text-[10px] font-bold text-indigo-600 dark:text-indigo-400 block mb-2">
                       {plan.includedFromPrevious}
                     </span>
                   )}
@@ -266,7 +266,7 @@ export const PricingPage: React.FC = () => {
                   <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300 font-medium mb-6">
                     {plan.features.map((feat, i) => (
                       <li key={i} className="flex items-center gap-2">
-                        <Check className="w-3.5 h-3.5 text-violet-600 shrink-0" />
+                        <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -289,7 +289,7 @@ export const PricingPage: React.FC = () => {
                       onClick={() => handleCheckout(plan)}
                       className={`w-full py-2.5 px-4 rounded-xl text-xs font-bold transition-all shadow-sm cursor-pointer disabled:opacity-60 disabled:cursor-wait ${
                         plan.isPopular
-                          ? 'text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-violet-500/20'
+                          ? 'text-white bg-indigo-600 hover:bg-indigo-500 shadow-indigo-500/20'
                           : 'text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700'
                       }`}
                     >
@@ -308,9 +308,9 @@ export const PricingPage: React.FC = () => {
             {[...sideFeaturesLeft, ...sideFeaturesRight].map((feat, idx) => (
               <div
                 key={idx}
-                className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-sm flex items-start gap-4"
+                className="glass-panel p-6 rounded-3xl flex items-start gap-4"
               >
-                <div className="w-12 h-12 rounded-2xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
                   <feat.icon className="w-6 h-6" />
                 </div>
                 <div className="space-y-1">
@@ -335,7 +335,7 @@ export const PricingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl overflow-hidden">
+          <div className="glass-panel rounded-3xl overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
@@ -344,7 +344,7 @@ export const PricingPage: React.FC = () => {
                     <th className="py-5 px-4 text-center w-[15%]">Free</th>
                     <th className="py-5 px-4 text-center w-[15%]">Starter</th>
                     <th className="py-5 px-4 text-center w-[15%]">Business</th>
-                    <th className="py-5 px-4 text-center w-[15%] text-violet-600 bg-violet-50/50 dark:bg-violet-950/30">
+                    <th className="py-5 px-4 text-center w-[15%] text-indigo-600 bg-indigo-50/50 dark:bg-indigo-950/30">
                       Professional
                     </th>
                   </tr>
@@ -360,28 +360,28 @@ export const PricingPage: React.FC = () => {
                       </td>
                       <td className="py-4 px-4 text-center">
                         {row.free ? (
-                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                          <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mx-auto" />
                         ) : (
                           <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
                         )}
                       </td>
                       <td className="py-4 px-4 text-center">
                         {row.starter ? (
-                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                          <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mx-auto" />
                         ) : (
                           <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
                         )}
                       </td>
                       <td className="py-4 px-4 text-center">
                         {row.business ? (
-                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                          <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mx-auto" />
                         ) : (
                           <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
                         )}
                       </td>
-                      <td className="py-4 px-4 text-center bg-violet-50/20 dark:bg-violet-950/10">
+                      <td className="py-4 px-4 text-center bg-indigo-50/20 dark:bg-indigo-950/10">
                         {row.professional ? (
-                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                          <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mx-auto" />
                         ) : (
                           <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
                         )}
@@ -411,17 +411,17 @@ export const PricingPage: React.FC = () => {
               return (
                 <div
                   key={idx}
-                  className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs overflow-hidden transition-all"
+                  className="glass-panel rounded-2xl overflow-hidden transition-all"
                 >
                   <button
                     type="button"
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-slate-900 dark:text-white cursor-pointer hover:text-violet-600 dark:hover:text-violet-400 transition-colors"
+                    className="w-full p-5 text-left flex items-center justify-between gap-4 font-bold text-sm sm:text-base text-slate-900 dark:text-white cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                   >
                     <span>{faq.q}</span>
                     <ChevronDown
                       className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-200 ${
-                        isOpen ? 'rotate-180 text-violet-600 dark:text-violet-400' : ''
+                        isOpen ? 'rotate-180 text-indigo-600 dark:text-indigo-400' : ''
                       }`}
                     />
                   </button>
@@ -448,7 +448,7 @@ export const PricingPage: React.FC = () => {
         </div>
 
         {/* Final CTA Banner */}
-        <div className="rounded-3xl bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white p-8 sm:p-14 text-center space-y-6 shadow-2xl relative overflow-hidden">
+        <div className="rounded-3xl bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-600 text-white p-8 sm:p-14 text-center space-y-6 shadow-2xl relative overflow-hidden">
           <div className="relative z-10 max-w-2xl mx-auto space-y-4">
             <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
               Ready to grow your business?

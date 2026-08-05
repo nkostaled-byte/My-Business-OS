@@ -43,7 +43,7 @@ export const PaystackCallbackPage: React.FC = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 px-4">
-      <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl p-8 sm:p-10 text-center">
+      <div className="w-full max-w-md glass-strong rounded-3xl p-8 sm:p-10 text-center">
         {state.status === 'loading' && (
           <>
             <div className="mx-auto w-14 h-14 rounded-2xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center mb-5">

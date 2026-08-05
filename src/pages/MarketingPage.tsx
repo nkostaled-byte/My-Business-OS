@@ -38,7 +38,7 @@ export const MarketingPage: React.FC = () => {
               {/* Headline */}
               <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 leading-[1.1]">
                 Smart solutions for{' '}
-                <span className="bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-500 bg-clip-text text-transparent">
+                <span className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 bg-clip-text text-transparent">
                   modern teams
                 </span>
               </h1>
@@ -52,7 +52,7 @@ export const MarketingPage: React.FC = () => {
               <div className="flex flex-wrap items-center gap-4 pt-2">
                 <NavLink
                   to="/app"
-                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-bold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-xl shadow-violet-500/25 active:scale-[0.98] transition-all"
+                  className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-xl shadow-indigo-500/25 active:scale-[0.98] transition-all"
                 >
                   <span>Get Started</span>
                   <ArrowRight className="w-4 h-4" />
@@ -80,7 +80,7 @@ export const MarketingPage: React.FC = () => {
             <div className="lg:col-span-6 relative">
               <div className="relative mx-auto max-w-lg lg:max-w-none transform lg:rotate-1 lg:hover:rotate-0 transition-transform duration-500">
                 {/* Browser frame container */}
-                <div className="rounded-3xl bg-white dark:bg-slate-900 p-2 sm:p-3 shadow-2xl border border-slate-200/80 dark:border-slate-800 relative">
+                <div className="glass-panel rounded-3xl p-2 sm:p-3 relative">
                   {/* Fake browser bar */}
                   <div className="flex items-center gap-1.5 px-3 py-2 border-b border-slate-100 dark:border-slate-800 mb-2">
                     <span className="w-3 h-3 rounded-full bg-rose-400 inline-block" />
@@ -113,19 +113,19 @@ export const MarketingPage: React.FC = () => {
                         <span className="text-base font-extrabold block mt-0.5">R42,680</span>
                         <span className="text-[9px] opacity-90">+18% vs last month</span>
                       </div>
-                      <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                      <div className="glass-panel rounded-xl p-3">
                         <span className="text-[10px] text-slate-400 block">Orders</span>
                         <span className="text-base font-bold text-slate-900 dark:text-slate-100 block mt-0.5">128</span>
                         <span className="text-[9px] text-emerald-500 font-medium">+12%</span>
                       </div>
-                      <div className="p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800">
+                      <div className="glass-panel rounded-xl p-3">
                         <span className="text-[10px] text-slate-400 block">Bookings</span>
                         <span className="text-base font-bold text-slate-900 dark:text-slate-100 block mt-0.5">64</span>
                         <span className="text-[9px] text-emerald-500 font-medium">+8%</span>
                       </div>
                     </div>
 
-                    <div className="p-3 bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800">
+                    <div className="glass-panel rounded-xl p-3">
                       <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block mb-2">
                         Revenue Trend
                       </span>
@@ -140,7 +140,7 @@ export const MarketingPage: React.FC = () => {
                 </div>
 
                 {/* Floating Annotation Cards */}
-                <div className="absolute -top-6 -right-4 sm:-right-8 p-3 rounded-2xl bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 animate-bounce duration-1000 flex items-center gap-3">
+                <div className="absolute -top-6 -right-4 sm:-right-8 glass-panel rounded-2xl p-3 animate-bounce duration-1000 flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-900/50 text-violet-600 flex items-center justify-center">
                     <BarChart3 className="w-4 h-4" />
                   </div>
@@ -154,7 +154,7 @@ export const MarketingPage: React.FC = () => {
                   </div>
                 </div>
 
-                <div className="absolute -bottom-6 -left-4 sm:-left-8 p-3 rounded-2xl bg-white dark:bg-slate-800 shadow-xl border border-slate-200 dark:border-slate-700 flex items-center gap-3">
+                <div className="absolute -bottom-6 -left-4 sm:-left-8 glass-panel rounded-2xl p-3 flex items-center gap-3">
                   <div className="flex items-center -space-x-1.5">
                     <img
                       src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=80&auto=format&fit=crop&q=80"
@@ -230,7 +230,7 @@ export const MarketingPage: React.FC = () => {
               return (
                 <div
                   key={i}
-                  className="p-6 rounded-3xl bg-slate-50 dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 hover:border-violet-300 dark:hover:border-violet-800 transition-all hover:-translate-y-1 group"
+                  className="glass-panel p-6 rounded-3xl hover:border-indigo-400/50 transition-all hover:-translate-y-1 group"
                 >
                   <div className="w-12 h-12 rounded-2xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center mb-5 group-hover:bg-violet-600 group-hover:text-white transition-colors">
                     <Icon className="w-6 h-6" />
@@ -267,14 +267,14 @@ export const MarketingPage: React.FC = () => {
             {PRICING_PLANS.map((plan) => (
               <div
                 key={plan.id}
-                className={`rounded-3xl p-6 flex flex-col justify-between transition-all relative ${
+                className={`glass-panel rounded-3xl p-6 flex flex-col justify-between transition-all relative ${
                   plan.isPopular
-                    ? 'border-2 border-violet-600 bg-white dark:bg-slate-900 shadow-2xl shadow-violet-500/15'
-                    : 'border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 shadow-lg'
+                    ? 'border-2 border-indigo-500 shadow-indigo-500/15'
+                    : ''
                 }`}
               >
                 {plan.badge && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-violet-600 to-purple-600 text-white text-[10px] font-extrabold uppercase tracking-wider shadow-md">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] font-extrabold uppercase tracking-wider shadow-md">
                     {plan.badge}
                   </div>
                 )}
@@ -321,7 +321,7 @@ export const MarketingPage: React.FC = () => {
       </section>
 
       {/* CTA Band */}
-      <section className="py-16 bg-gradient-to-r from-violet-600 via-purple-600 to-indigo-600 text-white text-center">
+      <section className="py-16 bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-600 text-white text-center">
         <div className="max-w-4xl mx-auto px-4 space-y-6">
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
             Ready to streamline your business operations?

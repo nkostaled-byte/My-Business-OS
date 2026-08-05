@@ -56,7 +56,7 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({ table = 'custome
       <button
         onClick={() => setIsOpen(!isOpen)}
         disabled={!!exporting}
-        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-medium bg-white dark:bg-slate-900 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-800 hover:bg-slate-50 dark:hover:bg-slate-800 shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold glass-subtle text-slate-700 dark:text-slate-200 shadow-panel transition-colors cursor-pointer disabled:opacity-50"
       >
         {exporting ? (
           <Loader2 className="w-3.5 h-3.5 text-slate-500 animate-spin" />
@@ -69,7 +69,7 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({ table = 'custome
       {isOpen && (
         <>
           <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)} />
-          <div className="absolute right-0 mt-2 w-44 rounded-xl bg-white dark:bg-slate-900 shadow-lg border border-slate-200 dark:border-slate-800 py-1.5 z-30 animate-in fade-in zoom-in-95 duration-150">
+          <div className="absolute right-0 mt-2 w-44 rounded-xl glass-strong py-1.5 z-30 animate-in fade-in zoom-in-95 duration-150">
             <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
               Download Format
             </div>

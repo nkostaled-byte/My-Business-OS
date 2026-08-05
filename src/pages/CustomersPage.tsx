@@ -193,7 +193,7 @@ export const CustomersPage: React.FC = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Sipho Dlamini"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
@@ -207,7 +207,7 @@ export const CustomersPage: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="sipho@example.com"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
@@ -221,11 +221,11 @@ export const CustomersPage: React.FC = () => {
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
               placeholder="+27 82 555 0192"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
-          <div className="pt-3 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
+          <div className="pt-3 flex justify-end gap-2 border-t border-slate-200/50 dark:border-white/5">
             <button
               type="button"
               onClick={closeModal}
@@ -237,7 +237,7 @@ export const CustomersPage: React.FC = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer"
+              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer"
             >
               {editingCustomer ? 'Save Changes' : 'Save Customer'}
             </motion.button>
@@ -254,7 +254,7 @@ export const CustomersPage: React.FC = () => {
           subtitle={`Profile & Purchase Summary`}
         >
           <div className="space-y-4 text-xs">
-            <div className="flex items-center gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+            <div className="flex items-center gap-4 p-4 rounded-2xl glass-subtle">
               <div className="w-14 h-14 rounded-full bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-300 font-bold text-base flex items-center justify-center ring-2 ring-violet-500">
                 {getInitials(selectedCustomer.name)}
               </div>
@@ -276,7 +276,7 @@ export const CustomersPage: React.FC = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+              <div className="p-3 rounded-xl glass-subtle">
                 <span className="text-slate-400 block mb-1 flex items-center gap-1">
                   <Mail className="w-3.5 h-3.5" /> Email
                 </span>
@@ -285,7 +285,7 @@ export const CustomersPage: React.FC = () => {
                 </span>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+              <div className="p-3 rounded-xl glass-subtle">
                 <span className="text-slate-400 block mb-1 flex items-center gap-1">
                   <Phone className="w-3.5 h-3.5" /> Phone
                 </span>
@@ -294,7 +294,7 @@ export const CustomersPage: React.FC = () => {
                 </span>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
+              <div className="p-3 rounded-xl glass-subtle">
                 <span className="text-slate-400 block mb-1 flex items-center gap-1">
                   <Calendar className="w-3.5 h-3.5" /> Last Visit
                 </span>

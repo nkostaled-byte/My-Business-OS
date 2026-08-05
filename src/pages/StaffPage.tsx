@@ -116,7 +116,7 @@ export const StaffPage: React.FC = () => {
 
         <button
           onClick={openAddModal}
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Add Staff Member</span>
@@ -130,7 +130,7 @@ export const StaffPage: React.FC = () => {
           ))}
         </div>
       ) : staff.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800">
+        <div className="glass-panel rounded-2xl p-6">
           <EmptyState
             icon={UserCheck}
             title="No staff members listed"
@@ -144,7 +144,7 @@ export const StaffPage: React.FC = () => {
           {staff.map((member) => (
             <div
               key={member.id}
-              className="p-5 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4"
+              className="p-5 rounded-2xl glass-panel space-y-4"
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
@@ -207,7 +207,7 @@ export const StaffPage: React.FC = () => {
               )}
 
               {(member.specialties || []).length > 0 && (
-                <div className="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap gap-1.5">
+                <div className="pt-3 border-t border-slate-200/50 dark:border-white/5 flex flex-wrap gap-1.5">
                   {(member.specialties || []).map((spec, i) => (
                     <span
                       key={i}
@@ -241,7 +241,7 @@ export const StaffPage: React.FC = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. David Khumalo"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
@@ -254,7 +254,7 @@ export const StaffPage: React.FC = () => {
               value={role}
               onChange={(e) => setRole(e.target.value)}
               placeholder="e.g. Master Barber"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
@@ -268,7 +268,7 @@ export const StaffPage: React.FC = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="david@grafixos.com"
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
               />
             </div>
 
@@ -281,7 +281,7 @@ export const StaffPage: React.FC = () => {
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+27 81 222 3344"
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
               />
             </div>
           </div>
@@ -295,11 +295,11 @@ export const StaffPage: React.FC = () => {
               value={specialtiesStr}
               onChange={(e) => setSpecialtiesStr(e.target.value)}
               placeholder="Beard Sculpting, Fades, Hot Towel"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
-          <div className="pt-3 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
+          <div className="pt-3 flex justify-end gap-2 border-t border-slate-200/50 dark:border-white/5">
             <button
               type="button"
               onClick={closeModal}
@@ -311,7 +311,7 @@ export const StaffPage: React.FC = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer"
+              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer"
             >
               {editingMember ? 'Save Changes' : 'Save Staff Member'}
             </motion.button>

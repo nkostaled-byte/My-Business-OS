@@ -22,6 +22,104 @@
   --shadow-glow-accent: 0 0 0 1px rgb(79 70 229 / 0.12), 0 4px 14px -2px rgb(79 70 229 / 0.25);
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Glassmorphism system
+   ───────────────────────────────────────────────────────────── */
+
+@utility glass-panel {
+  background-color: rgb(255 255 255 / 0.62);
+  border: 1px solid rgb(255 255 255 / 0.7);
+  -webkit-backdrop-filter: blur(18px) saturate(170%);
+  backdrop-filter: blur(18px) saturate(170%);
+  box-shadow:
+    0 1px 2px rgb(15 23 42 / 0.05),
+    0 8px 24px -6px rgb(15 23 42 / 0.1),
+    inset 0 1px 0 rgb(255 255 255 / 0.6);
+}
+.dark .glass-panel {
+  background-color: rgb(18 22 28 / 0.6);
+  border-color: rgb(255 255 255 / 0.08);
+  box-shadow:
+    0 1px 2px rgb(0 0 0 / 0.2),
+    0 8px 24px -6px rgb(0 0 0 / 0.35),
+    inset 0 1px 0 rgb(255 255 255 / 0.06);
+}
+
+@utility glass-nav {
+  background-color: rgb(255 255 255 / 0.55);
+  border: 1px solid rgb(255 255 255 / 0.65);
+  -webkit-backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(20px) saturate(180%);
+  box-shadow: 0 1px 2px rgb(15 23 42 / 0.04), 0 4px 16px -4px rgb(15 23 42 / 0.08);
+}
+.dark .glass-nav {
+  background-color: rgb(14 17 22 / 0.55);
+  border-color: rgb(255 255 255 / 0.07);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.25), 0 4px 16px -4px rgb(0 0 0 / 0.3);
+}
+
+@utility glass-strong {
+  background-color: rgb(255 255 255 / 0.82);
+  border: 1px solid rgb(255 255 255 / 0.85);
+  -webkit-backdrop-filter: blur(24px) saturate(180%);
+  backdrop-filter: blur(24px) saturate(180%);
+  box-shadow: 0 4px 10px rgb(15 23 42 / 0.06), 0 18px 40px -8px rgb(15 23 42 / 0.16);
+}
+.dark .glass-strong {
+  background-color: rgb(18 22 28 / 0.8);
+  border-color: rgb(255 255 255 / 0.09);
+  box-shadow: 0 4px 10px rgb(0 0 0 / 0.3), 0 18px 40px -8px rgb(0 0 0 / 0.45);
+}
+
+@utility glass-subtle {
+  background-color: rgb(255 255 255 / 0.35);
+  border: 1px solid rgb(255 255 255 / 0.45);
+  -webkit-backdrop-filter: blur(10px) saturate(150%);
+  backdrop-filter: blur(10px) saturate(150%);
+}
+.dark .glass-subtle {
+  background-color: rgb(255 255 255 / 0.04);
+  border-color: rgb(255 255 255 / 0.06);
+}
+
+/* Animated gradient backdrop blobs */
+@keyframes blob-drift {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(40px, -30px) scale(1.1); }
+  66% { transform: translate(-30px, 25px) scale(0.95); }
+}
+.app-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.app-backdrop__blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  animation: blob-drift 18s ease-in-out infinite;
+  will-change: transform;
+}
+.light .app-backdrop__blob {
+  opacity: 0.55;
+}
+.dark .app-backdrop__blob {
+  opacity: 0.3;
+}
+
+@layer base {
+  .light .app-backdrop,
+  .dark .app-backdrop {
+    background: transparent;
+  }
+  .app-backdrop ~ *,
+  .app-backdrop {
+    isolation: auto;
+  }
+}
+
 @layer base {
   html {
     color-scheme: light dark;

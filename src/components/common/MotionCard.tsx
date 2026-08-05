@@ -28,7 +28,7 @@ export const MotionCard: React.FC<MotionCardProps> = ({
             }
           : undefined
       }
-      className={`bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 rounded-xl shadow-panel transition-colors ${className}`}
+      className={`glass-panel rounded-xl transition-colors ${className}`}
       {...props}
     >
       {children}

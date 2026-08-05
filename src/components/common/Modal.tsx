@@ -53,7 +53,7 @@ export const Modal: React.FC<ModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 12 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className={`relative w-full ${maxWidth} bg-white dark:bg-[#0e1116] rounded-2xl shadow-popover border border-slate-200/70 dark:border-white/10 p-6 z-10 my-8`}
+            className={`relative w-full ${maxWidth} glass-strong rounded-2xl p-6 z-10 my-8`}
           >
             <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
               <div>

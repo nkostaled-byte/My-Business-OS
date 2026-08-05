@@ -14,7 +14,7 @@ export const RecentBookingsWidget: React.FC<RecentBookingsWidgetProps> = ({ book
   ] as Booking[];
 
   return (
-    <div className="p-6 rounded-xl bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 shadow-panel h-full space-y-4">
+    <div className="p-6 rounded-xl glass-panel h-full space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Recent Bookings</h3>
         <NavLink to="/app/bookings" className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline">View all</NavLink>

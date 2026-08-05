@@ -7,7 +7,7 @@ export const FormBuilderTab: React.FC = () => {
             <div className="w-64 border-r border-slate-200 dark:border-slate-800 space-y-4">
                 <h3 className="font-bold text-slate-900 dark:text-slate-100 mb-4">Available Fields</h3>
                 {['Single line text', 'Email', 'Phone', 'Dropdown', 'Checkbox', 'Paragraph'].map(field => (
-                    <div key={field} className="p-3 bg-slate-50 dark:bg-slate-800 rounded-xl text-xs font-medium cursor-grab hover:bg-violet-50 hover:text-violet-600 transition-colors">
+                    <div key={field} className="p-3 glass-subtle rounded-xl text-xs font-medium cursor-grab hover:bg-violet-50 hover:text-violet-600 transition-colors">
                         {field}
                     </div>
                 ))}

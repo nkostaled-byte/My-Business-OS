@@ -114,7 +114,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 bg-white/85 dark:bg-[#0a0c0f]/85 backdrop-blur-md border-b border-slate-200/70 dark:border-white/5 px-4 sm:px-6 py-3 transition-colors">
+    <header className="sticky top-0 z-30 glass-nav px-4 sm:px-6 py-3 transition-colors border-b-0">
       <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
         {/* Left Side: Mobile Menu Button & Search */}
         <div className="flex items-center gap-3 flex-1 max-w-md" ref={searchRef}>
@@ -135,7 +135,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
               onFocus={() => { if (searchResults.length > 0) setSearchOpen(true); }}
-              className="w-full pl-9 pr-12 py-2 bg-white dark:bg-[#12161c] border border-slate-200/80 dark:border-white/10 rounded-lg text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 shadow-panel focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 transition-all"
+              className="w-full pl-9 pr-12 py-2 glass-subtle rounded-lg text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 shadow-panel focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 transition-all"
             />
             <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[10px] font-mono font-medium text-slate-400 shadow-panel">
               ⌘K
@@ -149,7 +149,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -4 }}
                   transition={{ duration: 0.15 }}
-                  className="absolute top-full left-0 right-0 mt-1 rounded-lg bg-white dark:bg-[#12161c] shadow-popover border border-slate-200 dark:border-white/10 py-1.5 z-50 max-h-64 overflow-y-auto"
+                  className="absolute top-full left-0 right-0 mt-1 rounded-lg glass-strong py-1.5 z-50 max-h-64 overflow-y-auto"
                 >
                   {searching && (
                     <div className="flex items-center justify-center py-3">
@@ -233,7 +233,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -8 }}
                     transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute right-0 mt-2 w-72 sm:w-80 rounded-lg bg-white dark:bg-[#12161c] shadow-popover border border-slate-200 dark:border-white/10 py-2 z-30"
+                    className="absolute right-0 mt-2 w-72 sm:w-80 rounded-lg glass-strong py-2 z-30"
                   >
                     <div className="px-4 py-2 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
                       <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">
@@ -305,7 +305,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -8 }}
                     transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute right-0 mt-2 w-52 rounded-lg bg-white dark:bg-[#12161c] shadow-popover border border-slate-200 dark:border-white/10 py-1.5 z-30"
+                    className="absolute right-0 mt-2 w-52 rounded-lg glass-strong py-1.5 z-30"
                   >
                     <div className="px-3.5 py-2 border-b border-slate-100 dark:border-slate-800">
                       <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">

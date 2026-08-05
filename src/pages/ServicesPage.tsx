@@ -137,7 +137,7 @@ export const ServicesPage: React.FC = () => {
           whileHover={{ scale: 1.02 }}
           whileTap={{ scale: 0.98 }}
           onClick={openAddModal}
-          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 cursor-pointer"
+          className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer"
         >
           <Plus className="w-4 h-4" />
           <span>Add Service</span>
@@ -146,7 +146,7 @@ export const ServicesPage: React.FC = () => {
 
       {/* Services Grid */}
       {services.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 rounded-2xl p-6 border border-slate-200/80 dark:border-slate-800">
+        <div className="glass-panel rounded-2xl p-6">
           <EmptyState
             icon={Scissors}
             title="No services configured"
@@ -192,7 +192,7 @@ export const ServicesPage: React.FC = () => {
                 </p>
               </div>
 
-              <div className="mt-5 pt-3 border-t border-slate-100 dark:border-slate-800 flex items-center justify-between">
+              <div className="mt-5 pt-3 border-t border-slate-200/50 dark:border-white/5 flex items-center justify-between">
                 <span className="text-lg font-extrabold text-slate-900 dark:text-slate-100">
                   R{s.price.toLocaleString()}
                 </span>
@@ -246,7 +246,7 @@ export const ServicesPage: React.FC = () => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Signature Haircut & Beard Trim"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
@@ -260,7 +260,7 @@ export const ServicesPage: React.FC = () => {
               value={category}
               onChange={(e) => setCategory(e.target.value)}
               placeholder="e.g. Barber Services"
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
@@ -275,7 +275,7 @@ export const ServicesPage: React.FC = () => {
                 value={duration}
                 onChange={(e) => setDuration(e.target.value)}
                 placeholder="45"
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
               />
             </div>
 
@@ -289,7 +289,7 @@ export const ServicesPage: React.FC = () => {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="350"
-                className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+                className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
               />
             </div>
           </div>
@@ -303,7 +303,7 @@ export const ServicesPage: React.FC = () => {
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Brief overview of what is included in this service..."
-              className="w-full px-3.5 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
             />
           </div>
 
@@ -315,7 +315,7 @@ export const ServicesPage: React.FC = () => {
             placeholder="Upload file or enter service image link..."
           />
 
-          <div className="pt-3 flex justify-end gap-2 border-t border-slate-100 dark:border-slate-800">
+          <div className="pt-3 flex justify-end gap-2 border-t border-slate-200/50 dark:border-white/5">
             <button
               type="button"
               onClick={closeModal}
@@ -327,7 +327,7 @@ export const ServicesPage: React.FC = () => {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               type="submit"
-              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer"
+              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer"
             >
               {editingService ? 'Save Changes' : 'Save Service'}
             </motion.button>

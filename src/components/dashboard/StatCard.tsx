@@ -94,7 +94,7 @@ export const StatCard: React.FC<StatCardProps> = ({
         boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px -6px rgba(15,23,42,0.12)',
       }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-      className="p-6 rounded-xl bg-white dark:bg-[#0e1116] border border-slate-200/70 dark:border-white/10 shadow-panel flex flex-col justify-between h-38"
+      className="p-6 rounded-xl glass-panel flex flex-col justify-between h-38"
     >
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">

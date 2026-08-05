@@ -53,9 +53,9 @@ export function DataTable<T extends { id: string }>({
   }, [data, searchKey, search]);
 
   return (
-    <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
+    <div className="glass-panel rounded-2xl overflow-hidden">
       {/* Table Action Bar */}
-      <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800">
+      <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-slate-200/50 dark:border-white/5">
         <div className="relative flex-1 max-w-sm">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -63,7 +63,7 @@ export function DataTable<T extends { id: string }>({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder={searchPlaceholder}
-            className="w-full pl-9 pr-4 py-2 bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
+            className="w-full pl-9 pr-4 py-2 glass-subtle rounded-xl text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all"
           />
         </div>
 
@@ -74,7 +74,7 @@ export function DataTable<T extends { id: string }>({
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               onClick={onAddClick}
-              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium text-white bg-gradient-to-r from-violet-600 to-purple-600 hover:from-violet-500 hover:to-purple-500 shadow-md shadow-violet-500/20 cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer"
             >
               <span>+</span>
               <span>{addButtonLabel}</span>
@@ -104,7 +104,7 @@ export function DataTable<T extends { id: string }>({
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs sm:text-sm">
             <thead>
-              <tr className="bg-slate-50/80 dark:bg-slate-800/40 border-b border-slate-100 dark:border-slate-800 text-slate-500 dark:text-slate-400 font-medium">
+              <tr className="bg-slate-50/60 dark:bg-white/5 border-b border-slate-200/50 dark:border-white/5 text-slate-500 dark:text-slate-400 font-medium">
                 {columns.map((col, idx) => (
                   <th key={idx} className={`py-3 px-4 sm:px-6 ${col.className || ''}`}>
                     {col.header}
@@ -112,14 +112,14 @@ export function DataTable<T extends { id: string }>({
                 ))}
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
+            <tbody className="divide-y divide-slate-200/50 dark:divide-white/5">
               {filteredData.map((row, index) => (
                 <motion.tr
                   key={row.id}
                   initial={{ opacity: 0, y: 6 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.18, delay: index * 0.03 }}
-                  className="hover:bg-slate-50/60 dark:hover:bg-slate-800/30 transition-colors"
+                  className="hover:bg-white/50 dark:hover:bg-white/5 transition-colors"
                 >
                   {columns.map((col, idx) => (
                     <td key={idx} className={`py-3.5 px-4 sm:px-6 ${col.className || ''}`}>

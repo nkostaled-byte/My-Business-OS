@@ -58,10 +58,10 @@ export const SubmissionDetailDrawer: React.FC<SubmissionDetailDrawerProps> = ({
           animate={{ x: 0 }}
           exit={{ x: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 250 }}
-          className="w-full max-w-lg bg-white dark:bg-slate-900 h-full shadow-2xl border-l border-slate-200 dark:border-slate-800 flex flex-col justify-between"
+          className="w-full max-w-lg glass-strong h-full flex flex-col justify-between"
         >
           {/* Header */}
-          <div className="p-6 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between">
+          <div className="p-6 border-b border-slate-200/50 dark:border-white/5 flex items-center justify-between">
             <div>
               <span className="text-[10px] font-extrabold uppercase tracking-widest text-violet-600 dark:text-violet-400">
                 {submission.formName}
@@ -171,7 +171,7 @@ export const SubmissionDetailDrawer: React.FC<SubmissionDetailDrawerProps> = ({
           </div>
 
           {/* Footer Actions */}
-          <div className="p-6 border-t border-slate-200 dark:border-slate-800 flex items-center justify-between gap-3 bg-slate-50 dark:bg-slate-950/40">
+          <div className="p-6 border-t border-slate-200/50 dark:border-white/5 flex items-center justify-between gap-3 bg-slate-50 dark:bg-slate-950/40">
             <div className="flex items-center gap-2">
               <button
                 type="button"

@@ -291,7 +291,7 @@ export const SettingsPage: React.FC = () => {
               onClick={() => setActiveTab(tab.id as any)}
               className={`relative flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 isActive
-                  ? 'text-violet-600 dark:text-violet-400 font-bold'
+                  ? 'text-indigo-600 dark:text-indigo-400 font-bold'
                   : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
@@ -300,7 +300,7 @@ export const SettingsPage: React.FC = () => {
               {isActive && (
                 <motion.div
                   layoutId="activeTabUnderline"
-                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-violet-600 dark:bg-violet-400"
+                  className="absolute bottom-0 left-0 right-0 h-0.5 bg-indigo-600 dark:bg-indigo-400"
                 />
               )}
             </button>
@@ -309,7 +309,7 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Content Form / Panel */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-xs max-w-3xl">
+      <div className="glass-panel rounded-3xl p-6 sm:p-8 max-w-3xl">
         <form onSubmit={handleSave} className="space-y-6">
           <AnimatePresence mode="wait">
             {activeTab === 'general' && (
@@ -338,7 +338,7 @@ export const SettingsPage: React.FC = () => {
                       type="text" 
                       value={draftProfileName} 
                       onChange={(e) => setDraftProfileName(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" 
+                      className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" 
                     />
                   </div>
                   <div>
@@ -347,7 +347,7 @@ export const SettingsPage: React.FC = () => {
                       type="email" 
                       value={draftProfileEmail} 
                       onChange={(e) => setDraftProfileEmail(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" 
+                      className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" 
                     />
                   </div>
                 </div>
@@ -358,7 +358,7 @@ export const SettingsPage: React.FC = () => {
                     <select 
                       value={language} 
                       onChange={(e) => setLanguage(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                      className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
                     >
                       <option>English (South Africa)</option>
                       <option>English (US)</option>
@@ -370,7 +370,7 @@ export const SettingsPage: React.FC = () => {
                     <select 
                       value={timezone} 
                       onChange={(e) => setTimezone(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                      className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
                     >
                       <option>(GMT+02:00) Johannesburg / Cape Town</option>
                       <option>(GMT+00:00) London</option>
@@ -393,7 +393,7 @@ export const SettingsPage: React.FC = () => {
                     type="text" 
                     value={draftBusinessName} 
                     onChange={(e) => setDraftBusinessName(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" 
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" 
                   />
                 </div>
 
@@ -427,7 +427,7 @@ export const SettingsPage: React.FC = () => {
                       type="text" 
                       value={phone} 
                       onChange={(e) => setPhone(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" 
+                      className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" 
                     />
                   </div>
                   <div>
@@ -436,7 +436,7 @@ export const SettingsPage: React.FC = () => {
                       type="email" 
                       value={draftProfileEmail} 
                       onChange={(e) => setDraftProfileEmail(e.target.value)}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" 
+                      className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" 
                     />
                   </div>
                 </div>
@@ -447,7 +447,7 @@ export const SettingsPage: React.FC = () => {
                     type="text" 
                     value={address} 
                     onChange={(e) => setAddress(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" 
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" 
                   />
                 </div>
 
@@ -457,7 +457,7 @@ export const SettingsPage: React.FC = () => {
                     type="text" 
                     value={hours} 
                     onChange={(e) => setHours(e.target.value)}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" 
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" 
                   />
                 </div>
               </motion.div>
@@ -483,7 +483,7 @@ export const SettingsPage: React.FC = () => {
                   <input 
                     type="text" 
                     defaultValue={`${businessName} — Professional Services & Online Bookings`}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" 
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" 
                   />
                 </div>
 
@@ -493,7 +493,7 @@ export const SettingsPage: React.FC = () => {
                     type="text" 
                     placeholder="Instagram profile URL"
                     defaultValue="https://instagram.com/mygrafixmedia"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" 
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" 
                   />
                 </div>
               </motion.div>
@@ -517,20 +517,20 @@ export const SettingsPage: React.FC = () => {
                       value={inviteName}
                       onChange={(e) => setInviteName(e.target.value)}
                       placeholder="Full name"
-                      className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                      className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
                     />
                     <input
                       type="email"
                       value={inviteEmail}
                       onChange={(e) => setInviteEmail(e.target.value)}
                       placeholder="name@example.com"
-                      className="w-full px-3.5 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
+                      className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
                     />
                     <div className="flex gap-2">
                       <select
                         value={inviteRole}
                         onChange={(e) => setInviteRole(e.target.value as 'staff' | 'admin')}
-                        className="flex-1 px-3 py-2 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 cursor-pointer"
+                        className="flex-1 px-3 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 cursor-pointer"
                       >
                         <option value="staff">Staff</option>
                         <option value="admin">Admin</option>
@@ -687,37 +687,37 @@ export const SettingsPage: React.FC = () => {
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Bank Name</label>
                       <input type="text" value={bankName} onChange={(e) => setBankName(e.target.value)}
                         placeholder="e.g. First National Bank"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Account Name</label>
                       <input type="text" value={bankAccountName} onChange={(e) => setBankAccountName(e.target.value)}
                         placeholder="e.g. My Business (Pty) Ltd"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Account Number</label>
                       <input type="text" value={bankAccountNumber} onChange={(e) => setBankAccountNumber(e.target.value)}
                         placeholder="e.g. 62819283746"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Branch Code</label>
                       <input type="text" value={bankBranchCode} onChange={(e) => setBankBranchCode(e.target.value)}
                         placeholder="e.g. 255005"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Account Type</label>
                       <input type="text" value={bankAccountType} onChange={(e) => setBankAccountType(e.target.value)}
                         placeholder="e.g. Cheque / Savings"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Reference</label>
                       <input type="text" value={bankReference} onChange={(e) => setBankReference(e.target.value)}
                         placeholder="e.g. My Business Invoice"
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                   </div>
                 </div>
@@ -735,7 +735,7 @@ export const SettingsPage: React.FC = () => {
                           className="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer" />
                         <input type="text" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)}
                           placeholder="#111111"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                          className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
                       </div>
                     </div>
                     <div>
@@ -745,7 +745,7 @@ export const SettingsPage: React.FC = () => {
                           className="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer" />
                         <input type="text" value={secondaryColor} onChange={(e) => setSecondaryColor(e.target.value)}
                           placeholder="#f5f5f5"
-                          className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
+                          className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
                       </div>
                     </div>
                   </div>
@@ -758,7 +758,7 @@ export const SettingsPage: React.FC = () => {
                   <textarea value={paymentInstructions} onChange={(e) => setPaymentInstructions(e.target.value)}
                     placeholder="e.g. Please use the invoice number as reference when making payment. EFT payments may take 2-3 business days to reflect."
                     rows={4}
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 resize-none" />
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 resize-none" />
                 </div>
               </motion.div>
             )}
@@ -832,7 +832,7 @@ export const SettingsPage: React.FC = () => {
             <div className="flex justify-between items-center pt-2 border-t border-slate-200 dark:border-slate-700">
               <span className="text-slate-400 text-xs">Temporary password</span>
               <div className="flex items-center gap-2">
-                <span className="font-mono font-bold text-violet-600 dark:text-violet-400">{inviteResult?.tempPassword}</span>
+                <span className="font-mono font-bold text-indigo-600 dark:text-indigo-400">{inviteResult?.tempPassword}</span>
                 <button
                   type="button"
                   onClick={() => {

@@ -84,7 +84,7 @@ export const BookingsPage: React.FC = () => {
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 glass-panel p-4 rounded-2xl">
         <div className="flex items-center gap-2 flex-1 max-w-md">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -93,7 +93,7 @@ export const BookingsPage: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by client, service, or staff..." 
-              className="w-full pl-10 pr-4 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500" 
+              className="w-full pl-10 pr-4 py-2 rounded-xl text-xs glass-subtle text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500" 
             />
           </div>
         </div>
@@ -117,7 +117,7 @@ export const BookingsPage: React.FC = () => {
 
       {/* Loading state */}
       {isLoading ? (
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 space-y-4">
+        <div className="glass-panel rounded-3xl p-6 space-y-4">
           {[1, 2, 3].map(n => (
             <div key={n} className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-800 animate-pulse">
               <div className="space-y-2">
@@ -130,10 +130,10 @@ export const BookingsPage: React.FC = () => {
         </div>
       ) : viewMode === 'list' ? (
         /* List View Table */
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
+        <div className="glass-panel rounded-3xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase tracking-wider font-semibold">
+              <thead className="bg-slate-50/60 dark:bg-white/5 text-slate-500 uppercase tracking-wider font-semibold">
                 <tr>
                   <th className="p-4">Customer</th>
                   <th className="p-4">Service</th>
@@ -144,12 +144,12 @@ export const BookingsPage: React.FC = () => {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-200/50 dark:divide-white/5">
                 {filteredBookings.map(b => (
                   <tr 
                     key={b.id} 
                     onClick={() => setSelectedBooking(b)}
-                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 cursor-pointer transition-colors"
+                    className="hover:bg-white/50 dark:hover:bg-white/5 cursor-pointer transition-colors"
                   >
                     <td className="p-4">
                       <p className="font-bold text-slate-900 dark:text-slate-100">{b.clientName}</p>
@@ -212,7 +212,7 @@ export const BookingsPage: React.FC = () => {
         </div>
       ) : (
         /* Calendar View (Monthly Grid Simulation for July 2026) */
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs p-6 space-y-6">
+        <div className="glass-panel rounded-3xl p-6 space-y-6">
           <div className="flex items-center justify-between">
             <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">July 2026 Schedule</h3>
             <span className="text-xs font-semibold text-slate-500">Monthly Calendar Overview</span>
@@ -277,8 +277,8 @@ export const BookingsPage: React.FC = () => {
       {/* Booking Details Modal */}
       {selectedBooking && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="w-full max-w-md bg-white dark:bg-slate-900 rounded-3xl shadow-2xl border border-slate-200 dark:border-slate-800 overflow-hidden">
-            <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
+          <div className="w-full max-w-md glass-strong rounded-3xl overflow-hidden">
+            <div className="p-6 border-b border-slate-200/50 dark:border-white/5 flex items-center justify-between bg-slate-50/50 dark:bg-slate-800/40">
               <div>
                 <span className="text-xs font-bold text-violet-600 dark:text-violet-400">{selectedBooking.bookingCode}</span>
                 <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">{selectedBooking.clientName}</h3>
@@ -292,7 +292,7 @@ export const BookingsPage: React.FC = () => {
             </div>
 
             <div className="p-6 space-y-4 text-xs">
-              <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+              <div className="grid grid-cols-2 gap-4 p-4 rounded-2xl glass-subtle">
                 <div>
                   <span className="text-slate-400 block font-medium">Service</span>
                   <span className="font-bold text-slate-900 dark:text-slate-100">{selectedBooking.serviceName}</span>
@@ -311,7 +311,7 @@ export const BookingsPage: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-800">
+              <div className="flex items-center justify-between p-4 rounded-2xl glass-subtle">
                 <span className="text-slate-500 font-medium">Current Status</span>
                 {getStatusBadge(selectedBooking.status)}
               </div>
@@ -324,7 +324,7 @@ export const BookingsPage: React.FC = () => {
               )}
             </div>
 
-            <div className="p-6 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex gap-3">
+            <div className="p-6 border-t border-slate-200/50 dark:border-white/5 bg-slate-50/50 dark:bg-slate-900/50 flex gap-3">
               {selectedBooking.status !== 'completed' && (
                 <button 
                   onClick={(e) => {

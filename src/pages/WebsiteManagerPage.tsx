@@ -82,7 +82,7 @@ export const WebsiteManagerPage: React.FC = () => {
             href={websiteUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 border border-slate-200 dark:border-slate-800 shadow-xs cursor-pointer transition-all"
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 glass-panel hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-all"
           >
             <span>Visit Website</span>
             <ExternalLink className="w-3.5 h-3.5" />
@@ -134,7 +134,7 @@ export const WebsiteManagerPage: React.FC = () => {
       <div className="space-y-4">
         <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Website Health</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2">
+          <div className="glass-panel rounded-3xl p-6 space-y-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Website Status</span>
             <div className="flex items-center justify-between">
               <p className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
@@ -146,7 +146,7 @@ export const WebsiteManagerPage: React.FC = () => {
             <span className="text-[11px] text-slate-500 block">100% operational</span>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2">
+          <div className="glass-panel rounded-3xl p-6 space-y-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">SSL Active</span>
             <div className="flex items-center justify-between">
               <p className="text-lg font-extrabold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
@@ -157,7 +157,7 @@ export const WebsiteManagerPage: React.FC = () => {
             <span className="text-[11px] text-slate-500 block">Valid TLS Certificate</span>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2">
+          <div className="glass-panel rounded-3xl p-6 space-y-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Last Published</span>
             <div className="flex items-center justify-between">
               <p className="text-sm font-extrabold text-slate-900 dark:text-slate-100">—</p>
@@ -166,7 +166,7 @@ export const WebsiteManagerPage: React.FC = () => {
             <span className="text-[11px] text-slate-500 block">Not published yet</span>
           </div>
 
-          <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-2">
+          <div className="glass-panel rounded-3xl p-6 space-y-2">
             <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Uptime</span>
             <div className="flex items-center justify-between">
               <p className="text-lg font-extrabold text-slate-900 dark:text-slate-100">—</p>
@@ -178,7 +178,7 @@ export const WebsiteManagerPage: React.FC = () => {
       </div>
 
       {/* Business Information Section */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-6">
+      <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Business Information</h3>
@@ -235,7 +235,7 @@ export const WebsiteManagerPage: React.FC = () => {
               <div 
                 key={idx}
                 onClick={() => navigate(action.path)}
-                className="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs hover:border-violet-500/50 cursor-pointer transition-all group space-y-3"
+                className="glass-panel p-6 rounded-3xl hover:border-indigo-500/50 cursor-pointer transition-all group space-y-3"
               >
                 <div className="w-10 h-10 rounded-2xl bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center group-hover:scale-110 transition-transform">
                   <Icon className="w-5 h-5" />
@@ -251,13 +251,13 @@ export const WebsiteManagerPage: React.FC = () => {
       </div>
 
       {/* Website Analytics */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-6">
+      <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Website Analytics</h3>
             <p className="text-xs text-slate-500 dark:text-slate-400">Visitor engagement and conversion metrics over the last 30 days.</p>
           </div>
-          <NavLink to="/app/analytics" className="text-xs font-bold text-violet-600 hover:underline">
+          <NavLink to="/app/analytics" className="text-xs font-bold text-indigo-600 hover:underline">
             Detailed reports
           </NavLink>
         </div>
@@ -276,7 +276,7 @@ export const WebsiteManagerPage: React.FC = () => {
       </div>
 
       {/* Publishing Status */}
-      <div className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-4">
         <div>
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">Website Status</span>
           <h4 className="text-base font-bold text-slate-900 dark:text-slate-100 mt-0.5">Changes published instantly</h4>

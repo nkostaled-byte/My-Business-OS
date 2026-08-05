@@ -55,7 +55,7 @@ export const FormsPage: React.FC = () => {
       </div>
 
       {/* Toolbar */}
-      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200/80 dark:border-slate-800 shadow-xs">
+      <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 glass-panel p-4 rounded-2xl">
         <div className="flex items-center gap-2 flex-1 max-w-md">
           <div className="relative w-full">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
@@ -64,7 +64,7 @@ export const FormsPage: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by name, email, or subject..." 
-              className="w-full pl-10 pr-4 py-2 rounded-xl text-xs bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500" 
+              className="w-full pl-10 pr-4 py-2 rounded-xl text-xs glass-subtle text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500" 
             />
           </div>
         </div>
@@ -88,7 +88,7 @@ export const FormsPage: React.FC = () => {
 
       {/* Loading State / Skeleton */}
       {isLoading ? (
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 p-6 space-y-4">
+        <div className="glass-panel rounded-3xl p-6 space-y-4">
           {[1, 2, 3, 4].map(n => (
             <div key={n} className="flex items-center justify-between py-3 border-b border-slate-100 dark:border-slate-800 animate-pulse">
               <div className="space-y-2">
@@ -101,10 +101,10 @@ export const FormsPage: React.FC = () => {
         </div>
       ) : (
         /* Submissions Table */
-        <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-xs overflow-hidden">
+        <div className="glass-panel rounded-3xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 uppercase tracking-wider font-semibold">
+              <thead className="bg-slate-50/60 dark:bg-white/5 text-slate-500 uppercase tracking-wider font-semibold">
                 <tr>
                   <th className="p-4">Customer Name</th>
                   <th className="p-4">Email</th>
@@ -115,12 +115,12 @@ export const FormsPage: React.FC = () => {
                   <th className="p-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+              <tbody className="divide-y divide-slate-200/50 dark:divide-white/5">
                 {filteredSubmissions.map(sub => (
                   <tr 
                     key={sub.id} 
                     onClick={() => setSelectedSubmission(sub)}
-                    className="hover:bg-slate-50/80 dark:hover:bg-slate-800/40 cursor-pointer transition-colors"
+                    className="hover:bg-white/50 dark:hover:bg-white/5 cursor-pointer transition-colors"
                   >
                     <td className="p-4 font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                       {sub.status === 'unread' && (
@@ -203,8 +203,8 @@ export const FormsPage: React.FC = () => {
       {/* View Detail Modal / Drawer */}
       {selectedSubmission && (
         <div className="fixed inset-0 z-50 flex justify-end bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-200">
-          <div className="w-full max-w-lg bg-white dark:bg-slate-900 h-full shadow-2xl flex flex-col border-l border-slate-200 dark:border-slate-800 overflow-y-auto">
-            <div className="p-6 border-b border-slate-100 dark:border-slate-800 flex items-center justify-between sticky top-0 bg-white dark:bg-slate-900 z-10">
+          <div className="w-full max-w-lg glass-strong h-full flex flex-col overflow-y-auto">
+            <div className="p-6 border-b border-slate-200/50 dark:border-white/5 flex items-center justify-between sticky top-0 glass-panel z-10">
               <div>
                 <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-400">
                   {selectedSubmission.formName}
@@ -223,7 +223,7 @@ export const FormsPage: React.FC = () => {
               <div className="grid grid-cols-2 gap-4 bg-slate-50 dark:bg-slate-800/60 p-4 rounded-2xl border border-slate-100 dark:border-slate-800 text-xs">
                 <div>
                   <span className="text-slate-400 block font-medium">Email Address</span>
-                  <a href={`mailto:${selectedSubmission.senderEmail}`} className="font-bold text-violet-600 dark:text-violet-400 hover:underline">
+                  <a href={`mailto:${selectedSubmission.senderEmail}`} className="font-bold text-indigo-600 dark:text-indigo-400 hover:underline">
                     {selectedSubmission.senderEmail}
                   </a>
                 </div>
@@ -237,7 +237,7 @@ export const FormsPage: React.FC = () => {
                 </div>
                 <div>
                   <span className="text-slate-400 block font-medium">Status</span>
-                  <span className="font-bold uppercase text-violet-600 dark:text-violet-400">{selectedSubmission.status}</span>
+                  <span className="font-bold uppercase text-indigo-600 dark:text-indigo-400">{selectedSubmission.status}</span>
                 </div>
               </div>
 

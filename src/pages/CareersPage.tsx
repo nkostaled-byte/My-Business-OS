@@ -115,7 +115,7 @@ export const CareersPage: React.FC = () => {
             transition={{ delay: 0.1 }}
             className="text-4xl sm:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto"
           >
-            Join us in empowering <span className="text-violet-600 dark:text-violet-400">African businesses</span> to thrive online
+            Join us in empowering <span className="text-indigo-600 dark:text-indigo-400">African businesses</span> to thrive online
           </motion.h1>
 
           <motion.p 
@@ -141,8 +141,8 @@ export const CareersPage: React.FC = () => {
             {benefits.map((b, idx) => {
               const Icon = b.icon;
               return (
-                <div key={idx} className="bg-white dark:bg-slate-900 rounded-3xl p-8 border border-slate-200/80 dark:border-slate-800 shadow-xs space-y-4 hover:border-violet-500/50 transition-colors">
-                  <div className="w-12 h-12 rounded-2xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center">
+                <div key={idx} className="glass-panel rounded-3xl p-8 space-y-4 hover:border-indigo-400/50 transition-colors">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                     <Icon className="w-6 h-6" />
                   </div>
                   <h3 className="text-base font-bold">{b.title}</h3>
@@ -164,10 +164,10 @@ export const CareersPage: React.FC = () => {
         <div className="space-y-4 max-w-4xl mx-auto">
           {openPositions.length > 0 ? (
             openPositions.map((job, idx) => (
-              <div key={idx} className="bg-white dark:bg-slate-900 rounded-3xl p-6 sm:p-8 border border-slate-200/80 dark:border-slate-800 shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6 hover:shadow-md transition-shadow">
+              <div key={idx} className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:shadow-md transition-shadow">
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="px-3 py-1 rounded-full bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-300 text-[10px] font-extrabold uppercase tracking-wider">
+                    <span className="px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-[10px] font-extrabold uppercase tracking-wider">
                       {job.department}
                     </span>
                     <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-bold">
@@ -177,20 +177,20 @@ export const CareersPage: React.FC = () => {
                   <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100">{job.title}</h3>
                   <p className="text-xs text-slate-600 dark:text-slate-400 max-w-xl">{job.desc}</p>
                   <p className="text-xs text-slate-500 flex items-center gap-1.5 pt-1">
-                    <MapPin className="w-3.5 h-3.5 text-violet-600" /> {job.location}
+                    <MapPin className="w-3.5 h-3.5 text-indigo-600" /> {job.location}
                   </p>
                 </div>
 
                 <button
                   onClick={() => addToast(`Application modal opened for ${job.title}`, 'info')}
-                  className="px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-md shadow-violet-500/20 transition-all whitespace-nowrap cursor-pointer"
+                  className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-500/20 transition-all whitespace-nowrap cursor-pointer"
                 >
                   Apply Now
                 </button>
               </div>
             ))
           ) : (
-            <div className="text-center py-16 bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 space-y-4">
+            <div className="text-center py-16 glass-panel rounded-3xl space-y-4">
               <Building className="w-12 h-12 text-slate-400 mx-auto" />
               <h3 className="text-base font-bold">No current openings</h3>
               <p className="text-xs text-slate-500">Check back soon or send us a general application below.</p>
@@ -209,8 +209,8 @@ export const CareersPage: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {hiringSteps.map((s, idx) => (
-              <div key={idx} className="bg-white dark:bg-slate-900 rounded-3xl p-6 border border-slate-200/80 dark:border-slate-800 space-y-3 relative">
-                <span className="text-3xl font-black text-violet-600/30">{s.step}</span>
+              <div key={idx} className="glass-panel rounded-3xl p-6 space-y-3 relative">
+                <span className="text-3xl font-black text-indigo-600/30">{s.step}</span>
                 <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">{s.title}</h3>
                 <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{s.desc}</p>
               </div>
@@ -221,7 +221,7 @@ export const CareersPage: React.FC = () => {
 
       {/* CTA / Send CV Section */}
       <section className="py-24 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <div className="bg-gradient-to-r from-violet-900 via-purple-900 to-indigo-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl space-y-6 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-indigo-900 via-indigo-800 to-sky-900 rounded-3xl p-8 sm:p-12 text-white shadow-xl space-y-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full blur-3xl pointer-events-none" />
           
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight relative z-10">

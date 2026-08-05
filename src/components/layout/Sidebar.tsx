@@ -104,7 +104,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
 
       {/* Sidebar container */}
       <aside
-        className={`fixed top-0 bottom-0 left-0 z-40 w-64 bg-white dark:bg-[#0e1116] border-r border-slate-200/70 dark:border-white/5 flex flex-col justify-between transition-transform duration-300 ease-in-out lg:translate-x-0 ${
+        className={`fixed top-0 bottom-0 left-0 z-40 w-64 glass-strong border-r border-slate-200/70 dark:border-white/5 flex flex-col justify-between transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
@@ -231,7 +231,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
               transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
               className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
             >
-              <div className="max-w-md w-full text-center bg-white dark:bg-slate-900 rounded-3xl border border-slate-200/80 dark:border-slate-800 shadow-2xl px-6 py-8 pointer-events-auto">
+              <div className="max-w-md w-full text-center glass-strong rounded-3xl px-6 py-8 pointer-events-auto">
                 <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-violet-100 dark:bg-violet-950/50 flex items-center justify-center">
                   <Lock className="w-7 h-7 text-violet-600 dark:text-violet-400" />
                 </div>

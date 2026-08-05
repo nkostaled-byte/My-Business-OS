@@ -168,7 +168,7 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
             </label>
           </div>
 
-          <div className="flex gap-1 text-xs font-semibold border-b border-slate-100 dark:border-slate-800 overflow-x-auto">
+          <div className="flex gap-1 text-xs font-semibold border-b border-slate-200/50 dark:border-white/5 overflow-x-auto">
             {([
               ['overview', 'Overview', FileText],
               ['audit', 'Audit', ClipboardCheck],
@@ -354,5 +354,5 @@ function formatCurrency(n: number | null | undefined) {
   return new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR', maximumFractionDigits: 0 }).format(Number(n || 0));
 }
 
-const selCls = 'w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30';
+const selCls = 'w-full px-3 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30';
 const inputCls = selCls + ' placeholder:text-slate-400';

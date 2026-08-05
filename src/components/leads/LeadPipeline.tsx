@@ -43,7 +43,7 @@ export const LeadPipeline: React.FC<Props> = ({ stages, total, onSelectLead, onC
             e.preventDefault();
             if (dragging) moveToStage(dragging, stage.name);
           }}
-          className={`w-72 shrink-0 flex flex-col bg-slate-100/70 dark:bg-slate-900/40 rounded-2xl border ${
+          className={`w-72 shrink-0 flex flex-col bg-white/40 dark:bg-white/5 backdrop-blur-md rounded-2xl border ${
             overStage === stage.name ? 'border-indigo-400 dark:border-indigo-500 bg-indigo-50/40 dark:bg-indigo-500/5' : 'border-slate-200/70 dark:border-white/10'
           } transition-colors`}
         >
@@ -99,7 +99,7 @@ const PipelineCard = ({ lead, draggable, dragging, onDragStart, onDragEnd, onCli
     onDragEnd={onDragEnd}
     onClick={onClick}
     whileHover={{ scale: 1.02 }}
-    className={`cursor-grab select-none bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-700 rounded-xl p-3 shadow-xs hover:shadow-md transition-shadow ${
+    className={`cursor-grab select-none glass-panel rounded-xl p-3 ${
       dragging ? 'opacity-50 rotate-1' : ''
     }`}
   >
