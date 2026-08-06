@@ -43,12 +43,13 @@ export const BookingsPage: React.FC = () => {
   };
 
   const filteredBookings = bookings.filter(b => {
-    const matchesSearch = 
-      b.clientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      b.serviceName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (b.staffName && b.staffName.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      b.bookingCode.toLowerCase().includes(searchQuery.toLowerCase());
-    
+    const q = searchQuery.toLowerCase();
+    const matchesSearch =
+      (b.clientName || '').toLowerCase().includes(q) ||
+      (b.serviceName || '').toLowerCase().includes(q) ||
+      ((b.staffName || '').toLowerCase().includes(q)) ||
+      (b.bookingCode || '').toLowerCase().includes(q);
+
     if (statusFilter === 'all') return matchesSearch;
     return matchesSearch && b.status === statusFilter;
   });
