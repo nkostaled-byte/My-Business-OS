@@ -8,9 +8,9 @@ interface SalesChannelChartProps {
 
 export const SalesChannelChart: React.FC<SalesChannelChartProps> = ({ orders }) => {
   const posRevenue = orders.filter((o) => o.isPos && o.status !== 'cancelled' && o.status !== 'refunded')
-    .reduce((sum, o) => sum + o.totalAmount, 0);
+    .reduce((sum, o) => sum + (Number(o.totalAmount) || 0), 0);
   const onlineRevenue = orders.filter((o) => !o.isPos && o.status !== 'cancelled' && o.status !== 'refunded')
-    .reduce((sum, o) => sum + o.totalAmount, 0);
+    .reduce((sum, o) => sum + (Number(o.totalAmount) || 0), 0);
 
   const data = [
     { name: 'POS / In-store', value: posRevenue, color: '#4F46E5' },

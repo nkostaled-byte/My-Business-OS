@@ -14,7 +14,7 @@ export const TopCustomersList: React.FC<TopCustomersListProps> = ({
   customers,
   currencyPrefix = 'R',
 }) => {
-  const sorted = [...customers].sort((a, b) => b.totalSpent - a.totalSpent);
+  const sorted = [...customers].sort((a, b) => (Number(b.totalSpent) || 0) - (Number(a.totalSpent) || 0));
 
   return (
     <motion.div
@@ -61,14 +61,13 @@ export const TopCustomersList: React.FC<TopCustomersListProps> = ({
                     {cust.name}
                   </h4>
                   <span className="text-[11px] text-slate-400">
-                    {cust.ordersCount} orders · {cust.tier}
+                    {Number(cust.ordersCount) || 0} orders · {cust.tier}
                   </span>
                 </div>
               </div>
               <div className="text-right shrink-0">
                 <span className="text-xs font-extrabold text-slate-900 dark:text-slate-100 block">
-                  {currencyPrefix}
-                  {cust.totalSpent.toLocaleString()}
+                  {currencyPrefix}{(Number(cust.totalSpent) || 0).toLocaleString()}
                 </span>
               </div>
             </motion.div>

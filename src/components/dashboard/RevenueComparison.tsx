@@ -11,11 +11,11 @@ interface RevenueComparisonProps {
 export const RevenueComparison: React.FC<RevenueComparisonProps> = ({ data, currencyPrefix = 'R' }) => {
   const { total, avg, best, prevTotal, changePct } = useMemo(() => {
     if (!data.length) return { total: 0, avg: 0, best: null as RevenueDataPoint | null, prevTotal: 0, changePct: 0 };
-    const total = data.reduce((s, d) => s + d.revenue, 0);
+    const total = data.reduce((s, d) => s + (Number(d.revenue) || 0), 0);
     const avg = total / data.length;
     const half = Math.floor(data.length / 2);
-    const firstHalf = data.slice(0, half).reduce((s, d) => s + d.revenue, 0);
-    const secondHalf = data.slice(half).reduce((s, d) => s + d.revenue, 0);
+    const firstHalf = data.slice(0, half).reduce((s, d) => s + (Number(d.revenue) || 0), 0);
+    const secondHalf = data.slice(half).reduce((s, d) => s + (Number(d.revenue) || 0), 0);
     const current = secondHalf;
     const prevTotal = firstHalf;
     const changePct = prevTotal > 0 ? Math.round(((current - prevTotal) / prevTotal) * 100) : 0;
