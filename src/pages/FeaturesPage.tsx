@@ -104,7 +104,7 @@ export const FeaturesPage: React.FC = () => {
       {/* CTA */}
       <div className="rounded-3xl bg-indigo-600 text-white p-10 text-center space-y-6 shadow-xl">
         <h2 className="text-3xl font-extrabold">Ready to explore Business OS?</h2>
-        <p className="text-violet-100 max-w-xl mx-auto">
+        <p className="text-indigo-100 max-w-xl mx-auto">
           Pick a plan that fits your business and start running today. No hidden fees.
         </p>
         <NavLink

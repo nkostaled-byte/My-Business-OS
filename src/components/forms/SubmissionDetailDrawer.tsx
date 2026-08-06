@@ -63,7 +63,7 @@ export const SubmissionDetailDrawer: React.FC<SubmissionDetailDrawerProps> = ({
           {/* Header */}
           <div className="p-6 border-b border-slate-200/50 dark:border-white/5 flex items-center justify-between">
             <div>
-              <span className="text-[10px] font-extrabold uppercase tracking-widest text-violet-600 dark:text-violet-400">
+              <span className="text-[10px] font-extrabold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
                 {submission.formName}
               </span>
               <h2 className="text-lg font-extrabold text-slate-900 dark:text-slate-100 mt-0.5">
@@ -116,20 +116,20 @@ export const SubmissionDetailDrawer: React.FC<SubmissionDetailDrawerProps> = ({
               </h4>
               <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 space-y-2.5">
                 <div className="flex items-center gap-3 text-xs text-slate-700 dark:text-slate-300">
-                  <Mail className="w-4 h-4 text-violet-600" />
+                  <Mail className="w-4 h-4 text-indigo-600" />
                   <a href={`mailto:${submission.senderEmail}`} className="font-semibold hover:underline">
                     {submission.senderEmail}
                   </a>
                 </div>
                 {submission.senderPhone && (
                   <div className="flex items-center gap-3 text-xs text-slate-700 dark:text-slate-300">
-                    <Phone className="w-4 h-4 text-violet-600" />
+                    <Phone className="w-4 h-4 text-indigo-600" />
                     <span className="font-semibold">{submission.senderPhone}</span>
                   </div>
                 )}
                 {submission.senderCompany && (
                   <div className="flex items-center gap-3 text-xs text-slate-700 dark:text-slate-300">
-                    <Building className="w-4 h-4 text-violet-600" />
+                    <Building className="w-4 h-4 text-indigo-600" />
                     <span className="font-semibold">{submission.senderCompany}</span>
                   </div>
                 )}
@@ -160,11 +160,11 @@ export const SubmissionDetailDrawer: React.FC<SubmissionDetailDrawerProps> = ({
             </div>
 
             {/* Resend Notice */}
-            <div className="p-3.5 rounded-2xl bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-800/60 flex items-start gap-3">
-              <div className="w-5 h-5 rounded-full bg-violet-600 text-white flex items-center justify-center text-[10px] shrink-0 mt-0.5 font-bold">
+            <div className="p-3.5 rounded-2xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-800/60 flex items-start gap-3">
+              <div className="w-5 h-5 rounded-full bg-indigo-600 text-white flex items-center justify-center text-[10px] shrink-0 mt-0.5 font-bold">
                 i
               </div>
-              <p className="text-[11px] text-violet-800 dark:text-violet-200 leading-relaxed">
+              <p className="text-[11px] text-indigo-800 dark:text-indigo-200 leading-relaxed">
                 Replies are sent through Resend. The Cloudflare Worker backend automatically handles email dispatch and logs delivery status.
               </p>
             </div>
@@ -194,7 +194,7 @@ export const SubmissionDetailDrawer: React.FC<SubmissionDetailDrawerProps> = ({
             <button
               type="button"
               onClick={handleReplyClick}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-500/20 cursor-pointer transition-all"
             >
               <Send className="w-3.5 h-3.5" />
               <span>Reply via Resend</span>

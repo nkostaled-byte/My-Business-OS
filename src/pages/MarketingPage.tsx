@@ -24,12 +24,12 @@ export const MarketingPage: React.FC = () => {
   const { businessName, businessLogo } = useData();
 
   return (
-    <div className="selection:bg-violet-100 selection:text-violet-900 relative">
+    <div className="selection:bg-indigo-100 selection:text-indigo-900 relative">
       {/* Hero Section */}
       <section className="relative pt-12 pb-20 lg:pt-20 lg:pb-32 overflow-hidden">
         {/* Decorative background glow */}
-        <div className="absolute top-1/4 right-10 w-96 h-96 bg-violet-400/20 dark:bg-violet-600/15 rounded-full blur-3xl -z-10" />
-        <div className="absolute top-10 left-10 w-80 h-80 bg-purple-400/20 dark:bg-purple-600/10 rounded-full blur-3xl -z-10" />
+        <div className="absolute top-1/4 right-10 w-96 h-96 bg-indigo-400/20 dark:bg-indigo-600/15 rounded-full blur-3xl -z-10" />
+        <div className="absolute top-10 left-10 w-80 h-80 bg-indigo-400/20 dark:bg-indigo-600/10 rounded-full blur-3xl -z-10" />
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
@@ -102,13 +102,13 @@ export const MarketingPage: React.FC = () => {
                           Here's what's happening with your business today.
                         </p>
                       </div>
-                      <span className="text-[10px] bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 font-semibold px-2 py-0.5 rounded-md">
+                      <span className="text-[10px] bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-semibold px-2 py-0.5 rounded-md">
                         This Month
                       </span>
                     </div>
 
                     <div className="grid grid-cols-3 gap-2">
-                      <div className="p-3 rounded-xl bg-gradient-to-tr from-violet-600 to-purple-600 text-white">
+                      <div className="p-3 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-600 text-white">
                         <span className="text-[10px] opacity-80 block">Total Revenue</span>
                         <span className="text-base font-extrabold block mt-0.5">R42,680</span>
                         <span className="text-[9px] opacity-90">+18% vs last month</span>
@@ -129,11 +129,11 @@ export const MarketingPage: React.FC = () => {
                       <span className="text-xs font-bold text-slate-800 dark:text-slate-200 block mb-2">
                         Revenue Trend
                       </span>
-                      <div className="h-20 bg-violet-50/50 dark:bg-violet-950/20 rounded-lg flex items-end p-2 gap-1.5">
-                        <div className="w-full bg-violet-300 dark:bg-violet-700 h-1/3 rounded-sm" />
-                        <div className="w-full bg-violet-400 dark:bg-violet-600 h-1/2 rounded-sm" />
-                        <div className="w-full bg-violet-500 dark:bg-violet-500 h-2/3 rounded-sm" />
-                        <div className="w-full bg-violet-600 dark:bg-violet-400 h-full rounded-sm" />
+                      <div className="h-20 bg-indigo-50/50 dark:bg-indigo-950/20 rounded-lg flex items-end p-2 gap-1.5">
+                        <div className="w-full bg-indigo-300 dark:bg-indigo-700 h-1/3 rounded-sm" />
+                        <div className="w-full bg-indigo-400 dark:bg-indigo-600 h-1/2 rounded-sm" />
+                        <div className="w-full bg-indigo-500 dark:bg-indigo-500 h-2/3 rounded-sm" />
+                        <div className="w-full bg-indigo-600 dark:bg-indigo-400 h-full rounded-sm" />
                       </div>
                     </div>
                   </div>
@@ -141,7 +141,7 @@ export const MarketingPage: React.FC = () => {
 
                 {/* Floating Annotation Cards */}
                 <div className="absolute -top-6 -right-4 sm:-right-8 glass-panel rounded-2xl p-3 animate-bounce duration-1000 flex items-center gap-3">
-                  <div className="w-8 h-8 rounded-xl bg-violet-100 dark:bg-violet-900/50 text-violet-600 flex items-center justify-center">
+                  <div className="w-8 h-8 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 flex items-center justify-center">
                     <BarChart3 className="w-4 h-4" />
                   </div>
                   <div>
@@ -185,7 +185,7 @@ export const MarketingPage: React.FC = () => {
       <section id="features" className="py-20 bg-white dark:bg-slate-900/50 border-t border-slate-200/60 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-violet-600 dark:text-violet-400 mb-2">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-2">
               Everything in one OS
             </h2>
             <p className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
@@ -232,7 +232,7 @@ export const MarketingPage: React.FC = () => {
                   key={i}
                   className="glass-panel p-6 rounded-3xl hover:border-indigo-400/50 transition-all hover:-translate-y-1 group"
                 >
-                  <div className="w-12 h-12 rounded-2xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center mb-5 group-hover:bg-violet-600 group-hover:text-white transition-colors">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-5 group-hover:bg-indigo-600 group-hover:text-white transition-colors">
                     <Icon className="w-6 h-6" />
                   </div>
                   <h3 className="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2">
@@ -252,7 +252,7 @@ export const MarketingPage: React.FC = () => {
       <section className="py-20 bg-slate-50 dark:bg-slate-950 border-t border-slate-200/60 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
           <div className="text-center max-w-2xl mx-auto space-y-3">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-violet-600 dark:text-violet-400">
+            <h2 className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
               Simple & Transparent Plans
             </h2>
             <p className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
@@ -301,7 +301,7 @@ export const MarketingPage: React.FC = () => {
                   <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium mb-6">
                     {plan.features.slice(0, 5).map((feat, i) => (
                       <li key={i} className="flex items-center gap-2">
-                        <Check className="w-3.5 h-3.5 text-violet-600 shrink-0" />
+                        <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
                         <span>{feat}</span>
                       </li>
                     ))}
@@ -310,7 +310,7 @@ export const MarketingPage: React.FC = () => {
 
                 <NavLink
                   to="/pricing"
-                  className="w-full py-2.5 rounded-xl text-xs font-bold text-center text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-violet-600 hover:text-white transition-all block shadow-xs"
+                  className="w-full py-2.5 rounded-xl text-xs font-bold text-center text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition-all block shadow-xs"
                 >
                   View Plan Details
                 </NavLink>
@@ -326,12 +326,12 @@ export const MarketingPage: React.FC = () => {
           <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
             Ready to streamline your business operations?
           </h2>
-          <p className="text-sm sm:text-base text-violet-100 max-w-xl mx-auto">
+          <p className="text-sm sm:text-base text-indigo-100 max-w-xl mx-auto">
             Join thousands of salons, barber shops, boutique stores, and service brands on My Business OS.
           </p>
           <NavLink
             to="/app"
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-sm font-bold text-slate-900 bg-white hover:bg-violet-50 shadow-2xl transition-all"
+            className="inline-flex items-center gap-2 px-8 py-4 rounded-2xl text-sm font-bold text-slate-900 bg-white hover:bg-indigo-50 shadow-2xl transition-all"
           >
             <span>Launch Dashboard Now</span>
             <ArrowRight className="w-4 h-4" />

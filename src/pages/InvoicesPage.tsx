@@ -264,7 +264,7 @@ export const InvoicesPage: React.FC = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={(e) => { e.stopPropagation(); setSelectedInvoice(row); }}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors cursor-pointer"
             title="View invoice details"
           >
             <Eye className="w-4 h-4" />
@@ -375,7 +375,7 @@ export const InvoicesPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => updateLineItem(idx, 'source', 'manual')}
-                      className={`px-1.5 py-1.5 text-[10px] font-bold cursor-pointer ${item.source === 'manual' ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400' : 'bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500'}`}
+                      className={`px-1.5 py-1.5 text-[10px] font-bold cursor-pointer ${item.source === 'manual' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400' : 'bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500'}`}
                       title="Manual entry"
                     >
                       <Type className="w-3 h-3" />
@@ -383,7 +383,7 @@ export const InvoicesPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => updateLineItem(idx, 'source', 'product')}
-                      className={`px-1.5 py-1.5 text-[10px] font-bold cursor-pointer ${item.source === 'product' ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400' : 'bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500'}`}
+                      className={`px-1.5 py-1.5 text-[10px] font-bold cursor-pointer ${item.source === 'product' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400' : 'bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500'}`}
                       title="Pick from inventory"
                     >
                       <Package className="w-3 h-3" />
@@ -391,7 +391,7 @@ export const InvoicesPage: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => updateLineItem(idx, 'source', 'service')}
-                      className={`px-1.5 py-1.5 text-[10px] font-bold cursor-pointer ${item.source === 'service' ? 'bg-violet-100 text-violet-700 dark:bg-violet-900/40 dark:text-violet-400' : 'bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500'}`}
+                      className={`px-1.5 py-1.5 text-[10px] font-bold cursor-pointer ${item.source === 'service' ? 'bg-indigo-100 text-indigo-700 dark:bg-indigo-900/40 dark:text-indigo-400' : 'bg-slate-50 dark:bg-slate-800 text-slate-400 dark:text-slate-500'}`}
                       title="Pick a service"
                     >
                       <Scissors className="w-3 h-3" />
@@ -537,7 +537,7 @@ export const InvoicesPage: React.FC = () => {
               whileTap={{ scale: 0.98 }}
               type="submit"
               disabled={creating}
-              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer disabled:opacity-50"
+              className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-500/20 cursor-pointer disabled:opacity-50"
             >
               {creating ? 'Generating...' : 'Issue Invoice'}
             </motion.button>
@@ -617,7 +617,7 @@ export const InvoicesPage: React.FC = () => {
                 whileTap={{ scale: 0.98 }}
                 onClick={() => handleDownloadPdf(selectedInvoice)}
                 disabled={downloading === selectedInvoice.id}
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 shadow-md shadow-violet-500/20 cursor-pointer disabled:opacity-50"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-500/20 cursor-pointer disabled:opacity-50"
               >
                 <Download className="w-4 h-4" />
                 <span>{downloading === selectedInvoice.id ? 'Generating PDF...' : 'Download PDF'}</span>

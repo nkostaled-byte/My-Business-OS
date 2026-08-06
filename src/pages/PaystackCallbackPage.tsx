@@ -46,7 +46,7 @@ export const PaystackCallbackPage: React.FC = () => {
       <div className="w-full max-w-md glass-strong rounded-3xl p-8 sm:p-10 text-center">
         {state.status === 'loading' && (
           <>
-            <div className="mx-auto w-14 h-14 rounded-2xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center mb-5">
+            <div className="mx-auto w-14 h-14 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center mb-5">
               <Loader2 className="w-7 h-7 animate-spin" />
             </div>
             <h1 className="text-xl font-extrabold text-slate-900 dark:text-white">
@@ -83,7 +83,7 @@ export const PaystackCallbackPage: React.FC = () => {
             <button
               type="button"
               onClick={() => navigate('/app/billing')}
-              className="mt-6 w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 transition-colors cursor-pointer"
+              className="mt-6 w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors cursor-pointer"
             >
               Go to Billing
             </button>
@@ -103,7 +103,7 @@ export const PaystackCallbackPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => navigate('/app/billing')}
-                className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 transition-colors cursor-pointer"
+                className="w-full py-2.5 px-4 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 transition-colors cursor-pointer"
               >
                 Go to Billing
               </button>

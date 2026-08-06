@@ -132,9 +132,9 @@ export const PricingPage: React.FC = () => {
   ];
 
   return (
-    <div className="py-12 sm:py-16 selection:bg-violet-100 selection:text-violet-900 relative">
+    <div className="py-12 sm:py-16 selection:bg-indigo-100 selection:text-indigo-900 relative">
       {/* Background Glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-violet-200/40 via-purple-100/20 dark:from-violet-900/20 dark:via-purple-900/10 to-transparent blur-3xl opacity-70 -z-10" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-[600px] pointer-events-none bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-indigo-200/40 via-indigo-100/20 dark:from-indigo-900/20 dark:via-indigo-900/10 to-transparent blur-3xl opacity-70 -z-10" />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
         {/* Hero Header */}
@@ -142,7 +142,7 @@ export const PricingPage: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-100/80 dark:bg-violet-950/80 border border-violet-200/80 dark:border-violet-800 text-violet-700 dark:text-violet-300 text-xs font-bold uppercase tracking-wider"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-100/80 dark:bg-indigo-950/80 border border-indigo-200/80 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider"
           >
             <span>Unified Pricing Plans</span>
           </motion.div>
@@ -453,7 +453,7 @@ export const PricingPage: React.FC = () => {
             <h2 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
               Ready to grow your business?
             </h2>
-            <p className="text-xs sm:text-base text-violet-100 leading-relaxed">
+            <p className="text-xs sm:text-base text-indigo-100 leading-relaxed">
               Pick a plan, connect your payments, and start running your business today.
             </p>
 
@@ -461,7 +461,7 @@ export const PricingPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => handleCheckout(PRICING_PLANS.find((p) => p.isPopular) ?? PRICING_PLANS[1])}
-                className="w-full sm:w-auto px-8 py-3.5 rounded-2xl text-xs sm:text-sm font-extrabold text-violet-950 bg-white hover:bg-violet-50 transition-colors shadow-xl cursor-pointer"
+                className="w-full sm:w-auto px-8 py-3.5 rounded-2xl text-xs sm:text-sm font-extrabold text-indigo-950 bg-white hover:bg-indigo-50 transition-colors shadow-xl cursor-pointer"
               >
                 Get Started
               </button>

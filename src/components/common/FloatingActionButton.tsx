@@ -27,7 +27,7 @@ export const FloatingActionButton: React.FC = () => {
     {
       label: 'New Booking',
       icon: Calendar,
-      color: 'bg-purple-500 text-white',
+      color: 'bg-indigo-500 text-white',
       onClick: () => navigate('/app/bookings'),
       minPlan: 'free',
     },

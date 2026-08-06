@@ -321,7 +321,7 @@ export const SettingsPage: React.FC = () => {
 
                 {/* Profile Photo */}
                 <div className="flex items-center gap-4">
-                  <img src={profileAvatar} alt={profileName} className="w-16 h-16 rounded-full object-cover ring-2 ring-violet-500/30" />
+                  <img src={profileAvatar} alt={profileName} className="w-16 h-16 rounded-full object-cover ring-2 ring-indigo-500/30" />
                   <div>
                     <label className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 cursor-pointer inline-flex items-center gap-2 transition-colors">
                       <Upload className="w-3.5 h-3.5" /> Upload Photo
@@ -407,7 +407,7 @@ export const SettingsPage: React.FC = () => {
                         <Building2 className="w-7 h-7 text-slate-400" />
                       )}
                     </div>
-                    <label className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer inline-flex items-center gap-2">
+                    <label className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all cursor-pointer inline-flex items-center gap-2">
                       <Upload className="w-3.5 h-3.5" /> Upload Logo
                       <input type="file" accept="image/*" className="hidden" onChange={handleLogoUpload} />
                     </label>
@@ -540,7 +540,7 @@ export const SettingsPage: React.FC = () => {
                         type="button"
                         onClick={handleInvite}
                         disabled={inviting || !inviteName.trim() || !inviteEmail.trim()}
-                        className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-md disabled:opacity-50 cursor-pointer"
+                        className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md disabled:opacity-50 cursor-pointer"
                       >
                         {inviting ? 'Inviting...' : 'Invite'}
                       </motion.button>
@@ -565,7 +565,7 @@ export const SettingsPage: React.FC = () => {
                           <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
                             member.role === 'admin'
                               ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
-                              : 'bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300'
+                              : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300'
                           }`}>
                             {member.role}
                           </span>
@@ -609,7 +609,7 @@ export const SettingsPage: React.FC = () => {
                         type="checkbox" 
                         checked={item.state} 
                         onChange={(e) => item.setState(e.target.checked)}
-                        className="w-4 h-4 rounded text-violet-600 focus:ring-violet-500 accent-violet-600" 
+                        className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 accent-indigo-600" 
                       />
                     </div>
                   ))}
@@ -624,7 +624,7 @@ export const SettingsPage: React.FC = () => {
                   <p className="text-xs text-slate-500 dark:text-slate-400">Manage your My Grafix OS plan and payment methods.</p>
                 </div>
 
-                <div className="p-6 rounded-3xl bg-gradient-to-r from-violet-900 to-indigo-900 text-white space-y-4 shadow-lg">
+                <div className="p-6 rounded-3xl bg-gradient-to-r from-indigo-600 via-indigo-600 to-sky-600 text-white space-y-4 shadow-lg">
                   <div className="flex justify-between items-center">
                     <div>
                       <span className="text-[10px] font-extrabold uppercase tracking-widest bg-white/20 px-2.5 py-1 rounded-full">
@@ -641,7 +641,7 @@ export const SettingsPage: React.FC = () => {
                       </span>
                     )}
                   </div>
-                  <p className="text-xs text-violet-200">
+                  <p className="text-xs text-indigo-200">
                     {billingStatus?.subscription_active
                       ? billingStatus.plan_expires_at
                         ? `Next billing date: ${new Date(billingStatus.plan_expires_at).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`
@@ -656,7 +656,7 @@ export const SettingsPage: React.FC = () => {
                   <button 
                     type="button" 
                     onClick={() => navigate('/app/billing')}
-                    className="flex-1 py-3 px-4 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-md transition-all"
+                    className="flex-1 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all"
                   >
                     Upgrade Plan
                   </button>
@@ -804,7 +804,7 @@ export const SettingsPage: React.FC = () => {
           <div className="pt-6 border-t border-slate-200 dark:border-slate-800 flex justify-end">
             <button
               type="submit"
-              className="px-6 py-3 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-md shadow-violet-500/20 transition-all cursor-pointer flex items-center gap-2"
+              className="px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-500/20 transition-all cursor-pointer flex items-center gap-2"
             >
               <Save className="w-4 h-4" /> Save Changes
             </button>
@@ -841,7 +841,7 @@ export const SettingsPage: React.FC = () => {
                       addToast({ title: 'Copied', message: 'Temporary password copied to clipboard.', type: 'success' });
                     }
                   }}
-                  className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 transition-colors cursor-pointer"
+                  className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors cursor-pointer"
                 >
                   <Copy className="w-3.5 h-3.5" />
                 </button>
@@ -855,7 +855,7 @@ export const SettingsPage: React.FC = () => {
             <button
               type="button"
               onClick={() => setInviteResult(null)}
-              className="px-4 py-2 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs cursor-pointer"
+              className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs cursor-pointer"
             >
               Done
             </button>

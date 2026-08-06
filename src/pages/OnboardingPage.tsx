@@ -105,7 +105,7 @@ const TIMEZONES = [
 // ─── Color Palette Presets ────────────────────────────────────────
 
 const COLOR_PRESETS = [
-  { label: 'Violet', value: '#7c3aed' },
+  { label: 'Indigo', value: '#4f46e5' },
   { label: 'Blue', value: '#2563eb' },
   { label: 'Emerald', value: '#059669' },
   { label: 'Amber', value: '#d97706' },
@@ -145,7 +145,7 @@ export const OnboardingPage: React.FC = () => {
   const [businessEmail, setBusinessEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [logoUrl, setLogoUrl] = useState('');
-  const [primaryColor, setPrimaryColor] = useState('#7c3aed');
+  const [primaryColor, setPrimaryColor] = useState('#4f46e5');
 
   // ─── Claim Business Form State ─────────────────────────────────
 
@@ -240,7 +240,7 @@ export const OnboardingPage: React.FC = () => {
   // ─── Render ────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-violet-50/30 to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center p-4 font-sans">
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-indigo-50/30 to-indigo-50/30 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 flex items-center justify-center p-4 font-sans">
       <div className="w-full max-w-2xl">
         {/* Logo */}
         <div className="flex justify-center mb-8">
@@ -248,7 +248,7 @@ export const OnboardingPage: React.FC = () => {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 p-2 flex items-center justify-center shadow-lg shadow-violet-500/10 border border-slate-100 dark:border-slate-800"
+            className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 p-2 flex items-center justify-center shadow-lg shadow-indigo-500/10 border border-slate-100 dark:border-slate-800"
           >
             <img
               src="https://res.cloudinary.com/dvvugpu04/image/upload/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png"
@@ -420,7 +420,7 @@ export const OnboardingPage: React.FC = () => {
                       value={businessName}
                       onChange={(e) => setBusinessName(e.target.value)}
                       placeholder="e.g. Premium Barbershop &amp; Spa"
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all"
                     />
                   </div>
                 </div>
@@ -434,7 +434,7 @@ export const OnboardingPage: React.FC = () => {
                     <select
                       value={businessType}
                       onChange={(e) => setBusinessType(e.target.value)}
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all appearance-none"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all appearance-none"
                     >
                       <option value="">Select your business type</option>
                       {BUSINESS_TYPES.map((t) => (
@@ -454,7 +454,7 @@ export const OnboardingPage: React.FC = () => {
                       <select
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}
-                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all appearance-none"
+                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all appearance-none"
                       >
                         {COUNTRIES.map((c) => (
                           <option key={c.code} value={c.code}>{c.name}</option>
@@ -472,7 +472,7 @@ export const OnboardingPage: React.FC = () => {
                       <select
                         value={currency}
                         onChange={(e) => setCurrency(e.target.value)}
-                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all appearance-none"
+                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all appearance-none"
                       >
                         {CURRENCIES.map((c) => (
                           <option key={c.code} value={c.code}>{c.label}</option>
@@ -491,7 +491,7 @@ export const OnboardingPage: React.FC = () => {
                     <select
                       value={timezone}
                       onChange={(e) => setTimezone(e.target.value)}
-                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all appearance-none"
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all appearance-none"
                     >
                       {TIMEZONES.map((tz) => (
                         <option key={tz} value={tz}>{tz.replace('_', ' ')}</option>
@@ -512,7 +512,7 @@ export const OnboardingPage: React.FC = () => {
                         value={businessEmail}
                         onChange={(e) => setBusinessEmail(e.target.value)}
                         placeholder={userEmail || "business@example.com"}
-                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
+                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all"
                       />
                     </div>
                   </div>
@@ -528,7 +528,7 @@ export const OnboardingPage: React.FC = () => {
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
                         placeholder="+27 82 123 4567"
-                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
+                        className="w-full pl-10 pr-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all"
                       />
                     </div>
                   </div>
@@ -543,7 +543,7 @@ export const OnboardingPage: React.FC = () => {
                     value={logoUrl}
                     onChange={(e) => setLogoUrl(e.target.value)}
                     placeholder="https://example.com/logo.png"
-                    className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all"
+                    className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all"
                   />
                 </div>
 

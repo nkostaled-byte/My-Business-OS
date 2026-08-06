@@ -23,7 +23,7 @@ interface Props {
 const PRIORITIES: LeadPriority[] = ['low', 'medium', 'high', 'urgent'];
 
 const inputCls =
-  'w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all';
+  'w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all';
 const labelCls = 'block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1';
 
 export const LeadForm: React.FC<Props> = ({ isOpen, onClose, onSaved, audit, website }) => {
@@ -124,8 +124,8 @@ export const LeadForm: React.FC<Props> = ({ isOpen, onClose, onSaved, audit, web
         </div>
 
         {audit && (
-          <div className="rounded-xl bg-violet-50 dark:bg-violet-950/40 border border-violet-200 dark:border-violet-900 p-3 text-xs text-slate-600 dark:text-slate-300">
-            Attaching audit score <span className="font-bold text-violet-600 dark:text-violet-400">{audit.score.score}</span> ({audit.score.opportunityLevel}) and recommended services to this lead.
+          <div className="rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-200 dark:border-indigo-900 p-3 text-xs text-slate-600 dark:text-slate-300">
+            Attaching audit score <span className="font-bold text-indigo-600 dark:text-indigo-400">{audit.score.score}</span> ({audit.score.opportunityLevel}) and recommended services to this lead.
           </div>
         )}
 

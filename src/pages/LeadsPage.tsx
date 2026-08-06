@@ -24,7 +24,7 @@ type Tab = 'pipeline' | 'table' | 'find' | 'overview';
 
 const STATUSES: LeadStatus[] = ['new', 'contacted', 'qualified', 'proposal', 'won', 'lost'];
 const STATUS_BAR: Record<LeadStatus, string> = {
-  new: 'bg-violet-500',
+  new: 'bg-indigo-500',
   contacted: 'bg-sky-500',
   qualified: 'bg-emerald-500',
   proposal: 'bg-amber-500',
@@ -33,7 +33,7 @@ const STATUS_BAR: Record<LeadStatus, string> = {
 };
 
 const inputCls =
-  'w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all';
+  'w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all';
 
 export const LeadsPage: React.FC = () => {
   const { success, error } = useToast();
@@ -84,7 +84,7 @@ export const LeadsPage: React.FC = () => {
 
   const stageColor = (name: string) => {
     const s = (pipelineData?.stages ?? []).find((s) => s.name === name);
-    return s?.color || 'violet';
+    return s?.color || 'indigo';
   };
 
   const totals = React.useMemo(() => {
@@ -150,8 +150,8 @@ export const LeadsPage: React.FC = () => {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard icon={Users} label="Total leads" value={totals.total} tone="violet" />
-        <StatCard icon={BarChart3} label="Hot + warm" value={totals.hot + totals.warm} tone="violet" />
+        <StatCard icon={Users} label="Total leads" value={totals.total} tone="indigo" />
+        <StatCard icon={BarChart3} label="Hot + warm" value={totals.hot + totals.warm} tone="indigo" />
         <StatCard icon={CircleDollarSign} label="Won" value={totals.won} tone="emerald" />
         <StatCard icon={PieChart} label="Avg score" value={totals.avg} tone="amber" />
       </div>
@@ -210,9 +210,9 @@ export const LeadsPage: React.FC = () => {
   );
 };
 
-const StatCard: React.FC<{ icon: React.ComponentType<{ className?: string }>; label: string; value: number; tone: 'violet' | 'emerald' | 'amber' }> = ({ icon: Icon, label, value, tone }) => {
+const StatCard: React.FC<{ icon: React.ComponentType<{ className?: string }>; label: string; value: number; tone: 'indigo' | 'emerald' | 'amber' }> = ({ icon: Icon, label, value, tone }) => {
   const toneCls =
-    tone === 'violet' ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
+    tone === 'indigo' ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400'
     : tone === 'emerald' ? 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
     : 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400';
   return (
@@ -253,8 +253,8 @@ const LeadsTable: React.FC<{ leads: Lead[]; loading: boolean; onSelect: (id: str
   };
 
   const colorOf = (name: string) => {
-    const map: Record<string, string> = { slate: 'bg-slate-400', violet: 'bg-violet-500', blue: 'bg-sky-500', emerald: 'bg-emerald-500', amber: 'bg-amber-500', green: 'bg-emerald-500', rose: 'bg-rose-500' };
-    return map[stageColor(name)] || 'bg-violet-500';
+    const map: Record<string, string> = { slate: 'bg-slate-400', violet: 'bg-indigo-500', blue: 'bg-sky-500', emerald: 'bg-emerald-500', amber: 'bg-amber-500', green: 'bg-emerald-500', rose: 'bg-rose-500' };
+    return map[stageColor(name)] || 'bg-indigo-500';
   };
 
   return (
@@ -271,7 +271,7 @@ const LeadsTable: React.FC<{ leads: Lead[]; loading: boolean; onSelect: (id: str
       </div>
 
       {loading ? (
-        <div className="p-16 flex items-center justify-center"><div className="w-8 h-8 border-2 border-violet-600 border-t-transparent rounded-full animate-spin" /></div>
+        <div className="p-16 flex items-center justify-center"><div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" /></div>
       ) : filtered.length === 0 ? (
         <div className="p-6"><EmptyState icon={Database} title="No leads found" description="Try a different search, add a lead, or run an audit." /></div>
       ) : (

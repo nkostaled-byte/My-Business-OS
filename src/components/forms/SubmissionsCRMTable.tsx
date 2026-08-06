@@ -84,7 +84,7 @@ export const SubmissionsCRMTable: React.FC<SubmissionsCRMTableProps> = ({
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search enquiries by name, email, form..."
-              className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-violet-500"
+              className="w-full pl-10 pr-4 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-indigo-500"
             />
           </div>
         </div>
@@ -149,7 +149,7 @@ export const SubmissionsCRMTable: React.FC<SubmissionsCRMTableProps> = ({
             ) : filteredSubmissions.length === 0 ? (
               <tr>
                 <td colSpan={6} className="py-16 text-center">
-                  <div className="w-12 h-12 rounded-2xl bg-violet-50 dark:bg-violet-950/50 text-violet-600 flex items-center justify-center mx-auto mb-3">
+                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950/50 text-indigo-600 flex items-center justify-center mx-auto mb-3">
                     <FileText className="w-6 h-6" />
                   </div>
                   <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100">
@@ -169,7 +169,7 @@ export const SubmissionsCRMTable: React.FC<SubmissionsCRMTableProps> = ({
                 >
                   <td className="py-4 px-6">
                     <div className="flex items-center gap-3">
-                      <div className="w-9 h-9 rounded-full bg-violet-100 dark:bg-violet-900/50 text-violet-700 dark:text-violet-300 font-bold flex items-center justify-center text-xs shrink-0">
+                      <div className="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-900/50 text-indigo-700 dark:text-indigo-300 font-bold flex items-center justify-center text-xs shrink-0">
                         {row.senderName.substring(0, 2).toUpperCase()}
                       </div>
                       <div>
@@ -224,7 +224,7 @@ export const SubmissionsCRMTable: React.FC<SubmissionsCRMTableProps> = ({
                       <button
                         type="button"
                         onClick={() => onUpdateStatus(row.id, 'replied')}
-                        className="p-1.5 rounded-lg bg-violet-100 dark:bg-violet-900/50 hover:bg-violet-200 text-violet-700 dark:text-violet-300 transition-colors"
+                        className="p-1.5 rounded-lg bg-indigo-100 dark:bg-indigo-900/50 hover:bg-indigo-200 text-indigo-700 dark:text-indigo-300 transition-colors"
                         title="Quick Reply"
                       >
                         <Send className="w-4 h-4" />

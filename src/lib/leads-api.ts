@@ -295,7 +295,7 @@ export function scoreTone(score: number): { text: string; ring: string; bg: stri
 
 export const STAGE_COLORS: Record<string, string> = {
   slate: 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 ring-slate-300/40',
-  violet: 'bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 ring-violet-500/30',
+  indigo: 'bg-indigo-100 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400 ring-indigo-500/30',
   blue: 'bg-sky-100 dark:bg-sky-950/60 text-sky-600 dark:text-sky-400 ring-sky-500/30',
   emerald: 'bg-emerald-100 dark:bg-emerald-950/50 text-emerald-600 dark:text-emerald-400 ring-emerald-500/30',
   amber: 'bg-amber-100 dark:bg-amber-950/50 text-amber-600 dark:text-amber-400 ring-amber-500/30',

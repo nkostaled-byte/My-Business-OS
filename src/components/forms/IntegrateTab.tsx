@@ -6,7 +6,7 @@ export const IntegrateTab: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-4">
                 <h3 className="font-bold text-slate-900 dark:text-slate-100">Hosted Link</h3>
-                <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-between text-xs font-mono text-violet-600">
+                <div className="p-4 bg-slate-50 dark:bg-slate-800 rounded-xl flex items-center justify-between text-xs font-mono text-indigo-600">
                     https://forms.mygrafixmedia.online/f/form-123
                     <Copy className="w-4 h-4 cursor-pointer" />
                 </div>

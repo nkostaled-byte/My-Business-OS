@@ -116,14 +116,14 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
     <Modal isOpen={Boolean(leadId)} onClose={onClose} title="Lead Details" subtitle={lead?.companyName || lead?.leadName} maxWidth="max-w-3xl">
       {loading && !lead ? (
         <div className="py-16 flex items-center justify-center">
-          <div className="w-8 h-8 border-2 border-violet-600 border-t-transparent rounded-full animate-spin" />
+          <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : !lead ? (
         <div className="py-10 text-center text-sm text-slate-500">Lead not found.</div>
       ) : (
         <div className="space-y-5">
           <div className="flex items-start gap-4 p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
-            <div className="w-14 h-14 rounded-2xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-300 font-bold text-base flex items-center justify-center ring-2 ring-violet-500 shrink-0">
+            <div className="w-14 h-14 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 font-bold text-base flex items-center justify-center ring-2 ring-indigo-500 shrink-0">
               {getInitials(lead.companyName || lead.contactName)}
             </div>
             <div className="flex-1 min-w-0">
@@ -206,12 +206,12 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
                 const p = getPlacesMeta(lead);
                 if (!p.placeId) return null;
                 return (
-                  <div className="mt-3 p-3 rounded-xl bg-violet-50 dark:bg-violet-950/40 border border-violet-100 dark:border-violet-900/60">
-                    <span className="text-[10px] font-semibold uppercase tracking-wide text-violet-500 dark:text-violet-400 block mb-1.5">Google Places</span>
+                  <div className="mt-3 p-3 rounded-xl bg-indigo-50 dark:bg-indigo-950/40 border border-indigo-100 dark:border-indigo-900/60">
+                    <span className="text-[10px] font-semibold uppercase tracking-wide text-indigo-500 dark:text-indigo-400 block mb-1.5">Google Places</span>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-700 dark:text-slate-200">
-                      {p.category && <span className="inline-flex items-center gap-1"><Tag className="w-3 h-3 text-violet-500" />{p.category}</span>}
+                      {p.category && <span className="inline-flex items-center gap-1"><Tag className="w-3 h-3 text-indigo-500" />{p.category}</span>}
                       {p.rating != null && <span className="inline-flex items-center gap-1"><Star className="w-3 h-3 text-amber-500 fill-amber-500" />{p.rating.toFixed(1)}{(p.ratingCount ?? 0) > 0 && <span className="text-slate-400">({p.ratingCount} reviews)</span>}</span>}
-                      {p.lat != null && p.lng != null && <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3 text-violet-500" />{p.lat.toFixed(4)}, {p.lng.toFixed(4)}</span>}
+                      {p.lat != null && p.lng != null && <span className="inline-flex items-center gap-1"><MapPin className="w-3 h-3 text-indigo-500" />{p.lat.toFixed(4)}, {p.lng.toFixed(4)}</span>}
                     </div>
                   </div>
                 );
@@ -234,12 +234,12 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
                 </div>
                 <div className="flex-1">
                   <div className="flex items-center gap-2">
-                    <TrendingUp className="w-4 h-4 text-violet-500" />
+                    <TrendingUp className="w-4 h-4 text-indigo-500" />
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 capitalize">Opportunity: {lead.opportunityLevel || 'Not assessed'}</span>
                   </div>
                   {lead.recommendedServices && lead.recommendedServices.length ? (
                     <div className="mt-2 flex flex-wrap gap-1.5">
-                      {lead.recommendedServices.map((s, i) => <span key={typeof s === 'string' ? s : (s.id || i)} className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-violet-100 text-violet-700 dark:bg-violet-950/60 dark:text-violet-400">{recommendedLabel(s)}</span>)}
+                      {lead.recommendedServices.map((s, i) => <span key={typeof s === 'string' ? s : (s.id || i)} className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-400">{recommendedLabel(s)}</span>)}
                     </div>
                   ) : (
                     <div className="mt-2 flex items-center gap-2">
@@ -251,7 +251,7 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
               </div>
 
               {lead.aiSummary && (
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/30 border border-violet-200/60 dark:border-violet-900">
+                <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-50 dark:from-indigo-950/40 dark:to-indigo-950/30 border border-indigo-200/60 dark:border-indigo-900">
                   <div className="flex items-center gap-2 mb-2">
                     <BrainCircuit className="w-4 h-4 text-indigo-500" />
                     <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Sales angle</span>
@@ -287,7 +287,7 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
             <div>
               <form onSubmit={addNote} className="flex gap-2 mb-3">
                 <input value={noteBody} onChange={(e) => setNoteBody(e.target.value)} placeholder="Add a note..." className={inputCls} />
-                <button type="submit" className="px-3 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 cursor-pointer">Add</button>
+                <button type="submit" className="px-3 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">Add</button>
               </form>
               <div className="space-y-2">
                 {(lead.notesList ?? []).map((n, i) => (
@@ -305,7 +305,7 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
             <div>
               <form onSubmit={addTask} className="flex gap-2 mb-3">
                 <input value={taskTitle} onChange={(e) => setTaskTitle(e.target.value)} placeholder="Add a task..." className={inputCls} />
-                <button type="submit" className="px-3 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 cursor-pointer">Add</button>
+                <button type="submit" className="px-3 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">Add</button>
               </form>
               <div className="space-y-2">
                 {(lead.tasks ?? []).map((t) => (
@@ -328,7 +328,7 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
                 <input type="datetime-local" value={followDue} onChange={(e) => setFollowDue(e.target.value)} className={inputCls} />
                 <div className="flex gap-2">
                   <input value={followNote} onChange={(e) => setFollowNote(e.target.value)} placeholder="Note" className={inputCls} />
-                  <button type="submit" className="px-3 py-2 rounded-xl text-xs font-bold text-white bg-violet-600 hover:bg-violet-700 cursor-pointer">Add</button>
+                  <button type="submit" className="px-3 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">Add</button>
                 </div>
               </form>
               <div className="space-y-2">
@@ -354,5 +354,5 @@ function formatCurrency(n: number | null | undefined) {
   return new Intl.NumberFormat('en-ZA', { style: 'currency', currency: 'ZAR', maximumFractionDigits: 0 }).format(Number(n || 0));
 }
 
-const selCls = 'w-full px-3 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30';
+const selCls = 'w-full px-3 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30';
 const inputCls = selCls + ' placeholder:text-slate-400';

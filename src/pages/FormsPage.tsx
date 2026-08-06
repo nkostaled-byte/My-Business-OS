@@ -64,7 +64,7 @@ export const FormsPage: React.FC = () => {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder="Search by name, email, or subject..." 
-              className="w-full pl-10 pr-4 py-2 rounded-xl text-xs glass-subtle text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-violet-500" 
+              className="w-full pl-10 pr-4 py-2 rounded-xl text-xs glass-subtle text-slate-900 dark:text-slate-100 focus:outline-hidden focus:ring-2 focus:ring-indigo-500" 
             />
           </div>
         </div>
@@ -76,7 +76,7 @@ export const FormsPage: React.FC = () => {
               onClick={() => setStatusFilter(f)}
               className={`px-4 py-2 rounded-xl text-xs font-bold capitalize transition-colors whitespace-nowrap ${
                 statusFilter === f 
-                  ? 'bg-violet-600 text-white shadow-sm' 
+                  ? 'bg-indigo-600 text-white shadow-sm' 
                   : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700'
               }`}
             >
@@ -124,7 +124,7 @@ export const FormsPage: React.FC = () => {
                   >
                     <td className="p-4 font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
                       {sub.status === 'unread' && (
-                        <span className="w-2 h-2 rounded-full bg-violet-600 animate-pulse"></span>
+                        <span className="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
                       )}
                       {sub.senderName}
                     </td>
@@ -138,7 +138,7 @@ export const FormsPage: React.FC = () => {
                     <td className="p-4">
                       <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase ${
                         sub.status === 'unread'
-                          ? 'bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-400 border border-violet-200 dark:border-violet-800'
+                          ? 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800'
                           : sub.status === 'read'
                           ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800'
                           : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
@@ -151,7 +151,7 @@ export const FormsPage: React.FC = () => {
                         <button 
                           onClick={() => setSelectedSubmission(sub)}
                           title="View Submission"
-                          className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-violet-50 hover:text-violet-600 transition-colors"
+                          className="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-indigo-50 hover:text-indigo-600 transition-colors"
                         >
                           <Eye className="w-4 h-4" />
                         </button>
@@ -188,7 +188,7 @@ export const FormsPage: React.FC = () => {
 
           {filteredSubmissions.length === 0 && (
             <div className="p-16 text-center space-y-3">
-              <div className="w-16 h-16 mx-auto rounded-full bg-violet-50 dark:bg-violet-950/50 flex items-center justify-center text-violet-600 dark:text-violet-400">
+              <div className="w-16 h-16 mx-auto rounded-full bg-indigo-50 dark:bg-indigo-950/50 flex items-center justify-center text-indigo-600 dark:text-indigo-400">
                 <Inbox className="w-8 h-8" />
               </div>
               <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">No form submissions yet.</h3>
@@ -206,7 +206,7 @@ export const FormsPage: React.FC = () => {
           <div className="w-full max-w-lg glass-strong h-full flex flex-col overflow-y-auto">
             <div className="p-6 border-b border-slate-200/50 dark:border-white/5 flex items-center justify-between sticky top-0 glass-panel z-10">
               <div>
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-violet-100 dark:bg-violet-950 text-violet-700 dark:text-violet-400">
+                <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400">
                   {selectedSubmission.formName}
                 </span>
                 <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-1">{selectedSubmission.senderName}</h2>
@@ -275,7 +275,7 @@ export const FormsPage: React.FC = () => {
             <div className="p-6 border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 flex gap-3">
               <a 
                 href={`mailto:${selectedSubmission.senderEmail}?subject=Re: ${selectedSubmission.subject || selectedSubmission.formName}`}
-                className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-md transition-all"
+                className="flex-1 flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md transition-all"
               >
                 <Mail className="w-4 h-4" /> Reply via Email
               </a>

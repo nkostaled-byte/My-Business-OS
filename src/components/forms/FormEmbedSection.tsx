@@ -37,7 +37,7 @@ export const FormEmbedSection: React.FC = () => {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <Globe className="w-3.5 h-3.5 text-violet-600" />
+              <Globe className="w-3.5 h-3.5 text-indigo-600" />
               Copy Embed Code
             </span>
             <button
@@ -58,7 +58,7 @@ export const FormEmbedSection: React.FC = () => {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <Terminal className="w-3.5 h-3.5 text-violet-600" />
+              <Terminal className="w-3.5 h-3.5 text-indigo-600" />
               Copy JavaScript SDK
             </span>
             <button
@@ -79,7 +79,7 @@ export const FormEmbedSection: React.FC = () => {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <Code className="w-3.5 h-3.5 text-violet-600" />
+              <Code className="w-3.5 h-3.5 text-indigo-600" />
               Copy iFrame
             </span>
             <button

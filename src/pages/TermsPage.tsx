@@ -8,7 +8,7 @@ export const TermsPage: React.FC = () => {
       {/* Hero */}
       <section className="relative overflow-hidden pt-24 pb-16 lg:pt-32 lg:pb-20 border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800/80 text-xs font-bold">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80 text-xs font-bold">
             <FileText className="w-3.5 h-3.5" />
             <span>Legal Agreement</span>
           </div>
@@ -23,14 +23,14 @@ export const TermsPage: React.FC = () => {
         <div className="hidden lg:block lg:col-span-1 space-y-3 sticky top-24 self-start">
           <h4 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 mb-4">Table of Contents</h4>
           <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-slate-400">
-            <li><a href="#acceptance" className="hover:text-violet-600">1. Acceptance of Terms</a></li>
-            <li><a href="#accounts" className="hover:text-violet-600">2. Accounts & Security</a></li>
-            <li><a href="#subscriptions" className="hover:text-violet-600">3. Subscriptions & Billing</a></li>
-            <li><a href="#cancellations" className="hover:text-violet-600">4. Cancellations & Refunds</a></li>
-            <li><a href="#acceptable" className="hover:text-violet-600">5. Acceptable Use</a></li>
-            <li><a href="#ip" className="hover:text-violet-600">6. Intellectual Property</a></li>
-            <li><a href="#liability" className="hover:text-violet-600">7. Limitation of Liability</a></li>
-            <li><a href="#termination" className="hover:text-violet-600">8. Termination</a></li>
+            <li><a href="#acceptance" className="hover:text-indigo-600">1. Acceptance of Terms</a></li>
+            <li><a href="#accounts" className="hover:text-indigo-600">2. Accounts & Security</a></li>
+            <li><a href="#subscriptions" className="hover:text-indigo-600">3. Subscriptions & Billing</a></li>
+            <li><a href="#cancellations" className="hover:text-indigo-600">4. Cancellations & Refunds</a></li>
+            <li><a href="#acceptable" className="hover:text-indigo-600">5. Acceptable Use</a></li>
+            <li><a href="#ip" className="hover:text-indigo-600">6. Intellectual Property</a></li>
+            <li><a href="#liability" className="hover:text-indigo-600">7. Limitation of Liability</a></li>
+            <li><a href="#termination" className="hover:text-indigo-600">8. Termination</a></li>
           </ul>
         </div>
 

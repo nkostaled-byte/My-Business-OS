@@ -338,7 +338,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                         type="checkbox"
                         checked={field.required}
                         onChange={() => handleFieldRequiredToggle(field.id)}
-                        className="rounded border-slate-300 text-violet-600 focus:ring-violet-500 w-3.5 h-3.5"
+                        className="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 w-3.5 h-3.5"
                       />
                       <span>Req.</span>
                     </label>
@@ -350,7 +350,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                         onChange={() => handleFieldToggle(field.id)}
                         className="sr-only peer"
                       />
-                      <div className="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-violet-600"></div>
+                      <div className="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
                     </label>
                   </div>
                 </div>
@@ -469,10 +469,10 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
             </div>
 
             {/* Resend Integration Card */}
-            <div className="p-4 rounded-2xl bg-gradient-to-r from-violet-500/10 via-purple-500/10 to-indigo-500/10 border border-violet-200 dark:border-violet-800/60 space-y-2">
+            <div className="p-4 rounded-2xl bg-gradient-to-r from-indigo-500/10 via-indigo-500/10 to-indigo-500/10 border border-indigo-200 dark:border-indigo-800/60 space-y-2">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <div className="w-7 h-7 rounded-lg bg-violet-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                  <div className="w-7 h-7 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-xs shadow-sm">
                     ✓
                   </div>
                   <span className="text-xs font-extrabold text-slate-900 dark:text-slate-100 uppercase tracking-wider">
@@ -535,7 +535,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                       onChange={(e) => updateConfig({ [item.key]: e.target.checked })}
                       className="sr-only peer"
                     />
-                    <div className="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-violet-600"></div>
+                    <div className="w-9 h-5 bg-slate-300 peer-focus:outline-none rounded-full peer dark:bg-slate-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-indigo-600"></div>
                   </label>
                 </div>
               ))}

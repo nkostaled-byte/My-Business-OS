@@ -6,7 +6,7 @@ export const CompanyPage: React.FC = () => {
   return (
     <div className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-50 dark:bg-violet-950/60 border border-violet-200/80 dark:border-violet-800 text-xs font-bold text-violet-700 dark:text-violet-300">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800 text-xs font-bold text-indigo-700 dark:text-indigo-300">
           <span>About My Business Systems</span>
         </div>
         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
@@ -19,7 +19,7 @@ export const CompanyPage: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         <div className="glass-panel p-8 rounded-3xl">
-          <ShieldCheck className="w-10 h-10 text-violet-600 mb-4" />
+          <ShieldCheck className="w-10 h-10 text-indigo-600 mb-4" />
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Security & Reliability</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
             Encrypted data storage, 99.9% uptime SLA, and automated daily backups for peace of mind.
@@ -27,7 +27,7 @@ export const CompanyPage: React.FC = () => {
         </div>
 
         <div className="glass-panel p-8 rounded-3xl">
-          <Heart className="w-10 h-10 text-violet-600 mb-4" />
+          <Heart className="w-10 h-10 text-indigo-600 mb-4" />
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Customer First</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
             Dedicated customer support team ready to assist with onboardings, training, and custom setups.
@@ -35,7 +35,7 @@ export const CompanyPage: React.FC = () => {
         </div>
 
         <div className="glass-panel p-8 rounded-3xl">
-          <Award className="w-10 h-10 text-violet-600 mb-4" />
+          <Award className="w-10 h-10 text-indigo-600 mb-4" />
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Constant Innovation</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
             Bi-weekly feature updates driven by user feedback and business requirements.

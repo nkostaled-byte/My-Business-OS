@@ -8,7 +8,7 @@ export const PrivacyPage: React.FC = () => {
       {/* Hero */}
       <section className="relative overflow-hidden pt-24 pb-16 lg:pt-32 lg:pb-20 border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800/80 text-xs font-bold">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80 text-xs font-bold">
             <Shield className="w-3.5 h-3.5" />
             <span>Legal & Compliance</span>
           </div>
@@ -23,19 +23,19 @@ export const PrivacyPage: React.FC = () => {
         <div className="hidden lg:block lg:col-span-1 space-y-3 sticky top-24 self-start">
           <h4 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 mb-4">Table of Contents</h4>
           <ul className="space-y-2 text-xs font-semibold text-slate-600 dark:text-slate-400">
-            <li><a href="#collection" className="hover:text-violet-600">1. Information We Collect</a></li>
-            <li><a href="#usage" className="hover:text-violet-600">2. How We Use Your Data</a></li>
-            <li><a href="#cookies" className="hover:text-violet-600">3. Cookies & Tracking</a></li>
-            <li><a href="#thirdparty" className="hover:text-violet-600">4. Third-Party Services</a></li>
-            <li><a href="#retention" className="hover:text-violet-600">5. Data Retention</a></li>
-            <li><a href="#rights" className="hover:text-violet-600">6. User Rights & POPIA</a></li>
-            <li><a href="#contact" className="hover:text-violet-600">7. Contact Information</a></li>
+            <li><a href="#collection" className="hover:text-indigo-600">1. Information We Collect</a></li>
+            <li><a href="#usage" className="hover:text-indigo-600">2. How We Use Your Data</a></li>
+            <li><a href="#cookies" className="hover:text-indigo-600">3. Cookies & Tracking</a></li>
+            <li><a href="#thirdparty" className="hover:text-indigo-600">4. Third-Party Services</a></li>
+            <li><a href="#retention" className="hover:text-indigo-600">5. Data Retention</a></li>
+            <li><a href="#rights" className="hover:text-indigo-600">6. User Rights & POPIA</a></li>
+            <li><a href="#contact" className="hover:text-indigo-600">7. Contact Information</a></li>
           </ul>
         </div>
 
         {/* Main Legal Body */}
         <div className="lg:col-span-3 space-y-12 text-sm leading-relaxed text-slate-700 dark:text-slate-300">
-          <div className="p-6 rounded-3xl bg-violet-50 dark:bg-violet-950/30 border border-violet-100 dark:border-violet-900/50 text-xs text-violet-900 dark:text-violet-200 space-y-2">
+          <div className="p-6 rounded-3xl bg-indigo-50 dark:bg-indigo-950/30 border border-indigo-100 dark:border-indigo-900/50 text-xs text-indigo-900 dark:text-indigo-200 space-y-2">
             <p className="font-bold">Overview</p>
             <p>At My Grafix Media ("we", "our", or "us"), we respect your privacy and are committed to protecting your personal information. This Privacy Policy outlines how we collect, use, and safeguard your data when you use My Grafix OS and our web services.</p>
           </div>
@@ -82,7 +82,7 @@ export const PrivacyPage: React.FC = () => {
 
           <section id="contact" className="space-y-4">
             <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100">7. Contact Information</h2>
-            <p>If you have questions regarding this Privacy Policy, please contact our Data Protection Officer at <span className="font-mono text-violet-600">privacy@mygrafixmedia.co.za</span>.</p>
+            <p>If you have questions regarding this Privacy Policy, please contact our Data Protection Officer at <span className="font-mono text-indigo-600">privacy@mygrafixmedia.co.za</span>.</p>
           </section>
         </div>
       </div>

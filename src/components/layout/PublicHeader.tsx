@@ -53,7 +53,7 @@ export const PublicHeader: React.FC = () => {
                 <>
                   <span>{item.name}</span>
                   {isActive && (
-                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-violet-600 dark:bg-violet-400 shadow-xs shadow-violet-500" />
+                    <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-indigo-600 dark:bg-indigo-400 shadow-xs shadow-indigo-500" />
                   )}
                 </>
               )}

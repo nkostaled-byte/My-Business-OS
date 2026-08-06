@@ -85,13 +85,13 @@ export const ContactPage: React.FC = () => {
     <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-24 pb-20 lg:pt-32 lg:pb-28 border-b border-slate-200 dark:border-slate-800">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-purple-500/5 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-indigo-500/5 to-transparent pointer-events-none" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-6">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800/80 text-xs font-bold"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80 text-xs font-bold"
           >
             <Mail className="w-3.5 h-3.5" />
             <span>Get in Touch</span>
@@ -103,7 +103,7 @@ export const ContactPage: React.FC = () => {
             transition={{ delay: 0.1 }}
             className="text-4xl sm:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto"
           >
-            Contact <span className="text-violet-600 dark:text-violet-400">My Grafix Media</span>
+            Contact <span className="text-indigo-600 dark:text-indigo-400">My Grafix Media</span>
           </motion.h1>
 
           <motion.p 
@@ -126,14 +126,14 @@ export const ContactPage: React.FC = () => {
               return (
                 <div key={idx} className="glass-panel rounded-3xl p-6 space-y-3 hover:border-indigo-400/50 transition-colors flex flex-col justify-between">
                   <div className="space-y-3">
-                    <div className="w-10 h-10 rounded-2xl bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400 flex items-center justify-center">
+                    <div className="w-10 h-10 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center">
                       <Icon className="w-5 h-5" />
                     </div>
                     <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">{c.title}</h3>
                     <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">{c.desc}</p>
                   </div>
                   <div className="pt-4 border-t border-slate-100 dark:border-slate-800">
-                    <span className="text-xs font-mono font-bold text-violet-600 dark:text-violet-400">{c.contact}</span>
+                    <span className="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400">{c.contact}</span>
                   </div>
                 </div>
               );
@@ -163,7 +163,7 @@ export const ContactPage: React.FC = () => {
                       placeholder="John Doe"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
+                      className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
                     />
                   </div>
                   <div>
@@ -173,7 +173,7 @@ export const ContactPage: React.FC = () => {
                       placeholder="My Business"
                       value={formData.businessName}
                       onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
+                      className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
                     />
                   </div>
                 </div>
@@ -187,7 +187,7 @@ export const ContactPage: React.FC = () => {
                       placeholder="john@business.com"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
+                      className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
                     />
                   </div>
                   <div>
@@ -197,7 +197,7 @@ export const ContactPage: React.FC = () => {
                       placeholder="+27 82 555 0192"
                       value={formData.phone}
                       onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
+                      className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
                     />
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export const ContactPage: React.FC = () => {
                   <select
                     value={formData.subject}
                     onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
+                    className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
                   >
                     <option>General Enquiry</option>
                     <option>Sales & Pricing</option>
@@ -224,13 +224,13 @@ export const ContactPage: React.FC = () => {
                     placeholder="Tell us how we can help you..."
                     value={formData.message}
                     onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                    className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-violet-500"
+                    className="w-full px-4 py-3 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-4 rounded-xl bg-violet-600 hover:bg-violet-700 text-white font-bold text-xs shadow-lg shadow-violet-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
+                  className="w-full py-4 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-lg shadow-indigo-500/20 transition-all flex items-center justify-center gap-2 cursor-pointer"
                 >
                   <Send className="w-4 h-4" /> Send Message
                 </button>
@@ -244,7 +244,7 @@ export const ContactPage: React.FC = () => {
                 <p className="text-xs text-slate-500 max-w-md mx-auto">Thank you for getting in touch. A member of our team has received your enquiry and will reply shortly.</p>
                 <button
                   onClick={() => setFormSubmitted(false)}
-                  className="px-6 py-2.5 rounded-xl bg-violet-600 text-white text-xs font-bold shadow-md cursor-pointer"
+                  className="px-6 py-2.5 rounded-xl bg-indigo-600 text-white text-xs font-bold shadow-md cursor-pointer"
                 >
                   Send Another Message
                 </button>
@@ -259,7 +259,7 @@ export const ContactPage: React.FC = () => {
               
               <div className="space-y-4 text-xs">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-5 h-5 text-violet-600 shrink-0 mt-0.5" />
+                  <MapPin className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                   <div>
                     <p className="font-bold text-slate-900 dark:text-slate-100">Cape Town Office</p>
                     <p className="text-slate-500 mt-0.5">124 Long Street, Cape Town City Centre, 8001, South Africa</p>
@@ -267,7 +267,7 @@ export const ContactPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Clock className="w-5 h-5 text-violet-600 shrink-0 mt-0.5" />
+                  <Clock className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                   <div>
                     <p className="font-bold text-slate-900 dark:text-slate-100">Business Hours</p>
                     <p className="text-slate-500 mt-0.5">Monday - Friday: 08:00 - 18:00 SAST<br />Saturday: 09:00 - 14:00 SAST</p>
@@ -275,7 +275,7 @@ export const ContactPage: React.FC = () => {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Phone className="w-5 h-5 text-violet-600 shrink-0 mt-0.5" />
+                  <Phone className="w-5 h-5 text-indigo-600 shrink-0 mt-0.5" />
                   <div>
                     <p className="font-bold text-slate-900 dark:text-slate-100">Direct Line</p>
                     <p className="text-slate-500 mt-0.5">+27 82 555 0192</p>
@@ -287,9 +287,9 @@ export const ContactPage: React.FC = () => {
             {/* Map Placeholder Card */}
             <div className="bg-slate-100 dark:bg-slate-900 rounded-3xl p-6 border border-slate-200 dark:border-slate-800 text-center space-y-3">
               <div className="w-full h-40 rounded-2xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 font-semibold text-xs relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-tr from-violet-500/10 to-indigo-500/10" />
+                <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 to-indigo-500/10" />
                 <span className="relative z-10 flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-violet-600" /> Cape Town, South Africa Map Grid
+                  <Globe className="w-4 h-4 text-indigo-600" /> Cape Town, South Africa Map Grid
                 </span>
               </div>
               <p className="text-xs text-slate-500">Global edge infrastructure deployed across South Africa & Europe.</p>

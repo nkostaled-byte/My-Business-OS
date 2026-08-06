@@ -70,7 +70,7 @@ export const GalleryPage: React.FC = () => {
                 className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent p-4 flex flex-col justify-end text-white opacity-90 group-hover:opacity-100 transition-opacity">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-violet-300">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-300">
                   {item.category}
                 </span>
                 <h4 className="text-xs font-bold leading-tight mt-0.5">{item.title}</h4>

@@ -148,15 +148,15 @@ export const BillingPage: React.FC = () => {
   return (
     <div className="space-y-12 py-4">
       {/* Current Workspace Plan Banner */}
-      <div className="p-6 sm:p-8 rounded-[28px] bg-gradient-to-br from-violet-900 via-purple-900 to-slate-900 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border border-violet-700/50">
+      <div className="p-6 sm:p-8 rounded-[28px] bg-gradient-to-br from-indigo-600 via-indigo-600 to-sky-600 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border border-indigo-700/50">
         <div className="flex items-start gap-4">
           {statusLoading ? (
             <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center">
-              <Loader2 className="w-5 h-5 animate-spin text-violet-300" />
+              <Loader2 className="w-5 h-5 animate-spin text-indigo-300" />
             </div>
           ) : (
             <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-5 h-5 text-violet-300" />
+              <ShieldCheck className="w-5 h-5 text-indigo-300" />
             </div>
           )}
 
@@ -168,8 +168,8 @@ export const BillingPage: React.FC = () => {
               </>
             ) : (
               <>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-violet-500/20 text-violet-300 text-xs font-bold border border-violet-400/30">
-                  <ShieldCheck className="w-3.5 h-3.5 text-violet-400" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold border border-indigo-400/30">
+                  <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
                   {status?.subscription_active
                     ? `Active Tier: ${currentPlanName} Plan`
                     : status?.has_subscription
@@ -177,7 +177,7 @@ export const BillingPage: React.FC = () => {
                       : `Plan: ${currentPlanName} Plan`}
                 </span>
                 <h2 className="text-xl sm:text-2xl font-extrabold mt-3">My Business OS Workspace</h2>
-                <p className="text-xs sm:text-sm text-violet-200 mt-1 max-w-xl">
+                <p className="text-xs sm:text-sm text-indigo-200 mt-1 max-w-xl">
                   {status?.subscription_active
                     ? `Your plan renews automatically on ${status.plan_expires_at
                         ? new Date(status.plan_expires_at).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })
@@ -215,7 +215,7 @@ export const BillingPage: React.FC = () => {
                     : PRICING_PLANS.find((p) => p.id === currentPlan) ?? firstPaid;
                 if (target) handleCheckout(target);
               }}
-              className="px-5 py-2.5 rounded-2xl text-xs font-bold text-white bg-violet-500 hover:bg-violet-400 transition-colors shadow-lg cursor-pointer"
+              className="px-5 py-2.5 rounded-2xl text-xs font-bold text-white bg-indigo-500 hover:bg-indigo-400 transition-colors shadow-lg cursor-pointer"
             >
               <span className="inline-flex items-center gap-1.5">
                 <RefreshCw className="w-3.5 h-3.5" />
@@ -228,7 +228,7 @@ export const BillingPage: React.FC = () => {
 
       {/* Hero Header */}
       <div className="text-center space-y-4 max-w-3xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-50 dark:bg-violet-950/60 border border-violet-200/80 dark:border-violet-800/80 text-violet-700 dark:text-violet-300 text-xs font-bold shadow-xs">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 text-xs font-bold shadow-xs">
           <span>Unified subscription plans</span>
         </div>
 
@@ -346,7 +346,7 @@ export const BillingPage: React.FC = () => {
                 <ul className="space-y-2.5 text-xs text-slate-700 dark:text-slate-300 font-medium mb-6">
                   {plan.features.map((feat, i) => (
                     <li key={i} className="flex items-center gap-2">
-                      <Check className="w-3.5 h-3.5 text-violet-600 dark:text-violet-400 shrink-0" />
+                      <Check className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400 shrink-0" />
                       <span>{feat}</span>
                     </li>
                   ))}
@@ -573,28 +573,28 @@ export const BillingPage: React.FC = () => {
                       </td>
                       <td className="py-4 px-4 text-center">
                         {row.free ? (
-                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                          <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mx-auto" />
                         ) : (
                           <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
                         )}
                       </td>
                       <td className="py-4 px-4 text-center">
                         {row.starter ? (
-                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                          <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mx-auto" />
                         ) : (
                           <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
                         )}
                       </td>
                       <td className="py-4 px-4 text-center bg-indigo-50/20 dark:bg-indigo-500/10">
                         {row.business ? (
-                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                          <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mx-auto" />
                         ) : (
                           <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
                         )}
                       </td>
                       <td className="py-4 px-4 text-center">
                         {row.professional ? (
-                          <Check className="w-4 h-4 text-violet-600 dark:text-violet-400 mx-auto" />
+                          <Check className="w-4 h-4 text-indigo-600 dark:text-indigo-400 mx-auto" />
                         ) : (
                           <Minus className="w-4 h-4 text-slate-300 dark:text-slate-700 mx-auto" />
                         )}
@@ -629,7 +629,7 @@ export const BillingPage: React.FC = () => {
                   <span>{faq.q}</span>
                   <ChevronDown
                     className={`w-4 h-4 text-slate-400 shrink-0 transition-transform ${
-                      isOpen ? 'rotate-180 text-violet-600' : ''
+                      isOpen ? 'rotate-180 text-indigo-600' : ''
                     }`}
                   />
                 </button>

@@ -22,7 +22,7 @@ interface Props {
 }
 
 const inputCls =
-  'w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-violet-500/30 transition-all';
+  'w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all';
 
 export const LeadAuditCenter: React.FC<Props> = ({ isOpen, onClose, onLeadSaved, initialUrl }) => {
   const { error } = useToast();
@@ -160,7 +160,7 @@ const AuditResultView = ({ result, onCreateLead, onNew, onClose, businessName }:
       </div>
 
       {ai && (
-        <div className="p-4 rounded-2xl bg-gradient-to-br from-violet-50 to-purple-50 dark:from-violet-950/40 dark:to-purple-950/30 border border-violet-200/60 dark:border-violet-900">
+        <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-50 dark:from-indigo-950/40 dark:to-indigo-950/30 border border-indigo-200/60 dark:border-indigo-900">
           <div className="flex items-center gap-2 mb-1.5">
             <BrainCircuit className="w-4 h-4 text-indigo-500" />
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300">AI sales angle</span>

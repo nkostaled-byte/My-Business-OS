@@ -242,7 +242,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                       {unreadCount > 0 && (
                         <button
                           onClick={() => setNotifications((prev) => prev.map((n) => ({ ...n, read: true })))}
-                          className="text-[11px] font-medium text-violet-600 dark:text-violet-400 hover:underline cursor-pointer"
+                          className="text-[11px] font-medium text-indigo-600 dark:text-indigo-400 hover:underline cursor-pointer"
                         >
                           Mark all as read
                         </button>

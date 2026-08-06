@@ -232,8 +232,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
               className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none"
             >
               <div className="max-w-md w-full text-center glass-strong rounded-3xl px-6 py-8 pointer-events-auto">
-                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-violet-100 dark:bg-violet-950/50 flex items-center justify-center">
-                  <Lock className="w-7 h-7 text-violet-600 dark:text-violet-400" />
+                <div className="w-14 h-14 mx-auto mb-4 rounded-2xl bg-indigo-100 dark:bg-indigo-950/50 flex items-center justify-center">
+                  <Lock className="w-7 h-7 text-indigo-600 dark:text-indigo-400" />
                 </div>
                 <h3 className="text-lg font-extrabold text-slate-900 dark:text-white">
                   This feature requires the {upgradeRequiredName} plan

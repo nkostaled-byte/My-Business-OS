@@ -97,13 +97,13 @@ export const CareersPage: React.FC = () => {
     <div className="min-h-screen bg-white dark:bg-slate-950 text-slate-900 dark:text-slate-100 transition-colors">
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-24 pb-20 lg:pt-32 lg:pb-28 border-b border-slate-200 dark:border-slate-800">
-        <div className="absolute inset-0 bg-gradient-to-br from-violet-500/5 via-purple-500/5 to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-indigo-500/5 to-transparent pointer-events-none" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-6">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-100 dark:bg-violet-950/60 text-violet-700 dark:text-violet-300 border border-violet-200 dark:border-violet-800/80 text-xs font-bold"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80 text-xs font-bold"
           >
             <Briefcase className="w-3.5 h-3.5" />
             <span>Careers at My Grafix Media</span>
@@ -227,7 +227,7 @@ export const CareersPage: React.FC = () => {
           <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight relative z-10">
             Don't see your exact role?
           </h2>
-          <p className="text-sm text-violet-200 max-w-xl mx-auto relative z-10">
+          <p className="text-sm text-indigo-200 max-w-xl mx-auto relative z-10">
             We are always looking for exceptional engineers, designers, and customer champions. Send us your CV and tell us how you can contribute.
           </p>
 
@@ -239,11 +239,11 @@ export const CareersPage: React.FC = () => {
                 placeholder="Enter your email address"
                 value={cvEmail}
                 onChange={(e) => setCvEmail(e.target.value)}
-                className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-violet-200 text-xs focus:outline-none focus:ring-2 focus:ring-white"
+                className="flex-1 px-4 py-3 rounded-xl bg-white/10 border border-white/20 text-white placeholder-indigo-200 text-xs focus:outline-none focus:ring-2 focus:ring-white"
               />
               <button
                 type="submit"
-                className="px-6 py-3 rounded-xl bg-white text-violet-950 font-bold text-xs hover:bg-violet-50 transition-colors shadow-lg cursor-pointer"
+                className="px-6 py-3 rounded-xl bg-white text-indigo-950 font-bold text-xs hover:bg-indigo-50 transition-colors shadow-lg cursor-pointer"
               >
                 Send CV
               </button>

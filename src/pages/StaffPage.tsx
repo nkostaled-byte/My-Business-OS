@@ -148,14 +148,14 @@ export const StaffPage: React.FC = () => {
             >
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-full bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-300 font-bold text-sm flex items-center justify-center">
+                  <div className="w-11 h-11 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 font-bold text-sm flex items-center justify-center">
                     {getInitials(member.name)}
                   </div>
                   <div>
                     <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
                       {member.name}
                     </h3>
-                    <span className="text-xs font-semibold text-violet-600 dark:text-violet-400 flex items-center gap-1">
+                    <span className="text-xs font-semibold text-indigo-600 dark:text-indigo-400 flex items-center gap-1">
                       <Briefcase className="w-3 h-3" />
                       {member.role || 'Team Member'}
                     </span>
@@ -170,7 +170,7 @@ export const StaffPage: React.FC = () => {
                       whileHover={{ scale: 1.05 }}
                       whileTap={{ scale: 0.95 }}
                       onClick={() => openEditModal(member)}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors cursor-pointer"
                       title="Edit staff member"
                     >
                       <Edit3 className="w-3.5 h-3.5" />

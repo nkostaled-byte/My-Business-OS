@@ -164,10 +164,10 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
               onClick={() => !isUploading && fileInputRef.current?.click()}
               className={`border-2 border-dashed rounded-2xl p-4 text-center cursor-pointer transition-all ${
                 isUploading
-                  ? 'border-violet-300 bg-violet-50/50 dark:bg-violet-950/20 cursor-wait'
+                  ? 'border-indigo-300 bg-indigo-50/50 dark:bg-indigo-950/20 cursor-wait'
                   : isDragging
-                  ? 'border-violet-500 bg-violet-50 dark:bg-violet-950/40'
-                  : 'border-slate-200 dark:border-slate-700 hover:border-violet-400 dark:hover:border-violet-600 bg-slate-50/50 dark:bg-slate-800/40'
+                  ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/40'
+                  : 'border-slate-200 dark:border-slate-700 hover:border-indigo-400 dark:hover:border-indigo-600 bg-slate-50/50 dark:bg-slate-800/40'
               }`}
             >
               <input
@@ -180,8 +180,8 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
               />
               <div className={`w-10 h-10 rounded-xl flex items-center justify-center mx-auto mb-2 ${
                 isUploading
-                  ? 'bg-violet-100 dark:bg-violet-900/60 text-violet-500 dark:text-violet-300'
-                  : 'bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-400'
+                  ? 'bg-indigo-100 dark:bg-indigo-900/60 text-indigo-500 dark:text-indigo-300'
+                  : 'bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400'
               }`}>
                 {isUploading ? (
                   <Loader2 className="w-5 h-5 animate-spin" />
@@ -191,7 +191,7 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
               </div>
               {isUploading ? (
                 <>
-                  <p className="text-xs font-bold text-violet-600 dark:text-violet-400">
+                  <p className="text-xs font-bold text-indigo-600 dark:text-indigo-400">
                     Uploading to server...
                   </p>
                   <p className="text-[11px] text-slate-400 dark:text-slate-500 mt-0.5">
@@ -229,7 +229,7 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
               <button
                 type="button"
                 onClick={handleApplyUrl}
-                className="px-3 py-2 rounded-xl text-xs font-semibold bg-violet-600 hover:bg-violet-700 text-white cursor-pointer"
+                className="px-3 py-2 rounded-xl text-xs font-semibold bg-indigo-600 hover:bg-indigo-700 text-white cursor-pointer"
               >
                 Apply
               </button>
@@ -255,7 +255,7 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
                 }}
                 className={`px-2 py-1 rounded-lg text-[10px] font-medium border transition-colors cursor-pointer flex items-center gap-1 ${
                   value === preset.url
-                    ? 'border-violet-500 bg-violet-50 dark:bg-violet-950/60 text-violet-600 dark:text-violet-300 font-bold'
+                    ? 'border-indigo-500 bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 font-bold'
                     : 'border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-50'
                 }`}
               >

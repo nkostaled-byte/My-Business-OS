@@ -29,7 +29,7 @@ export const FormLivePreview: React.FC<FormLivePreviewProps> = ({ config, busine
         {/* Preview Header */}
         <div className="flex items-center justify-between border-b pb-4 border-slate-200/20 dark:border-slate-800/80">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-widest text-violet-500 block">
+            <span className="text-[10px] font-bold uppercase tracking-widest text-indigo-500 block">
               Live Preview
             </span>
             <h4 className="text-sm font-extrabold tracking-tight mt-0.5">
@@ -85,8 +85,8 @@ export const FormLivePreview: React.FC<FormLivePreviewProps> = ({ config, busine
                         onChange={(e) => setFormData({ ...formData, [field.id]: e.target.value })}
                         className={`w-full px-3.5 py-2.5 ${config.borderRadius} ${config.fontSize} border transition-all focus:outline-none focus:ring-2 resize-none ${
                           isDark
-                            ? 'bg-slate-900 border-slate-800 text-slate-100 focus:ring-violet-500'
-                            : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-violet-500'
+                            ? 'bg-slate-900 border-slate-800 text-slate-100 focus:ring-indigo-500'
+                            : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-indigo-500'
                         }`}
                       />
                     ) : isSelect ? (
@@ -96,8 +96,8 @@ export const FormLivePreview: React.FC<FormLivePreviewProps> = ({ config, busine
                         onChange={(e) => setFormData({ ...formData, [field.id]: e.target.value })}
                         className={`w-full px-3.5 py-2.5 ${config.borderRadius} ${config.fontSize} border transition-all focus:outline-none focus:ring-2 ${
                           isDark
-                            ? 'bg-slate-900 border-slate-800 text-slate-100 focus:ring-violet-500'
-                            : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-violet-500'
+                            ? 'bg-slate-900 border-slate-800 text-slate-100 focus:ring-indigo-500'
+                            : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-indigo-500'
                         }`}
                       >
                         <option value="">Select option...</option>
@@ -114,8 +114,8 @@ export const FormLivePreview: React.FC<FormLivePreviewProps> = ({ config, busine
                         onChange={(e) => setFormData({ ...formData, [field.id]: e.target.value })}
                         className={`w-full px-3.5 py-2.5 ${config.borderRadius} ${config.fontSize} border transition-all focus:outline-none focus:ring-2 ${
                           isDark
-                            ? 'bg-slate-900 border-slate-800 text-slate-100 focus:ring-violet-500'
-                            : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-violet-500'
+                            ? 'bg-slate-900 border-slate-800 text-slate-100 focus:ring-indigo-500'
+                            : 'bg-slate-50 border-slate-200 text-slate-900 focus:ring-indigo-500'
                         }`}
                       />
                     )}
@@ -125,7 +125,7 @@ export const FormLivePreview: React.FC<FormLivePreviewProps> = ({ config, busine
 
             {config.marketingConsent && (
               <div className="flex items-start gap-2 pt-1">
-                <input type="checkbox" required id="consent" className="mt-0.5 rounded border-slate-300 text-violet-600 focus:ring-violet-500" />
+                <input type="checkbox" required id="consent" className="mt-0.5 rounded border-slate-300 text-indigo-600 focus:ring-indigo-500" />
                 <label htmlFor="consent" className={`text-[11px] ${isDark ? 'text-slate-400' : 'text-slate-600'}`}>
                   I agree to receive communications regarding my enquiry in accordance with privacy policies.
                 </label>

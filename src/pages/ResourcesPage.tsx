@@ -24,7 +24,7 @@ export const ResourcesPage: React.FC = () => {
   return (
     <div className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-violet-50 dark:bg-violet-950/60 border border-violet-200/80 dark:border-violet-800 text-xs font-bold text-violet-700 dark:text-violet-300">
+        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800 text-xs font-bold text-indigo-700 dark:text-indigo-300">
           <span>Knowledge & Guides</span>
         </div>
         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
@@ -42,7 +42,7 @@ export const ResourcesPage: React.FC = () => {
             className="glass-panel p-8 rounded-3xl transition-all flex flex-col justify-between"
           >
             <div>
-              <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-violet-100 dark:bg-violet-950 text-violet-600 dark:text-violet-400 mb-4">
+              <span className="inline-block px-3 py-1 rounded-full text-xs font-bold bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 mb-4">
                 {art.type}
               </span>
               <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2 leading-snug">
@@ -54,7 +54,7 @@ export const ResourcesPage: React.FC = () => {
             </div>
             <a
               href="#"
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-violet-600 dark:text-violet-400 hover:gap-2 transition-all"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:gap-2 transition-all"
             >
               <span>Read article</span>
               <ArrowRight className="w-3.5 h-3.5" />

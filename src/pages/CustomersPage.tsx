@@ -99,11 +99,11 @@ export const CustomersPage: React.FC = () => {
           onClick={() => setSelectedCustomer(row)}
           className="flex items-center gap-3 cursor-pointer group"
         >
-          <div className="w-9 h-9 rounded-full bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-300 font-bold text-xs flex items-center justify-center ring-2 ring-slate-100 dark:ring-slate-800">
+          <div className="w-9 h-9 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 font-bold text-xs flex items-center justify-center ring-2 ring-slate-100 dark:ring-slate-800">
             {getInitials(row.name)}
           </div>
           <div>
-            <span className="font-bold block text-slate-900 dark:text-slate-100 group-hover:text-violet-600 transition-colors">
+            <span className="font-bold block text-slate-900 dark:text-slate-100 group-hover:text-indigo-600 transition-colors">
               {row.name}
             </span>
           </div>
@@ -129,7 +129,7 @@ export const CustomersPage: React.FC = () => {
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             onClick={() => openEditModal(row)}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors cursor-pointer"
             title="Edit customer"
           >
             <Edit3 className="w-3.5 h-3.5" />
@@ -255,20 +255,20 @@ export const CustomersPage: React.FC = () => {
         >
           <div className="space-y-4 text-xs">
             <div className="flex items-center gap-4 p-4 rounded-2xl glass-subtle">
-              <div className="w-14 h-14 rounded-full bg-violet-100 dark:bg-violet-950/60 text-violet-600 dark:text-violet-300 font-bold text-base flex items-center justify-center ring-2 ring-violet-500">
+              <div className="w-14 h-14 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 font-bold text-base flex items-center justify-center ring-2 ring-indigo-500">
                 {getInitials(selectedCustomer.name)}
               </div>
               <div className="flex-1">
                 <h4 className="text-base font-bold text-slate-900 dark:text-slate-100">
                   {selectedCustomer.name}
                 </h4>
-                <span className="text-violet-600 font-semibold">{selectedCustomer.email || 'No email'}</span>
+                <span className="text-indigo-600 font-semibold">{selectedCustomer.email || 'No email'}</span>
               </div>
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
                 onClick={() => openEditModal(selectedCustomer)}
-                className="p-2 rounded-lg text-slate-400 hover:text-violet-600 hover:bg-violet-50 dark:hover:bg-violet-950/50 transition-colors cursor-pointer"
+                className="p-2 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors cursor-pointer"
                 title="Edit customer"
               >
                 <Edit3 className="w-4 h-4" />

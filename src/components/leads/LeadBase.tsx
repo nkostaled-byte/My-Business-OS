@@ -131,10 +131,11 @@ export const OpportunityBadge: React.FC<{ level?: string | null }> = ({ level })
   );
 };
 
-export const StageDot: React.FC<{ color?: string }> = ({ color = 'violet' }) => {
+export const StageDot: React.FC<{ color?: string }> = ({ color = 'indigo' }) => {
   const map: Record<string, string> = {
     slate: 'bg-slate-400',
-    violet: 'bg-violet-500',
+    indigo: 'bg-indigo-500',
+    violet: 'bg-indigo-500',
     blue: 'bg-sky-500',
     emerald: 'bg-emerald-500',
     amber: 'bg-amber-500',
