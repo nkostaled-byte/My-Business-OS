@@ -4,6 +4,8 @@ import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
 import { Booking, BookingStatus } from '../types';
 import { Calendar as CalendarIcon, List, CheckCircle, XCircle, Eye, X, Phone, User, Clock, Plus, Search } from 'lucide-react';
+import { NewBookingModal } from '../components/dashboard/NewBookingModal';
+import { motion } from 'motion/react';
 
 export const BookingsPage: React.FC = () => {
   const { bookings, isLoading, updateResource } = useData();
@@ -12,6 +14,7 @@ export const BookingsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   const handleMarkComplete = async (id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -59,27 +62,39 @@ export const BookingsPage: React.FC = () => {
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">Manage client appointments and schedules across your team.</p>
         </div>
 
-        <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl self-start sm:self-auto border border-slate-200 dark:border-slate-700">
-          <button 
-            onClick={() => setViewMode('calendar')} 
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-              viewMode === 'calendar' 
-                ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' 
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-            }`}
+        <div className="flex items-center gap-3">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setIsBookingModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer"
           >
-            <CalendarIcon className="w-4 h-4" /> Calendar View
-          </button>
-          <button 
-            onClick={() => setViewMode('list')} 
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
-              viewMode === 'list' 
-                ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' 
-                : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
-            }`}
-          >
-            <List className="w-4 h-4" /> List View
-          </button>
+            <Plus className="w-4 h-4" />
+            <span>New Booking</span>
+          </motion.button>
+
+          <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl self-start sm:self-auto border border-slate-200 dark:border-slate-700">
+            <button 
+              onClick={() => setViewMode('calendar')} 
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                viewMode === 'calendar' 
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+              }`}
+            >
+              <CalendarIcon className="w-4 h-4" /> Calendar View
+            </button>
+            <button 
+              onClick={() => setViewMode('list')} 
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
+                viewMode === 'list' 
+                  ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' 
+                  : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
+              }`}
+            >
+              <List className="w-4 h-4" /> List View
+            </button>
+          </div>
         </div>
       </div>
 
@@ -352,6 +367,7 @@ export const BookingsPage: React.FC = () => {
         </div>
       )}
 
+      <NewBookingModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
     </div>
   );
 };
