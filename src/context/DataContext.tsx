@@ -428,7 +428,21 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           case 'products': setProducts((prev) => [result.data as unknown as Product, ...prev]); break;
           case 'services': setServices((prev) => [result.data as unknown as Service, ...prev]); break;
           case 'orders': setOrders((prev) => [result.data as unknown as Order, ...prev]); break;
-          case 'bookings': setBookings((prev) => [result.data as unknown as Booking, ...prev]); break;
+          case 'bookings': {
+            const bk = result.data as Record<string, unknown>;
+            setBookings((prev) => [{
+              ...bk,
+              clientName: (bk as any).clientName || data.clientName,
+              clientPhone: (bk as any).clientPhone || data.clientPhone,
+              serviceName: (bk as any).serviceName || data.serviceName,
+              staffName: (bk as any).staffName || data.staffName,
+              date: (bk as any).date || ((bk as any).startTime ? new Date((bk as any).startTime).toISOString().split('T')[0] : data.date),
+              time: (bk as any).time || ((bk as any).startTime ? new Date((bk as any).startTime).toTimeString().slice(0, 5) : data.time),
+              amount: (bk as any).amount ?? data.amount ?? 0,
+              bookingCode: (bk as any).bookingCode || data.bookingCode || `#BK-${String((bk as any).id || '').slice(0, 4).toUpperCase()}`,
+            } as unknown as Booking, ...prev]);
+            break;
+          }
           case 'customers': setCustomers((prev) => [result.data as unknown as Customer, ...prev]); break;
           case 'staff': setStaff((prev) => [result.data as unknown as StaffMember, ...prev]); break;
           case 'gallery': setGallery((prev) => [result.data as unknown as GalleryItem, ...prev]); break;

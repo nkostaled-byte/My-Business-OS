@@ -52,13 +52,19 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({ isOpen, onClos
     if (!clientName.trim() || !date || !time) return;
     setSaving(true);
 
+    const startTime = new Date(`${date}T${time}:00`).toISOString();
+
     const booking = await createResource<Partial<Booking>>('bookings', {
       clientName: clientName.trim(),
       clientPhone: clientPhone.trim() || undefined,
+      serviceId: selectedService?.id || undefined,
       serviceName: selectedService?.name || 'General Appointment',
+      staffId: staff.find((s) => s.id === staffId)?.id || undefined,
       staffName: staff.find((s) => s.id === staffId)?.name || undefined,
+      durationMinutes: selectedService?.durationMinutes,
       date,
       time,
+      startTime,
       status: 'upcoming',
       amount: parseFloat(amount) || 0,
     });
