@@ -32,15 +32,15 @@ export const SalesChannelChart: React.FC<SalesChannelChartProps> = ({ orders }) 
         <div className="text-center py-8 text-xs text-slate-400">No sales recorded yet</div>
       ) : (
         <div className="flex flex-col items-center gap-4 my-auto py-4">
-          <div className="relative w-36 h-36">
+          <div className="relative w-40 h-40">
             <ResponsiveContainer width="100%" height="100%">
               <PieChart>
                 <Pie
                   data={data}
                   cx="50%"
                   cy="50%"
-                  innerRadius={42}
-                  outerRadius={58}
+                  innerRadius={48}
+                  outerRadius={66}
                   paddingAngle={3}
                   dataKey="value"
                 >
@@ -63,11 +63,11 @@ export const SalesChannelChart: React.FC<SalesChannelChartProps> = ({ orders }) 
                 />
               </PieChart>
             </ResponsiveContainer>
-            <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
-              <span className="text-lg font-extrabold text-slate-900 dark:text-slate-100 leading-none">
+            <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none px-2">
+              <span className="text-base font-extrabold text-slate-900 dark:text-slate-100 leading-none max-w-full truncate">
                 R{total.toLocaleString()}
               </span>
-              <span className="text-[10px] font-medium text-slate-400 mt-0.5">Total</span>
+              <span className="text-[10px] font-medium text-slate-400 mt-1">Total</span>
             </div>
           </div>
 

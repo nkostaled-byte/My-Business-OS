@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { motion } from 'motion/react';
 import { useData } from '../context/DataContext';
 import { StatCard } from '../components/dashboard/StatCard';
 import { RevenueChart } from '../components/dashboard/RevenueChart';
@@ -7,13 +8,14 @@ import { TopProductsList } from '../components/dashboard/TopProductsList';
 import { RecentBookingsWidget } from '../components/dashboard/RecentBookingsWidget';
 import { BusinessHealthCard } from '../components/dashboard/BusinessHealthCard';
 import { DashboardUpgradeCard } from '../components/dashboard/DashboardUpgradeCard';
-import { CalendarDays } from 'lucide-react';
+import { CalendarDays, Plus } from 'lucide-react';
 import {
   DollarSign,
   ShoppingBag,
   Calendar,
   Users,
 } from 'lucide-react';
+import { NewBookingModal } from '../components/dashboard/NewBookingModal';
 
 export const OverviewPage: React.FC = () => {
   const {
@@ -30,6 +32,7 @@ export const OverviewPage: React.FC = () => {
   } = useData();
 
   const [dateRange, setDateRange] = useState('This Month');
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
 
   const greeting = useMemo(() => {
     const h = new Date().getHours();
@@ -59,6 +62,16 @@ export const OverviewPage: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-3">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setIsBookingModalOpen(true)}
+            className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-xs sm:text-sm font-semibold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 cursor-pointer"
+          >
+            <Plus className="w-4 h-4" />
+            <span>New Booking</span>
+          </motion.button>
+
           <div className="relative">
             <select
               value={dateRange}
@@ -129,6 +142,8 @@ export const OverviewPage: React.FC = () => {
         <RecentBookingsWidget bookings={bookings} />
         <BusinessHealthCard health={businessHealth} />
       </div>
+
+      <NewBookingModal isOpen={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} />
     </div>
   );
 };
