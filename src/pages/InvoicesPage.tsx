@@ -9,7 +9,7 @@ import { FileSpreadsheet, Eye, Download, FileText, Calendar, Mail, DollarSign, P
 import api from '../lib/api-client';
 
 export const InvoicesPage: React.FC = () => {
-  const { invoices, setInvoices, isLoading, products, services } = useData();
+  const { invoices, setInvoices, isLoading, products, services, customers } = useData();
   const { addToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<Invoice | null>(null);
@@ -18,6 +18,7 @@ export const InvoicesPage: React.FC = () => {
   const [updatingStatus, setUpdatingStatus] = useState(false);
 
   // Form State
+  const [selectedCustomerId, setSelectedCustomerId] = useState('');
   const [clientName, setClientName] = useState('');
   const [clientEmail, setClientEmail] = useState('');
   const [lineItems, setLineItems] = useState<{
@@ -29,11 +30,12 @@ export const InvoicesPage: React.FC = () => {
   }[]>([
     { description: '', quantity: 1, price: 0, source: 'manual' },
   ]);
-  const [tax, setTax] = useState(0);
+  const [vatPercent, setVatPercent] = useState(15);
   const [status, setStatus] = useState<InvoiceStatus>('sent');
   const [dueDate, setDueDate] = useState('');
 
   const subtotal = lineItems.reduce((sum, item) => sum + item.quantity * item.price, 0);
+  const tax = Number((subtotal * vatPercent / 100).toFixed(2));
   const total = subtotal + tax;
 
   const addLineItem = () => {
@@ -79,6 +81,15 @@ export const InvoicesPage: React.FC = () => {
     setLineItems(updated);
   };
 
+  const pickCustomer = (customerId: string) => {
+    setSelectedCustomerId(customerId);
+    const customer = customers.find((c) => c.id === customerId);
+    if (customer) {
+      setClientName(customer.name);
+      setClientEmail(customer.email);
+    }
+  };
+
   const handleCreateInvoice = async (e: React.FormEvent) => {
     e.preventDefault();
     setCreating(true);
@@ -91,7 +102,11 @@ export const InvoicesPage: React.FC = () => {
       }
 
       const result = await api.post<any>('/api/invoices', {
-        customer: { name: clientName, email: clientEmail },
+        customer: {
+          id: selectedCustomerId || undefined,
+          name: clientName,
+          email: clientEmail,
+        },
         items: validItems.map((item) => ({
           productId: item.source === 'product' ? item.sourceId : undefined,
           serviceId: item.source === 'service' ? item.sourceId : undefined,
@@ -116,10 +131,11 @@ export const InvoicesPage: React.FC = () => {
           type: 'success',
         });
         setIsModalOpen(false);
+        setSelectedCustomerId('');
         setClientName('');
         setClientEmail('');
         setLineItems([{ description: '', quantity: 1, price: 0, source: 'manual' }]);
-        setTax(0);
+        setVatPercent(15);
         setDueDate('');
         setStatus('sent');
       } else {
@@ -328,6 +344,25 @@ export const InvoicesPage: React.FC = () => {
         maxWidth="max-w-2xl"
       >
         <form onSubmit={handleCreateInvoice} className="space-y-4">
+          {/* Customer Selection */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+              Select Existing Customer
+            </label>
+            <select
+              value={selectedCustomerId}
+              onChange={(e) => pickCustomer(e.target.value)}
+              className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
+            >
+              <option value="">— New customer (type below) —</option>
+              {customers.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name} ({c.email})
+                </option>
+              ))}
+            </select>
+          </div>
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
@@ -483,15 +518,20 @@ export const InvoicesPage: React.FC = () => {
               <span>R{subtotal.toFixed(2)}</span>
             </div>
             <div className="flex justify-between items-center">
-              <span className="text-slate-500">Tax (ZAR)</span>
+              <span className="text-slate-500">VAT (%)</span>
               <input
                 type="number"
                 min={0}
-                step={0.01}
-                value={tax}
-                onChange={(e) => setTax(parseFloat(e.target.value) || 0)}
-                className="w-28 px-2 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs text-right text-slate-900 dark:text-slate-100"
+                max={100}
+                step={0.5}
+                value={vatPercent}
+                onChange={(e) => setVatPercent(parseFloat(e.target.value) || 0)}
+                className="w-20 px-2 py-1 rounded-lg bg-white dark:bg-slate-700 border border-slate-200 dark:border-slate-600 text-xs text-right text-slate-900 dark:text-slate-100"
               />
+            </div>
+            <div className="flex justify-between text-slate-500">
+              <span>Tax Amount</span>
+              <span>R{tax.toFixed(2)}</span>
             </div>
             <div className="flex justify-between font-bold text-slate-900 dark:text-slate-100 pt-1 border-t border-slate-200 dark:border-slate-700">
               <span>Total</span>
