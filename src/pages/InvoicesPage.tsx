@@ -145,24 +145,28 @@ export const InvoicesPage: React.FC = () => {
     setDownloading(id);
     try {
       const token = localStorage.getItem('grafix_auth_token');
-      const response = await fetch(
-        api.getUrl(`/api/invoices/${id}/pdf`),
-        { headers: token ? { Authorization: `Bearer ${token}` } : {} }
-      );
-      if (!response.ok) {
-        addToast({ title: 'Download Failed', message: 'Could not generate PDF.', type: 'error' });
-        return;
+      const pdfUrl = api.getUrl(`/api/invoices/${id}/pdf`);
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+      if (isIOS) {
+        window.open(pdfUrl, '_blank');
+        addToast({ title: 'PDF Opened', message: `${invoice.invoiceNumber || 'Invoice'} PDF opened in new tab.`, type: 'success' });
+      } else {
+        const response = await fetch(pdfUrl, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
+        if (!response.ok) {
+          addToast({ title: 'Download Failed', message: 'Could not generate PDF.', type: 'error' });
+          return;
+        }
+        const blob = await response.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${invoice.invoiceNumber || 'invoice'}.pdf`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        addToast({ title: 'PDF Downloaded', message: `${invoice.invoiceNumber || 'Invoice'} PDF saved.`, type: 'success' });
       }
-      const blob = await response.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${invoice.invoiceNumber || 'invoice'}.pdf`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      addToast({ title: 'PDF Downloaded', message: `${invoice.invoiceNumber || 'Invoice'} PDF saved.`, type: 'success' });
     } catch {
       addToast({ title: 'Download Failed', message: 'Network error while downloading PDF.', type: 'error' });
     }
