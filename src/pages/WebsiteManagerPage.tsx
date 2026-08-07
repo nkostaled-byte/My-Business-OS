@@ -142,7 +142,7 @@ export const WebsiteManagerPage: React.FC = () => {
 
   const handleSave = async () => {
     setSaving(true);
-    const normalized = normalizeSite(settings.websiteUrl);
+    const normalized = normalizeSiteUrl(settings.websiteUrl);
     const payload = {
       businessName: settings.businessName,
       phone: settings.phone,
