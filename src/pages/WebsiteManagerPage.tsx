@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
+import api from '../lib/api-client';
 import {
   Globe,
   ExternalLink,
@@ -9,11 +10,6 @@ import {
   Check,
   ShieldCheck,
   Activity,
-  Calendar,
-  FileText,
-  Package,
-  Scissors,
-  Server,
   Lock,
   ArrowUpRight,
   RefreshCw,
@@ -23,37 +19,173 @@ import {
   MapPin,
   Clock,
   CheckCircle,
-  Users,
   Eye,
-  BarChart3,
-  Share2,
-  Send,
-  Building,
+  Save,
+  AlertTriangle,
+  FileText,
+  Package,
+  Scissors,
 } from 'lucide-react';
 
+interface ClientState {
+  businessName: string;
+  phone: string;
+  address: string;
+  openingHours: string;
+  ownerEmail: string;
+  websiteUrl: string;
+}
+
+interface ProbeResult {
+  status: 'checking' | 'online' | 'offline';
+  latency: number | null;
+}
+
+interface SiteMetrics {
+  totalBookings?: number;
+  totalOrders?: number;
+  totalCustomers?: number;
+  totalRevenue?: number;
+  unreadSubmissions?: number;
+  todayBookings?: unknown[];
+}
+
+function normalizeSiteUrl(value: string): string {
+  const trimmed = value.trim();
+  if (!trimmed) return '';
+  return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+}
+
 export const WebsiteManagerPage: React.FC = () => {
-  const { businessName, profileEmail, isLoading } = useData();
+  const { businessName: ctxBusinessName, setBusinessName } = useData();
   const { addToast } = useToast();
   const navigate = useNavigate();
+
+  const [settings, setSettings] = useState<ClientState>({
+    businessName: ctxBusinessName,
+    phone: '',
+    address: '',
+    openingHours: '',
+    ownerEmail: '',
+    websiteUrl: '',
+  });
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [isPublishing, setIsPublishing] = useState(false);
+  const [websiteUrl, setWebsiteUrl] = useState('');
+  const [probe, setProbe] = useState<ProbeResult>({ status: 'checking', latency: null });
+  const [metrics, setMetrics] = useState<SiteMetrics | null>(null);
+  const [metricsError, setMetricsError] = useState<string | null>(null);
 
-  const websiteUrl = `https://${businessName.toLowerCase().replace(/[^a-z0-9]/g, '')}.co.za`;
-
-  const handleCopyLink = () => {
-    navigator.clipboard.writeText(websiteUrl);
-    setCopied(true);
-    addToast('Website link copied to clipboard', 'success');
-    setTimeout(() => setCopied(false), 2000);
+  const loadSettings = async () => {
+    const result = await api.get<any>('/api/client-settings');
+    if (result.success && result.data) {
+      const s = result.data as Partial<ClientState>;
+      setSettings({
+        businessName: s.businessName ?? ctxBusinessName,
+        phone: s.phone ?? '',
+        address: s.address ?? '',
+        openingHours: s.openingHours ?? '',
+        ownerEmail: s.ownerEmail ?? '',
+        websiteUrl: s.websiteUrl ?? '',
+      });
+      setWebsiteUrl(normalizeSiteUrl(s.websiteUrl ?? ''));
+    }
   };
 
-  const handlePublish = () => {
-    setIsPublishing(true);
-    setTimeout(() => {
-      setIsPublishing(false);
-      addToast('Website published', 'success');
-    }, 1000);
+  const loadMetrics = async () => {
+    setMetricsError(null);
+    const res = await api.get<SiteMetrics>('/api/dashboard/metrics');
+    if (res.success && res.data) {
+      setMetrics(res.data);
+    } else {
+      setMetrics(null);
+      setMetricsError(res.error || 'Analytics unavailable for this plan.');
+    }
   };
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      await Promise.allSettled([loadSettings(), loadMetrics()]);
+      if (!cancelled) setLoading(false);
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const probeSite = async (url: string) => {
+    if (!url) {
+      setProbe({ status: 'offline', latency: null });
+      return;
+    }
+    setProbe((p) => ({ ...p, status: 'checking' }));
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 6000);
+    const start = performance.now();
+    try {
+      await fetch(url, { mode: 'no-cors', signal: controller.signal });
+      setProbe({ status: 'online', latency: Math.round(performance.now() - start) });
+    } catch {
+      setProbe({ status: 'offline', latency: Math.round(performance.now() - start) });
+    } finally {
+      clearTimeout(timer);
+    }
+  };
+
+  // Probe the live site whenever the linked URL changes.
+  useEffect(() => {
+    if (loading) return;
+    probeSite(websiteUrl);
+  }, [websiteUrl, loading]);
+
+  const handleSave = async () => {
+    setSaving(true);
+    const normalized = normalizeSite(settings.websiteUrl);
+    const payload = {
+      businessName: settings.businessName,
+      phone: settings.phone,
+      address: settings.address,
+      openingHours: settings.openingHours,
+      websiteUrl: normalized,
+    };
+    const res = await api.put('/api/client-settings', payload);
+    setSaving(false);
+    if (!res.success) {
+      addToast({ title: 'Save Failed', message: res.error || 'Could not save.', type: 'error' });
+      return;
+    }
+    if (settings.businessName) setBusinessName?.(settings.businessName);
+    setWebsiteUrl(normalized);
+    probeSite(normalized);
+    addToast('Website content saved', 'success');
+  };
+
+  const handlePublish = async () => {
+    await handleSave();
+  };
+
+  const handleCopyLink = async () => {
+    if (!websiteUrl) {
+      addToast('Set a website URL to copy a link', 'info');
+      return;
+    }
+    try {
+      await navigator.clipboard.writeText(websiteUrl);
+      setCopied(true);
+      addToast('Website link copied to clipboard', 'success');
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      addToast('Could not copy to clipboard', 'error');
+    }
+  };
+
+  const set = (field: keyof ClientState, value: string) =>
+    setSettings((prev) => ({ ...prev, [field]: value }));
+
+  const siteOnline = probe.status === 'online';
+  const siteConfigured = !!websiteUrl;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200 pb-12">
@@ -64,7 +196,7 @@ export const WebsiteManagerPage: React.FC = () => {
             Website Manager
           </h1>
           <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Manage your business website, monitor its health, and keep your online presence up to date.
+            Manage your business website, monitor its live status, and keep your online presence up to date.
           </p>
         </div>
 
@@ -72,40 +204,83 @@ export const WebsiteManagerPage: React.FC = () => {
           <button
             type="button"
             onClick={handlePublish}
-            disabled={isPublishing}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-500/20 cursor-pointer transition-all"
+            disabled={saving}
+            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-500/20 cursor-pointer transition-all disabled:opacity-60"
           >
-            <RefreshCw className={`w-3.5 h-3.5 ${isPublishing ? 'animate-spin' : ''}`} />
-            <span>{isPublishing ? 'Publishing...' : 'Publish Changes'}</span>
+            <RefreshCw className={`w-3.5 h-3.5 ${saving ? 'animate-spin' : ''}`} />
+            <span>{saving ? 'Saving...' : 'Publish Changes'}</span>
           </button>
-          <a
-            href={websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 glass-panel hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-all"
-          >
-            <span>Visit Website</span>
-            <ExternalLink className="w-3.5 h-3.5" />
-          </a>
+          {websiteUrl ? (
+            <a
+              href={websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 glass-panel hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-all"
+            >
+              <span>Visit Website</span>
+              <ExternalLink className="w-3.5 h-3.5" />
+            </a>
+          ) : (
+            <button
+              type="button"
+              onClick={() => navigate('/app/settings')}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 glass-panel hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-all"
+            >
+              <span>Set Website URL</span>
+            </button>
+          )}
         </div>
       </div>
 
       {/* Website Status Card */}
       <div className="relative bg-gradient-to-r from-indigo-600 via-indigo-600 to-sky-600 text-white rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-        
+
         <div className="space-y-3 relative z-10 max-w-xl">
+          {/* Live status, not a hard-coded "Website Live" pill */}
           <div className="flex items-center gap-2">
-            <span className="px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 text-[10px] font-extrabold uppercase tracking-widest flex items-center gap-1.5">
-              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-              Website Live
-            </span>
+            {siteConfigured ? (
+              <span
+                className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest flex items-center gap-1.5 border ${
+                  probe.status === 'online'
+                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                    : probe.status === 'offline'
+                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+                      : 'bg-white/10 text-white/80 border-white/20'
+                }`}
+              >
+                <span
+                  className={`w-2 h-2 rounded-full ${
+                    probe.status === 'online'
+                      ? 'bg-emerald-400 animate-pulse'
+                      : probe.status === 'offline'
+                        ? 'bg-rose-400'
+                        : 'bg-white/60 animate-pulse'
+                  }`}
+                />
+                {probe.status === 'checking'
+                  ? 'Checking...'
+                  : probe.status === 'online'
+                    ? 'Online'
+                    : 'Offline'}
+              </span>
+            ) : (
+              <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-extrabold uppercase tracking-widest">
+                No URL Set
+              </span>
+            )}
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">
-            Your website is online and available to customers.
+            {!siteConfigured
+              ? 'Add your website address to go live.'
+              : probe.status === 'online'
+                ? 'Your website is live and reachable by customers.'
+                : probe.status === 'offline'
+                  ? 'We could not reach your website.'
+                  : 'Checking your website…'}
           </h2>
-          <p className="text-xs sm:text-sm text-indigo-200/90 font-mono">
-            {websiteUrl}
+          <p className="text-xs sm:text-sm text-indigo-200/90 font-mono truncate">
+            {websiteUrl || 'https://your-site.co.za'}
           </p>
         </div>
 
@@ -118,15 +293,17 @@ export const WebsiteManagerPage: React.FC = () => {
             {copied ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
             <span>{copied ? 'Copied Link' : 'Copy Website Link'}</span>
           </button>
-          <a
-            href={websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white text-indigo-950 hover:bg-indigo-50 text-xs font-extrabold shadow-lg transition-all cursor-pointer"
-          >
-            <span>Visit Website</span>
-            <ArrowUpRight className="w-4 h-4" />
-          </a>
+          {websiteUrl ? (
+            <a
+              href={websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-white text-indigo-950 hover:bg-indigo-50 text-xs font-extrabold shadow-lg transition-all cursor-pointer"
+            >
+              <span>Visit Website</span>
+              <ArrowUpRight className="w-4 h-4" />
+            </a>
+          ) : null}
         </div>
       </div>
 
@@ -135,87 +312,163 @@ export const WebsiteManagerPage: React.FC = () => {
         <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Website Health</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div className="glass-panel rounded-3xl p-6 space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Website Status</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Status</span>
             <div className="flex items-center justify-between">
-              <p className="text-lg font-extrabold text-emerald-600 dark:text-emerald-400 flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                Online
+              <p
+                className={`text-lg font-extrabold flex items-center gap-2 ${
+                  siteOnline
+                    ? 'text-emerald-600 dark:text-emerald-400'
+                    : probe.status === 'offline'
+                      ? 'text-rose-600 dark:text-rose-400'
+                      : 'text-slate-400'
+                }`}
+              >
+                <span
+                  className={`w-2.5 h-2.5 rounded-full ${
+                    siteOnline
+                      ? 'bg-emerald-500 animate-pulse'
+                      : probe.status === 'offline'
+                        ? 'bg-rose-500'
+                        : 'bg-slate-300 animate-pulse'
+                  }`}
+                />
+                {probe.status === 'checking' ? 'Checking' : siteOnline ? 'Online' : 'Offline'}
               </p>
-              <Activity className="w-5 h-5 text-emerald-500" />
+              <Activity className="w-5 h-5 text-slate-400" />
             </div>
-            <span className="text-[11px] text-slate-500 block">100% operational</span>
+            <span className="text-[11px] text-slate-500 block">
+              {siteConfigured
+                ? probe.status === 'offline'
+                  ? 'Could not reach the site.'
+                  : probe.latency != null
+                    ? `Responded in ${probe.latency}ms`
+                    : 'Verifying…'
+                : 'No URL set yet'}
+            </span>
           </div>
 
           <div className="glass-panel rounded-3xl p-6 space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">SSL Active</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Connection</span>
             <div className="flex items-center justify-between">
               <p className="text-lg font-extrabold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">
                 <ShieldCheck className="w-5 h-5 text-indigo-600" /> Secure
               </p>
               <Lock className="w-5 h-5 text-slate-400" />
             </div>
-            <span className="text-[11px] text-slate-500 block">Valid TLS Certificate</span>
+            <span className="text-[11px] text-slate-500 block">Served over HTTPS</span>
           </div>
 
           <div className="glass-panel rounded-3xl p-6 space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Last Published</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Updates</span>
             <div className="flex items-center justify-between">
-              <p className="text-sm font-extrabold text-slate-900 dark:text-slate-100">—</p>
-              <Calendar className="w-5 h-5 text-indigo-600" />
+              <p className="text-sm font-extrabold text-slate-900 dark:text-slate-100">Instant</p>
+              <RefreshCw className="w-5 h-5 text-indigo-600" />
             </div>
-            <span className="text-[11px] text-slate-500 block">Not published yet</span>
+            <span className="text-[11px] text-slate-500 block">Edits apply immediately</span>
           </div>
 
           <div className="glass-panel rounded-3xl p-6 space-y-2">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Uptime</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-400">Last Checked</span>
             <div className="flex items-center justify-between">
-              <p className="text-lg font-extrabold text-slate-900 dark:text-slate-100">—</p>
-              <Server className="w-5 h-5 text-indigo-600" />
+              <p className="text-sm font-extrabold text-slate-900 dark:text-slate-100">
+                {probe.status === 'checking' ? '—' : 'Just now'}
+              </p>
+              <Activity className="w-5 h-5 text-indigo-600" />
             </div>
-            <span className="text-[11px] text-slate-500 block">Monitoring inactive</span>
+            <span className="text-[11px] text-slate-500 block">Live reachability probe</span>
           </div>
         </div>
       </div>
 
-      {/* Business Information Section */}
+      {/* Business Information Section — inline editable, saves via client-settings */}
       <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Business Information</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Displayed in your website footer, contact page, and header.</p>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Displayed on your website footer, contact page, and header. Saved directly to My Grafix OS — no need to leave this page.
+            </p>
           </div>
-          <button 
-            onClick={() => navigate('/app/settings')}
-            className="px-4 py-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold text-slate-700 dark:text-slate-300 transition-colors flex items-center gap-1.5"
+          <button
+            type="button"
+            onClick={handleSave}
+            disabled={saving}
+            className="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md transition-all cursor-pointer disabled:opacity-50 inline-flex items-center gap-1.5"
           >
-            <Edit3 className="w-3.5 h-3.5" /> Edit Information
+            <Save className="w-3.5 h-3.5" /> {saving ? 'Saving...' : 'Save Changes'}
           </button>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
+          <div className="space-y-1.5">
+            <span className="text-slate-400 font-medium flex items-center gap-1.5">
+              <Globe className="w-3.5 h-3.5" /> Live Website URL
+            </span>
+            <input
+              type="text"
+              value={settings.websiteUrl}
+              onChange={(e) => set('websiteUrl', e.target.value)}
+              placeholder="https://your-site.co.za"
+              className="w-full px-3 py-2 rounded-xl glass-subtle text-sm font-bold text-slate-900 dark:text-slate-100"
+            />
+          </div>
+          <div className="space-y-1.5">
             <span className="text-slate-400 font-medium">Business Name</span>
-            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">{businessName}</p>
+            <input
+              type="text"
+              value={settings.businessName}
+              onChange={(e) => set('businessName', e.target.value)}
+              placeholder="Your business name"
+              className="w-full px-3 py-2 rounded-xl glass-subtle text-sm font-bold text-slate-900 dark:text-slate-100"
+            />
           </div>
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
-            <span className="text-slate-400 font-medium">Business Type</span>
-            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">—</p>
+          <div className="space-y-1.5">
+            <span className="text-slate-400 font-medium flex items-center gap-1.5">
+              <Mail className="w-3.5 h-3.5" /> Email Address
+            </span>
+            <input
+              type="email"
+              value={settings.ownerEmail}
+              onChange={(e) => set('ownerEmail', e.target.value)}
+              placeholder="Contact email"
+              className="w-full px-3 py-2 rounded-xl glass-subtle text-sm text-slate-900 dark:text-slate-100"
+            />
           </div>
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
-            <span className="text-slate-400 font-medium">Phone Number</span>
-            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">—</p>
+          <div className="space-y-1.5">
+            <span className="text-slate-400 font-medium flex items-center gap-1.5">
+              <Phone className="w-3.5 h-3.5" /> Phone Number
+            </span>
+            <input
+              type="text"
+              value={settings.phone}
+              onChange={(e) => set('phone', e.target.value)}
+              placeholder="+27 ..."
+              className="w-full px-3 py-2 rounded-xl glass-subtle text-sm text-slate-900 dark:text-slate-100"
+            />
           </div>
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
-            <span className="text-slate-400 font-medium">Email Address</span>
-            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">{profileEmail}</p>
+          <div className="space-y-1.5">
+            <span className="text-slate-400 font-medium flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5" /> Physical Address
+            </span>
+            <input
+              type="text"
+              value={settings.address}
+              onChange={(e) => set('address', e.target.value)}
+              placeholder="Street, City"
+              className="w-full px-3 py-2 rounded-xl glass-subtle text-sm text-slate-900 dark:text-slate-100"
+            />
           </div>
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
-            <span className="text-slate-400 font-medium">Physical Address</span>
-            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">—</p>
-          </div>
-          <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-1">
-            <span className="text-slate-400 font-medium">Opening Hours</span>
-            <p className="font-bold text-slate-900 dark:text-slate-100 text-sm">—</p>
+          <div className="space-y-1.5">
+            <span className="text-slate-400 font-medium flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5" /> Opening Hours
+            </span>
+            <input
+              type="text"
+              value={settings.openingHours}
+              onChange={(e) => set('openingHours', e.target.value)}
+              placeholder="Mon-Fri 9am-6pm"
+              className="w-full px-3 py-2 rounded-xl glass-subtle text-sm text-slate-900 dark:text-slate-100"
+            />
           </div>
         </div>
       </div>
@@ -232,7 +485,7 @@ export const WebsiteManagerPage: React.FC = () => {
           ].map((action, idx) => {
             const Icon = action.icon;
             return (
-              <div 
+              <div
                 key={idx}
                 onClick={() => navigate(action.path)}
                 className="glass-panel p-6 rounded-3xl hover:border-indigo-500/50 cursor-pointer transition-all group space-y-3"
@@ -250,27 +503,59 @@ export const WebsiteManagerPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Website Analytics */}
+      {/* Website Analytics — real data derived from CRM sources */}
       <div className="glass-panel rounded-3xl p-6 sm:p-8 space-y-6">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Website Analytics</h3>
-            <p className="text-xs text-slate-500 dark:text-slate-400">Visitor engagement and conversion metrics over the last 30 days.</p>
+            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Website Engagement</h3>
+            <p className="text-xs text-slate-500 dark:text-slate-400">
+              Real activity derived from your My Grafix data — bookings and enquiries your website drives.
+            </p>
           </div>
           <NavLink to="/app/analytics" className="text-xs font-bold text-indigo-600 hover:underline">
             Detailed reports
           </NavLink>
         </div>
 
-        {isLoading ? (
+        {loading ? (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 animate-pulse">
-            {[1, 2, 3, 4, 5].map(n => (
+            {[1, 2, 3, 4, 5].map((n) => (
               <div key={n} className="h-24 bg-slate-100 dark:bg-slate-800 rounded-2xl"></div>
             ))}
           </div>
+        ) : metricsError ? (
+          <div className="flex items-center justify-center gap-2 py-12 text-slate-400 text-xs">
+            <AlertTriangle className="w-4 h-4 text-amber-500" />
+            {metricsError}
+          </div>
+        ) : metrics ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
+            <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Bookings</span>
+              <p className="text-xl font-extrabold text-slate-900 dark:text-slate-100">{metrics.totalBookings ?? 0}</p>
+            </div>
+            <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">New Enquiries</span>
+              <p className="text-xl font-extrabold text-slate-900 dark:text-slate-100">{metrics.unreadSubmissions ?? 0}</p>
+            </div>
+            <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Total Orders</span>
+              <p className="text-xl font-extrabold text-slate-900 dark:text-slate-100">{metrics.totalOrders ?? 0}</p>
+            </div>
+            <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Customers</span>
+              <p className="text-xl font-extrabold text-slate-900 dark:text-slate-100">{metrics.totalCustomers ?? 0}</p>
+            </div>
+            <div className="rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 p-4 space-y-1">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">Revenue</span>
+              <p className="text-xl font-extrabold text-slate-900 dark:text-slate-100">
+                R{Math.round(metrics.totalRevenue ?? 0).toLocaleString()}
+              </p>
+            </div>
+          </div>
         ) : (
           <div className="flex items-center justify-center py-12 text-slate-400 text-xs">
-            Connect a supported analytics service to view visitor metrics.
+            No website activity recorded yet.
           </div>
         )}
       </div>
@@ -283,10 +568,10 @@ export const WebsiteManagerPage: React.FC = () => {
         </div>
         <button
           onClick={handlePublish}
-          disabled={isPublishing}
-          className="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-500/20 transition-all cursor-pointer"
+          disabled={saving}
+          className="w-full sm:w-auto px-6 py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-md shadow-indigo-500/20 transition-all cursor-pointer disabled:opacity-50"
         >
-          {isPublishing ? 'Publishing Changes...' : 'Publish Changes'}
+          {saving ? 'Publishing Changes...' : 'Publish Changes'}
         </button>
       </div>
 
@@ -301,6 +586,10 @@ export const WebsiteManagerPage: React.FC = () => {
         </div>
       </div>
 
+      <div className="flex items-center justify-end gap-2 text-[11px] text-slate-400">
+        <Edit3 className="w-3.5 h-3.5" />
+        View the full business settings on the Settings page.
+      </div>
     </div>
   );
 };
