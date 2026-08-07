@@ -91,7 +91,7 @@ export const ContactPage: React.FC = () => {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80 text-xs font-bold"
+            className="inline-flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold"
           >
             <Mail className="w-3.5 h-3.5" />
             <span>Get in Touch</span>

@@ -43,7 +43,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
       <div className="space-y-6 max-h-[80vh] overflow-y-auto pr-1">
         {/* Header & Toggle */}
         <div className="text-center space-y-3 pb-2">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold border border-indigo-200 dark:border-indigo-800">
+          <div className="inline-flex items-center gap-1.5 text-indigo-700 dark:text-indigo-300 text-xs font-extrabold">
             <Zap className="w-3.5 h-3.5" />
             <span>Unlock Advanced My Grafix OS Capabilities</span>
           </div>
@@ -85,7 +85,7 @@ export const UpgradeModal: React.FC<UpgradeModalProps> = ({
               >
                 Yearly
               </span>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-500 text-white text-[9px] font-extrabold uppercase tracking-wide">
+              <span className="text-emerald-600 dark:text-emerald-400 text-[9px] font-extrabold uppercase tracking-wide">
                 Save 20%
               </span>
             </div>

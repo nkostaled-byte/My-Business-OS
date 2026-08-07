@@ -124,7 +124,7 @@ export const OpportunityBadge: React.FC<{ level?: string | null }> = ({ level })
   if (!level) return null;
   const style = OPPORTUNITY_STYLE[level] || OPPORTUNITY_STYLE.cold;
   return (
-    <span className={`inline-flex items-center font-bold rounded-full px-2 py-0.5 text-[10px] uppercase tracking-wide ${style}`}>
+    <span className={`inline-flex items-center font-bold text-[10px] uppercase tracking-wide ${style}`}>
       <span className="w-1.5 h-1.5 rounded-full bg-current mr-1" />
       {OPPORTUNITY_LABEL[level] || level}
     </span>

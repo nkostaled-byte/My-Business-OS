@@ -68,7 +68,7 @@ export const SecurityPage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-indigo-500/5 to-transparent pointer-events-none" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-6">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80 text-xs font-bold">
+          <div className="inline-flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>Enterprise Security</span>
           </div>
@@ -151,7 +151,7 @@ export const SecurityPage: React.FC = () => {
       <section className="py-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="glass-panel rounded-3xl p-8 sm:p-10 flex flex-col md:flex-row items-center justify-between gap-6">
           <div className="space-y-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300 text-[10px] font-bold uppercase">
+            <div className="inline-flex items-center gap-1.5 text-amber-700 dark:text-amber-300 text-[10px] font-bold uppercase">
               <ShieldAlert className="w-3.5 h-3.5" /> Responsible Disclosure
             </div>
             <h3 className="text-xl font-extrabold text-slate-900 dark:text-slate-100">Found a security vulnerability?</h3>

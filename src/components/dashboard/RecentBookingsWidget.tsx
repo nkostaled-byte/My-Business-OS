@@ -27,12 +27,12 @@ export const RecentBookingsWidget: React.FC<RecentBookingsWidgetProps> = ({ book
                     <p className="font-bold text-slate-900 dark:text-slate-100">{b.clientName}</p>
                     <p className="text-slate-500 text-[11px]">{b.serviceName} • {b.time}</p>
                 </div>
-                <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase ${
+                <span className={`text-[10px] font-extrabold uppercase ${
                   b.status === 'completed' 
-                    ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800' 
+                    ? 'text-emerald-600 dark:text-emerald-400' 
                     : b.status === 'upcoming' || b.status === 'in-progress'
-                    ? 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-500/20' 
-                    : 'bg-rose-50 dark:bg-rose-950/60 text-rose-600 dark:text-rose-400 border border-rose-200 dark:border-rose-800'
+                    ? 'text-indigo-600 dark:text-indigo-400' 
+                    : 'text-rose-600 dark:text-rose-400'
                 }`}>
                     {b.status}
                 </span>

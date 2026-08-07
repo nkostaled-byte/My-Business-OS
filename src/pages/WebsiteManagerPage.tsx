@@ -19,7 +19,6 @@ import {
   MapPin,
   Clock,
   CheckCircle,
-  Eye,
   Save,
   AlertTriangle,
   FileText,
@@ -237,33 +236,6 @@ export const WebsiteManagerPage: React.FC = () => {
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="space-y-3 relative z-10 max-w-xl">
-          {/* Live status, not a hard-coded "Website Live" pill */}
-          <div className="flex items-center gap-2">
-            <span
-              className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest flex items-center gap-1.5 border ${
-                probe.status === 'online'
-                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
-                  : probe.status === 'offline'
-                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
-                    : 'bg-white/10 text-white/80 border-white/20'
-              }`}
-            >
-              <span
-                className={`w-2 h-2 rounded-full ${
-                  probe.status === 'online'
-                    ? 'bg-emerald-400 animate-pulse'
-                    : probe.status === 'offline'
-                      ? 'bg-rose-400'
-                      : 'bg-white/60 animate-pulse'
-                }`}
-              />
-              {probe.status === 'checking'
-                ? 'Checking...'
-                : probe.status === 'online'
-                  ? 'Online'
-                  : 'Offline'}
-            </span>
-          </div>
           <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">
             {!siteConfigured
               ? 'Add your website address to go live.'
@@ -475,7 +447,6 @@ export const WebsiteManagerPage: React.FC = () => {
             { label: 'Manage Services', desc: 'Add or edit services offered to clients', path: '/app/services', icon: Scissors },
             { label: 'Manage Products', desc: 'Update POS and online catalog items', path: '/app/products', icon: Package },
             { label: 'Update Gallery', desc: 'Upload portfolio photos and showcase work', path: '/app/gallery', icon: FileText },
-            { label: 'Preview Website', desc: 'View live responsive website layout', path: '/app', icon: Eye },
           ].map((action, idx) => {
             const Icon = action.icon;
             return (

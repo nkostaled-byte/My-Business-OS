@@ -17,7 +17,7 @@ export const DashboardUpgradeCard: React.FC = () => {
         <div className="absolute -right-10 -bottom-10 w-60 h-60 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
 
         <div className="space-y-2 relative z-10">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-slate-200 text-xs font-semibold border border-white/10">
+          <div className="inline-flex items-center gap-1.5 text-slate-200 text-xs font-semibold">
             <Zap className="w-3.5 h-3.5 text-indigo-300" />
             <span>Upgrade recommendation</span>
           </div>

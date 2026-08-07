@@ -136,12 +136,12 @@ export const FormsPage: React.FC = () => {
                     </td>
                     <td className="p-4 text-slate-500">{sub.submittedAt}</td>
                     <td className="p-4">
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase ${
+                      <span className={`text-[10px] font-extrabold uppercase ${
                         sub.status === 'unread'
-                          ? 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-400 border border-indigo-200 dark:border-indigo-800'
+                          ? 'text-indigo-700 dark:text-indigo-400'
                           : sub.status === 'read'
-                          ? 'bg-blue-50 dark:bg-blue-950/60 text-blue-700 dark:text-blue-400 border border-blue-200 dark:border-blue-800'
-                          : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 border border-slate-200 dark:border-slate-700'
+                          ? 'text-blue-700 dark:text-blue-400'
+                          : 'text-slate-600 dark:text-slate-400'
                       }`}>
                         {sub.status}
                       </span>
@@ -206,7 +206,7 @@ export const FormsPage: React.FC = () => {
           <div className="w-full max-w-lg glass-strong h-full flex flex-col overflow-y-auto">
             <div className="p-6 border-b border-slate-200/50 dark:border-white/5 flex items-center justify-between sticky top-0 glass-panel z-10">
               <div>
-                <span className="px-2.5 py-1 rounded-full text-[10px] font-extrabold uppercase bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-400">
+                <span className="text-[10px] font-extrabold uppercase text-indigo-700 dark:text-indigo-400">
                   {selectedSubmission.formName}
                 </span>
                 <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 mt-1">{selectedSubmission.senderName}</h2>

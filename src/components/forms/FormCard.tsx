@@ -5,7 +5,7 @@ export const FormCard: React.FC<{ form: any }> = ({ form }) => (
     <div className="glass-panel rounded-3xl p-6 space-y-4">
         <div className="flex justify-between items-start">
             <h3 className="font-bold text-slate-900 dark:text-slate-100">{form.name}</h3>
-            <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold uppercase ${form.status === 'published' ? 'bg-emerald-100 text-emerald-700' : 'bg-slate-100 text-slate-600'}`}>
+            <span className={`text-[10px] font-bold uppercase ${form.status === 'published' ? 'text-emerald-700' : 'text-slate-600'}`}>
                 {form.status}
             </span>
         </div>

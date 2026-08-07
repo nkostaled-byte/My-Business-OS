@@ -193,14 +193,14 @@ export const SubmissionsCRMTable: React.FC<SubmissionsCRMTableProps> = ({
 
                   <td className="py-4 px-6">
                     <span
-                      className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase tracking-wider ${
+                      className={`inline-flex text-[10px] font-extrabold uppercase tracking-wider ${
                         row.status === 'unread'
-                          ? 'bg-rose-500/10 text-rose-600 border border-rose-500/20'
+                          ? 'text-rose-600'
                           : row.status === 'replied'
-                          ? 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                          ? 'text-emerald-600'
                           : row.status === 'archived'
-                          ? 'bg-slate-500/10 text-slate-500 border border-slate-500/20'
-                          : 'bg-amber-500/10 text-amber-600 border border-amber-500/20'
+                          ? 'text-slate-500'
+                          : 'text-amber-600'
                       }`}
                     >
                       {row.status === 'unread' ? 'New' : row.status}

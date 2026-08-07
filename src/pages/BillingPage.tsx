@@ -168,7 +168,7 @@ export const BillingPage: React.FC = () => {
               </>
             ) : (
               <>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-xs font-bold border border-indigo-400/30">
+                <span className="inline-flex items-center gap-1.5 text-indigo-300 text-xs font-bold">
                   <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
                   {status?.subscription_active
                     ? `Active Tier: ${currentPlanName} Plan`
@@ -228,7 +228,7 @@ export const BillingPage: React.FC = () => {
 
       {/* Hero Header */}
       <div className="text-center space-y-4 max-w-3xl mx-auto">
-        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-50 dark:bg-indigo-950/60 border border-indigo-200/80 dark:border-indigo-800/80 text-indigo-700 dark:text-indigo-300 text-xs font-bold shadow-xs">
+        <div className="inline-flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold">
           <span>Unified subscription plans</span>
         </div>
 
@@ -279,7 +279,7 @@ export const BillingPage: React.FC = () => {
                 />
               )}
               <span className="relative z-10">Yearly</span>
-              <span className="relative z-10 px-2 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] font-extrabold uppercase tracking-wide">
+              <span className="relative z-10 text-indigo-600 dark:text-indigo-400 text-[10px] font-extrabold uppercase tracking-wide">
                 Save 20%
               </span>
             </button>
@@ -305,7 +305,7 @@ export const BillingPage: React.FC = () => {
               }`}
             >
               {plan.badge && (
-                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] font-extrabold uppercase tracking-wider shadow-md">
+                <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-indigo-600 dark:text-indigo-400 text-[10px] font-extrabold uppercase tracking-wider">
                   {plan.badge}
                 </div>
               )}
@@ -397,7 +397,7 @@ export const BillingPage: React.FC = () => {
       {/* Web Hosting Section */}
       <div className="space-y-8">
         <div className="text-center space-y-4 max-w-3xl mx-auto">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200/80 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 text-xs font-bold shadow-xs">
+          <div className="inline-flex items-center gap-2 text-emerald-700 dark:text-emerald-300 text-xs font-bold">
             <Globe className="w-3.5 h-3.5" />
             <span>Web hosting plans</span>
           </div>
@@ -459,7 +459,7 @@ export const BillingPage: React.FC = () => {
                 }`}
               >
                 {plan.badge && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-[10px] font-extrabold uppercase tracking-wider shadow-md">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-emerald-600 dark:text-emerald-400 text-[10px] font-extrabold uppercase tracking-wider">
                     {plan.badge}
                   </div>
                 )}

@@ -103,7 +103,7 @@ export const CareersPage: React.FC = () => {
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800/80 text-xs font-bold"
+            className="inline-flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold"
           >
             <Briefcase className="w-3.5 h-3.5" />
             <span>Careers at My Grafix Media</span>
@@ -167,10 +167,10 @@ export const CareersPage: React.FC = () => {
               <div key={idx} className="glass-panel rounded-3xl p-6 sm:p-8 flex flex-col md:flex-row md:items-center justify-between gap-6 hover:shadow-md transition-shadow">
                 <div className="space-y-2">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="px-3 py-1 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-700 dark:text-indigo-300 text-[10px] font-extrabold uppercase tracking-wider">
+                    <span className="text-indigo-700 dark:text-indigo-300 text-[10px] font-extrabold uppercase tracking-wider">
                       {job.department}
                     </span>
-                    <span className="px-3 py-1 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 text-[10px] font-bold">
+                    <span className="text-slate-600 dark:text-slate-400 text-[10px] font-bold">
                       {job.type}
                     </span>
                   </div>

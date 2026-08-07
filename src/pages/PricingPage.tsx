@@ -142,7 +142,7 @@ export const PricingPage: React.FC = () => {
           <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-100/80 dark:bg-indigo-950/80 border border-indigo-200/80 dark:border-indigo-800 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider"
+            className="inline-flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider"
           >
             <span>Unified Pricing Plans</span>
           </motion.div>
@@ -209,7 +209,7 @@ export const PricingPage: React.FC = () => {
               >
                 Pay yearly
               </span>
-              <span className="px-2.5 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 text-[11px] font-extrabold border border-emerald-300/80 dark:border-emerald-800">
+              <span className="text-emerald-700 dark:text-emerald-300 text-[11px] font-extrabold">
                 Save 20%
               </span>
             </div>
@@ -232,7 +232,7 @@ export const PricingPage: React.FC = () => {
                 }`}
               >
                 {plan.badge && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-indigo-600 text-white text-[10px] font-extrabold tracking-wider uppercase shadow-md">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-indigo-600 dark:text-indigo-400 text-[10px] font-extrabold tracking-wider uppercase">
                     {plan.badge}
                   </div>
                 )}

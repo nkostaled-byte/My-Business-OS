@@ -10,7 +10,6 @@ import { Modal } from '../components/common/Modal';
 import {
   Building2, 
   User, 
-  Globe, 
   Users, 
   Bell, 
   CreditCard, 
@@ -276,7 +275,6 @@ export const SettingsPage: React.FC = () => {
         {[
           { id: 'general', label: 'General', icon: User },
           { id: 'business', label: 'Business', icon: Building2 },
-          { id: 'website', label: 'Website', icon: Globe },
           { id: 'team', label: 'Team', icon: Users },
           { id: 'notifications', label: 'Notifications', icon: Bell },
           { id: 'billing', label: 'Billing', icon: CreditCard },
@@ -463,42 +461,6 @@ export const SettingsPage: React.FC = () => {
               </motion.div>
             )}
 
-            {activeTab === 'website' && (
-              <motion.div key="website" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-6">
-                <div>
-                  <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Website & Domain Settings</h3>
-                  <p className="text-xs text-slate-500 dark:text-slate-400">Manage your custom domain, SEO metadata, and social links.</p>
-                </div>
-
-                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-2">
-                  <span className="text-xs font-bold uppercase text-slate-400">Active Domain</span>
-                  <p className="text-sm font-bold text-slate-900 dark:text-slate-100 font-mono">
-                    https://{businessName.toLowerCase().replace(/[^a-z0-9]/g, '')}.co.za
-                  </p>
-                  <span className="text-[11px] text-emerald-600 font-semibold block">SSL Secure & Online</span>
-                </div>
-
-                <div className="space-y-3">
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">Default SEO Title</label>
-                  <input 
-                    type="text" 
-                    defaultValue={`${businessName} — Professional Services & Online Bookings`}
-                    className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" 
-                  />
-                </div>
-
-                <div className="space-y-3">
-                  <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300">Social Media Links</label>
-                  <input 
-                    type="text" 
-                    placeholder="Instagram profile URL"
-                    defaultValue="https://instagram.com/mygrafixmedia"
-                    className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" 
-                  />
-                </div>
-              </motion.div>
-            )}
-
             {activeTab === 'team' && (
               <motion.div key="team" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-6">
                 <div>
@@ -562,13 +524,13 @@ export const SettingsPage: React.FC = () => {
                           <p className="text-[11px] text-slate-500">{member.email}</p>
                         </div>
                         <div className="flex items-center gap-2">
-                          <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold uppercase ${
-                            member.role === 'admin'
-                              ? 'bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-300'
-                              : 'bg-indigo-100 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300'
-                          }`}>
-                            {member.role}
-                          </span>
+<span className={`text-[10px] font-bold uppercase ${
+                          member.role === 'admin'
+                            ? 'text-amber-700 dark:text-amber-300'
+                            : 'text-indigo-700 dark:text-indigo-300'
+                        }`}>
+                          {member.role}
+                        </span>
                           <button
                             type="button"
                             onClick={() => handleRemoveMember(member)}

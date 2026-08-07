@@ -479,7 +479,7 @@ export const FormBuilderPanel: React.FC<FormBuilderPanelProps> = ({ config, onCh
                     Powered by Resend
                   </span>
                 </div>
-                <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">
+                <span className="text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">
                   Worker Active
                 </span>
               </div>
