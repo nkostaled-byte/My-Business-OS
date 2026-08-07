@@ -239,36 +239,30 @@ export const WebsiteManagerPage: React.FC = () => {
         <div className="space-y-3 relative z-10 max-w-xl">
           {/* Live status, not a hard-coded "Website Live" pill */}
           <div className="flex items-center gap-2">
-            {siteConfigured ? (
+            <span
+              className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest flex items-center gap-1.5 border ${
+                probe.status === 'online'
+                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                  : probe.status === 'offline'
+                    ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
+                    : 'bg-white/10 text-white/80 border-white/20'
+              }`}
+            >
               <span
-                className={`px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-widest flex items-center gap-1.5 border ${
+                className={`w-2 h-2 rounded-full ${
                   probe.status === 'online'
-                    ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30'
+                    ? 'bg-emerald-400 animate-pulse'
                     : probe.status === 'offline'
-                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/30'
-                      : 'bg-white/10 text-white/80 border-white/20'
+                      ? 'bg-rose-400'
+                      : 'bg-white/60 animate-pulse'
                 }`}
-              >
-                <span
-                  className={`w-2 h-2 rounded-full ${
-                    probe.status === 'online'
-                      ? 'bg-emerald-400 animate-pulse'
-                      : probe.status === 'offline'
-                        ? 'bg-rose-400'
-                        : 'bg-white/60 animate-pulse'
-                  }`}
-                />
-                {probe.status === 'checking'
-                  ? 'Checking...'
-                  : probe.status === 'online'
-                    ? 'Online'
-                    : 'Offline'}
-              </span>
-            ) : (
-              <span className="px-3 py-1 rounded-full bg-amber-500/20 text-amber-300 border border-amber-500/30 text-[10px] font-extrabold uppercase tracking-widest">
-                No URL Set
-              </span>
-            )}
+              />
+              {probe.status === 'checking'
+                ? 'Checking...'
+                : probe.status === 'online'
+                  ? 'Online'
+                  : 'Offline'}
+            </span>
           </div>
           <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight">
             {!siteConfigured
