@@ -186,29 +186,23 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
         {/* Right Side: Theme Toggle, Notifications, Profile */}
         <div className="flex items-center gap-2 sm:gap-3">
           {/* Theme Toggle Button */}
-          <motion.button
-            whileHover={{ scale: 1.08, rotate: 15 }}
-            whileTap={{ scale: 0.92 }}
+          <button
             onClick={toggleTheme}
-            className="p-2 rounded-xl text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-100 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="relative w-16 h-8 rounded-full bg-slate-200 dark:bg-slate-700 transition-colors cursor-pointer flex items-center p-1"
             aria-label="Toggle light and dark mode"
           >
-            <AnimatePresence mode="wait" initial={false}>
-              <motion.div
-                key={theme}
-                initial={{ opacity: 0, rotate: -90, scale: 0.6 }}
-                animate={{ opacity: 1, rotate: 0, scale: 1 }}
-                exit={{ opacity: 0, rotate: 90, scale: 0.6 }}
-                transition={{ duration: 0.15 }}
-              >
-                {theme === 'dark' ? (
-                  <Sun className="w-4 h-4 text-amber-400" />
-                ) : (
-                  <Moon className="w-4 h-4 text-slate-600" />
-                )}
-              </motion.div>
-            </AnimatePresence>
-          </motion.button>
+            <span className="absolute left-1.5 text-slate-400">
+              <Sun className="w-4 h-4" />
+            </span>
+            <span className="absolute right-1.5 text-slate-400">
+              <Moon className="w-4 h-4" />
+            </span>
+            <span
+              className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow-md transition-transform duration-200 ${
+                theme === 'dark' ? 'translate-x-8' : 'translate-x-0'
+              }`}
+            />
+          </button>
 
           {/* Notifications Bell Dropdown */}
           <div className="relative">

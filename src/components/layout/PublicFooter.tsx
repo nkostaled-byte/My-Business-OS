@@ -51,11 +51,6 @@ export const PublicFooter: React.FC = () => {
               </NavLink>
             </li>
             <li>
-              <NavLink to="/careers" className="hover:text-white transition-colors">
-                Careers
-              </NavLink>
-            </li>
-            <li>
               <NavLink to="/contact" className="hover:text-white transition-colors">
                 Contact
               </NavLink>

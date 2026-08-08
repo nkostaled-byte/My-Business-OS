@@ -65,14 +65,20 @@ export const PublicHeader: React.FC = () => {
         <div className="flex items-center gap-3 sm:gap-4">
           <button
             onClick={toggleTheme}
-            className="p-2 rounded-xl text-slate-500 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+            className="relative w-16 h-8 rounded-full bg-slate-200 dark:bg-slate-700 transition-colors cursor-pointer flex items-center p-1"
             aria-label="Toggle dark mode"
           >
-            {theme === 'dark' ? (
-              <Sun className="w-5 h-5 text-amber-400" />
-            ) : (
-              <Moon className="w-5 h-5 text-slate-600" />
-            )}
+            <span className="absolute left-1.5 text-slate-400">
+              <Sun className="w-4 h-4" />
+            </span>
+            <span className="absolute right-1.5 text-slate-400">
+              <Moon className="w-4 h-4" />
+            </span>
+            <span
+              className={`absolute top-1 w-6 h-6 rounded-full bg-white shadow-md transition-transform duration-200 ${
+                theme === 'dark' ? 'translate-x-8' : 'translate-x-0'
+              }`}
+            />
           </button>
 
           <NavLink

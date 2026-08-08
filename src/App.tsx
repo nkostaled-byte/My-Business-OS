@@ -13,7 +13,7 @@ import { PricingPage } from './pages/PricingPage';
 import { FeaturesPage } from './pages/FeaturesPage';
 import { ResourcesPage } from './pages/ResourcesPage';
 import { CompanyPage } from './pages/CompanyPage';
-import { CareersPage } from './pages/CareersPage';
+
 import { ContactPage } from './pages/ContactPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
@@ -109,7 +109,6 @@ export default function App() {
                 <Route path="/features" element={<FeaturesPage />} />
                 <Route path="/resources" element={<ResourcesPage />} />
                 <Route path="/company" element={<CompanyPage />} />
-                <Route path="/careers" element={<CareersPage />} />
                 <Route path="/contact" element={<ContactPage />} />
                 <Route path="/privacy" element={<PrivacyPage />} />
                 <Route path="/terms" element={<TermsPage />} />

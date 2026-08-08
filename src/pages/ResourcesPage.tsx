@@ -24,9 +24,6 @@ export const ResourcesPage: React.FC = () => {
   return (
     <div className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold">
-          <span>Knowledge & Guides</span>
-        </div>
         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           Resources & Guides
         </h1>

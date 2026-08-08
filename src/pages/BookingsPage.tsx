@@ -3,9 +3,24 @@ import { motion } from 'motion/react';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
 import { Booking, BookingStatus } from '../types';
-import { Calendar as CalendarIcon, List, CheckCircle, XCircle, Eye, X, Phone, User, Clock, Plus, Search } from 'lucide-react';
+import { Calendar as CalendarIcon, List, CheckCircle, XCircle, Eye, X, Phone, Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { NewBookingModal } from '../components/dashboard/NewBookingModal';
-import { motion } from 'motion/react';
+
+const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const DAY_NAMES = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+function getDaysInMonth(year: number, month: number) {
+  return new Date(year, month + 1, 0).getDate();
+}
+
+function getFirstDayOfMonth(year: number, month: number) {
+  const day = new Date(year, month, 1).getDay();
+  return day === 0 ? 6 : day - 1;
+}
+
+function formatDateStr(year: number, month: number, day: number) {
+  return `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
 
 export const BookingsPage: React.FC = () => {
   const { bookings, isLoading, updateResource } = useData();
@@ -15,6 +30,28 @@ export const BookingsPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+
+  const now = new Date();
+  const [calendarYear, setCalendarYear] = useState(now.getFullYear());
+  const [calendarMonth, setCalendarMonth] = useState(now.getMonth());
+
+  const prevMonth = () => {
+    if (calendarMonth === 0) {
+      setCalendarMonth(11);
+      setCalendarYear(calendarYear - 1);
+    } else {
+      setCalendarMonth(calendarMonth - 1);
+    }
+  };
+
+  const nextMonth = () => {
+    if (calendarMonth === 11) {
+      setCalendarMonth(0);
+      setCalendarYear(calendarYear + 1);
+    } else {
+      setCalendarMonth(calendarMonth + 1);
+    }
+  };
 
   const handleMarkComplete = async (id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
@@ -53,6 +90,20 @@ export const BookingsPage: React.FC = () => {
     if (statusFilter === 'all') return matchesSearch;
     return matchesSearch && b.status === statusFilter;
   });
+
+  const daysInMonth = getDaysInMonth(calendarYear, calendarMonth);
+  const firstDayOffset = getFirstDayOfMonth(calendarYear, calendarMonth);
+  const today = new Date();
+  const isCurrentMonth = today.getFullYear() === calendarYear && today.getMonth() === calendarMonth;
+  const todayDate = today.getDate();
+
+  const calendarCells: (number | null)[] = [];
+  for (let i = 0; i < firstDayOffset; i++) {
+    calendarCells.push(null);
+  }
+  for (let d = 1; d <= daysInMonth; d++) {
+    calendarCells.push(d);
+  }
 
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
@@ -227,23 +278,42 @@ export const BookingsPage: React.FC = () => {
           )}
         </div>
       ) : (
-        /* Calendar View (Monthly Grid Simulation for July 2026) */
+        /* Calendar View */
         <div className="glass-panel rounded-3xl p-6 space-y-6">
           <div className="flex items-center justify-between">
-            <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">July 2026 Schedule</h3>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={prevMonth}
+                className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+              >
+                <ChevronLeft className="w-4 h-4" />
+              </button>
+              <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+                {MONTH_NAMES[calendarMonth]} {calendarYear}
+              </h3>
+              <button
+                onClick={nextMonth}
+                className="p-2 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 transition-colors cursor-pointer"
+              >
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            </div>
             <span className="text-xs font-semibold text-slate-500">Monthly Calendar Overview</span>
           </div>
 
           <div className="grid grid-cols-7 gap-2 text-center text-xs font-bold text-slate-400 py-2 border-b border-slate-100 dark:border-slate-800">
-            <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+            {DAY_NAMES.map(d => <div key={d}>{d}</div>)}
           </div>
 
           <div className="grid grid-cols-7 gap-2">
-            {Array.from({ length: 31 }).map((_, idx) => {
-              const dayNum = idx + 1;
-              const dateStr = `2026-07-${dayNum < 10 ? `0${dayNum}` : dayNum}`;
+            {calendarCells.map((dayNum, idx) => {
+              if (dayNum === null) {
+                return <div key={idx} className="min-h-[100px]" />;
+              }
+
+              const dateStr = formatDateStr(calendarYear, calendarMonth, dayNum);
               const dayBookings = filteredBookings.filter(b => b.date === dateStr);
-              const isToday = dayNum === 24;
+              const isToday = isCurrentMonth && dayNum === todayDate;
 
               return (
                 <div 

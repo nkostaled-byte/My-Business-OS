@@ -644,8 +644,8 @@ export const SettingsPage: React.FC = () => {
                 </div>
 
                 {/* VAT Settings */}
-                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-100 dark:border-slate-800 space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 space-y-3">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                     <DollarSign className="w-3.5 h-3.5" /> Tax / VAT
                   </h4>
                   <div className="flex items-center gap-3">
@@ -658,7 +658,7 @@ export const SettingsPage: React.FC = () => {
                         step={0.5}
                         value={vatPercent}
                         onChange={(e) => setVatPercent(parseFloat(e.target.value) || 0)}
-                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100"
                         placeholder="15"
                       />
                     </div>
@@ -673,7 +673,7 @@ export const SettingsPage: React.FC = () => {
                 </div>
 
                 <div className="space-y-4">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                     <Banknote className="w-3.5 h-3.5" /> Banking Details
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -681,43 +681,43 @@ export const SettingsPage: React.FC = () => {
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Bank Name</label>
                       <input type="text" value={bankName} onChange={(e) => setBankName(e.target.value)}
                         placeholder="e.g. First National Bank"
-                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Account Name</label>
                       <input type="text" value={bankAccountName} onChange={(e) => setBankAccountName(e.target.value)}
                         placeholder="e.g. My Business (Pty) Ltd"
-                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Account Number</label>
                       <input type="text" value={bankAccountNumber} onChange={(e) => setBankAccountNumber(e.target.value)}
                         placeholder="e.g. 62819283746"
-                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Branch Code</label>
                       <input type="text" value={bankBranchCode} onChange={(e) => setBankBranchCode(e.target.value)}
                         placeholder="e.g. 255005"
-                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Account Type</label>
                       <input type="text" value={bankAccountType} onChange={(e) => setBankAccountType(e.target.value)}
                         placeholder="e.g. Cheque / Savings"
-                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                     <div>
                       <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Reference</label>
                       <input type="text" value={bankReference} onChange={(e) => setBankReference(e.target.value)}
                         placeholder="e.g. My Business Invoice"
-                        className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                     <Palette className="w-3.5 h-3.5" /> Template Colors
                   </h4>
                   <p className="text-xs text-slate-500 dark:text-slate-400">Used for headers, headings and accents on your invoices.</p>
@@ -729,7 +729,7 @@ export const SettingsPage: React.FC = () => {
                           className="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer" />
                         <input type="text" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)}
                           placeholder="#111111"
-                          className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
                       </div>
                     </div>
                     <div>
@@ -739,20 +739,20 @@ export const SettingsPage: React.FC = () => {
                           className="w-10 h-10 rounded-lg border border-slate-200 dark:border-slate-700 cursor-pointer" />
                         <input type="text" value={secondaryColor} onChange={(e) => setSecondaryColor(e.target.value)}
                           placeholder="#f5f5f5"
-                          className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100" />
+                          className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100" />
                       </div>
                     </div>
                   </div>
                 </div>
 
                 <div className="space-y-3">
-                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
                     <PenLine className="w-3.5 h-3.5" /> Payment Instructions
                   </h4>
                   <textarea value={paymentInstructions} onChange={(e) => setPaymentInstructions(e.target.value)}
                     placeholder="e.g. Please use the invoice number as reference when making payment. EFT payments may take 2-3 business days to reflect."
                     rows={4}
-                    className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100 resize-none" />
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs text-slate-900 dark:text-slate-100 resize-none" />
                 </div>
               </motion.div>
             )}

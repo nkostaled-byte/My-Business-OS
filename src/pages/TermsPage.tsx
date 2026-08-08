@@ -8,10 +8,6 @@ export const TermsPage: React.FC = () => {
       {/* Hero */}
       <section className="relative overflow-hidden pt-24 pb-16 lg:pt-32 lg:pb-20 border-b border-slate-200 dark:border-slate-800">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-4">
-          <div className="inline-flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold">
-            <FileText className="w-3.5 h-3.5" />
-            <span>Legal Agreement</span>
-          </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight">Terms of Service</h1>
           <p className="text-sm text-slate-500 dark:text-slate-400">Last Updated: July 24, 2026</p>
         </div>

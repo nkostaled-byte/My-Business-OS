@@ -139,14 +139,6 @@ export const PricingPage: React.FC = () => {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
         {/* Hero Header */}
         <div className="text-center space-y-4 max-w-4xl mx-auto">
-          <motion.div
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold uppercase tracking-wider"
-          >
-            <span>Unified Pricing Plans</span>
-          </motion.div>
-
           <motion.h1
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}

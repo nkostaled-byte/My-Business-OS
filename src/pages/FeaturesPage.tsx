@@ -67,9 +67,6 @@ export const FeaturesPage: React.FC = () => {
     <div className="py-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-20">
       {/* Hero */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <div className="inline-flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold">
-          <span>Core Capabilities</span>
-        </div>
         <h1 className="text-4xl sm:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
           Everything you need to power your business
         </h1>

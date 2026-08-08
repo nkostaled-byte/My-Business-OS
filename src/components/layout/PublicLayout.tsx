@@ -2,6 +2,7 @@ import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { PublicHeader } from './PublicHeader';
 import { PublicFooter } from './PublicFooter';
+import { CookiesBanner } from './CookiesBanner';
 import { AppBackdrop } from '../common/AppBackdrop';
 
 export const PublicLayout: React.FC = () => {
@@ -13,6 +14,7 @@ export const PublicLayout: React.FC = () => {
         <Outlet />
       </div>
       <PublicFooter />
+      <CookiesBanner />
     </div>
   );
 };

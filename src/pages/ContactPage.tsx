@@ -88,15 +88,6 @@ export const ContactPage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-indigo-500/5 to-transparent pointer-events-none" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-6">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold"
-          >
-            <Mail className="w-3.5 h-3.5" />
-            <span>Get in Touch</span>
-          </motion.div>
-
           <motion.h1 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

@@ -68,11 +68,6 @@ export const SecurityPage: React.FC = () => {
         <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 via-indigo-500/5 to-transparent pointer-events-none" />
         
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 text-center space-y-6">
-          <div className="inline-flex items-center gap-2 text-indigo-700 dark:text-indigo-300 text-xs font-bold">
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Enterprise Security</span>
-          </div>
-
           <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight max-w-4xl mx-auto">
             Enterprise-grade <span className="text-indigo-600 dark:text-indigo-400">Security</span>
           </h1>
