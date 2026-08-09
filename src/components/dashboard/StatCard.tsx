@@ -40,6 +40,8 @@ export const StatCard: React.FC<StatCardProps> = ({
   if (isGradient) {
     return (
       <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
         whileHover={{
           y: -2,
           boxShadow: '0 2px 4px rgba(15,23,42,0.05), 0 14px 32px -8px rgba(15,23,42,0.25)',
@@ -89,6 +91,8 @@ export const StatCard: React.FC<StatCardProps> = ({
 
   return (
     <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
       whileHover={{
         y: -2,
         boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px -6px rgba(15,23,42,0.12)',

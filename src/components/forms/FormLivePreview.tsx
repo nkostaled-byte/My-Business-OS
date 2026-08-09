@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { FormBuilderState } from './FormBuilderPanel';
 import { Send, CheckCircle2 } from 'lucide-react';
 
@@ -39,28 +40,41 @@ export const FormLivePreview: React.FC<FormLivePreviewProps> = ({ config, busine
           <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
         </div>
 
-        {submitted ? (
-          <div className="py-12 text-center space-y-4 animate-in zoom-in duration-200">
-            <div
-              className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center shadow-lg"
-              style={{ backgroundColor: config.primaryColor, color: '#ffffff' }}
+        <AnimatePresence mode="wait">
+          {submitted ? (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.9, y: 10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -5 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              className="py-12 text-center space-y-4"
             >
-              <CheckCircle2 className="w-7 h-7" />
-            </div>
-            <h3 className="text-xl font-extrabold">{config.successHeading}</h3>
-            <p className="text-xs opacity-75 max-w-xs mx-auto leading-relaxed">{config.successBody}</p>
-            <button
-              type="button"
-              onClick={() => {
-                setSubmitted(false);
-                setFormData({});
-              }}
-              className="mt-4 px-4 py-2 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors"
-            >
-              Submit Another Enquiry
-            </button>
-          </div>
-        ) : (
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ duration: 0.5, delay: 0.1, type: 'spring', stiffness: 200 }}
+                className="w-14 h-14 rounded-2xl mx-auto flex items-center justify-center shadow-lg"
+                style={{ backgroundColor: config.primaryColor, color: '#ffffff' }}
+              >
+                <CheckCircle2 className="w-7 h-7" />
+              </motion.div>
+              <h3 className="text-xl font-extrabold">{config.successHeading}</h3>
+              <p className="text-xs opacity-75 max-w-xs mx-auto leading-relaxed">{config.successBody}</p>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                type="button"
+                onClick={() => {
+                  setSubmitted(false);
+                  setFormData({});
+                }}
+                className="mt-4 px-4 py-2 rounded-xl text-xs font-bold border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-900 transition-colors"
+              >
+                Submit Another Enquiry
+              </motion.button>
+            </motion.div>
+          ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
             {config.fields
               .filter((f) => f.enabled)
@@ -146,7 +160,8 @@ export const FormLivePreview: React.FC<FormLivePreviewProps> = ({ config, busine
               <Send className="w-4 h-4" />
             </button>
           </form>
-        )}
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="pt-4 border-t border-slate-200/20 dark:border-slate-800/80 text-center">

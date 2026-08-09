@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
 import { Download, FileSpreadsheet, FileText, Check, Loader2 } from 'lucide-react';
 import api from '../../lib/api-client';
 import { useToast } from '../../context/ToastContext';
@@ -53,7 +54,9 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({ table = 'custome
 
   return (
     <div className="relative inline-block text-left">
-      <button
+      <motion.button
+        whileHover={{ scale: 1.02 }}
+        whileTap={{ scale: 0.98 }}
         onClick={() => setIsOpen(!isOpen)}
         disabled={!!exporting}
         className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-semibold glass-subtle text-slate-700 dark:text-slate-200 shadow-panel transition-colors cursor-pointer disabled:opacity-50"
@@ -64,12 +67,19 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({ table = 'custome
           <Download className="w-3.5 h-3.5 text-slate-500" />
         )}
         <span>{exporting ? 'Exporting...' : 'Export'}</span>
-      </button>
+      </motion.button>
 
-      {isOpen && (
-        <>
-          <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)} />
-          <div className="absolute right-0 mt-2 w-44 rounded-xl glass-strong py-1.5 z-30 animate-in fade-in zoom-in-95 duration-150">
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <div className="fixed inset-0 z-20" onClick={() => setIsOpen(false)} />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: -4 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -4 }}
+              transition={{ duration: 0.15, ease: [0.16, 1, 0.3, 1] }}
+              className="absolute right-0 mt-2 w-44 rounded-xl glass-strong py-1.5 z-30"
+            >
             <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-slate-400">
               Download Format
             </div>
@@ -94,16 +104,25 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({ table = 'custome
                 <span>Export PDF</span>
               </div>
             </button>
-          </div>
+          </motion.div>
         </>
       )}
+      </AnimatePresence>
 
+      <AnimatePresence>
       {success && (
-        <div className="fixed bottom-4 right-4 z-50 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-xl text-xs font-medium flex items-center gap-2 animate-in fade-in slide-in-from-bottom-2">
+        <motion.div
+          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 10, scale: 0.95 }}
+          transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+          className="fixed bottom-4 right-4 z-50 bg-slate-900 text-white dark:bg-white dark:text-slate-900 px-4 py-2.5 rounded-xl shadow-xl text-xs font-medium flex items-center gap-2"
+        >
           <Check className="w-4 h-4 text-emerald-400 dark:text-emerald-600" />
           <span>{success === 'CSV' ? 'CSV downloaded successfully' : 'PDF export coming soon'}</span>
-        </div>
+        </motion.div>
       )}
+      </AnimatePresence>
     </div>
   );
 };
