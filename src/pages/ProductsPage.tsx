@@ -24,6 +24,7 @@ export const ProductsPage: React.FC = () => {
   const [category, setCategory] = useState('');
   const [sku, setSku] = useState('');
   const [price, setPrice] = useState('');
+  const [costPrice, setCostPrice] = useState('');
   const [stock, setStock] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [displayOnWebsite, setDisplayOnWebsite] = useState(false);
@@ -51,6 +52,7 @@ export const ProductsPage: React.FC = () => {
     setCategory('');
     setSku('');
     setPrice('');
+    setCostPrice('');
     setStock('');
     setImageUrl('');
     setDisplayOnWebsite(false);
@@ -79,6 +81,7 @@ export const ProductsPage: React.FC = () => {
     setCategory(product.category);
     setSku(product.sku);
     setPrice(String(product.price));
+    setCostPrice(String(product.costPrice ?? ''));
     setStock(String(product.stock));
     setImageUrl(product.imageUrl || '');
     setDisplayOnWebsite(product.displayOnWebsite || false);
@@ -95,6 +98,7 @@ export const ProductsPage: React.FC = () => {
         category,
         sku,
         price: parseFloat(price) || 0,
+        costPrice: parseFloat(costPrice) || 0,
         stock: parseInt(stock, 10) || 0,
         imageUrl: imageUrl || undefined,
         displayOnWebsite,
@@ -113,6 +117,7 @@ export const ProductsPage: React.FC = () => {
         sku: newSku,
         category,
         price: parseFloat(price) || 0,
+        costPrice: parseFloat(costPrice) || 0,
         stock: parseInt(stock, 10) || 0,
         imageUrl: imageUrl || undefined,
         displayOnWebsite,
@@ -314,7 +319,7 @@ export const ProductsPage: React.FC = () => {
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-3 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 Price (ZAR)
@@ -326,6 +331,20 @@ export const ProductsPage: React.FC = () => {
                 value={price}
                 onChange={(e) => setPrice(e.target.value)}
                 placeholder="380"
+                className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
+                Unit Cost (ZAR)
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                value={costPrice}
+                onChange={(e) => setCostPrice(e.target.value)}
+                placeholder="200"
                 className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100"
               />
             </div>

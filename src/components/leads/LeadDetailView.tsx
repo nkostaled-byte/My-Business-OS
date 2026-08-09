@@ -9,7 +9,7 @@ import { Modal } from '../common/Modal';
 import { useToast } from '../../context/ToastContext';
 import { leadsApi, formatDateTime } from '../../lib/leads-api';
 import { EmptyState } from '../common/EmptyState';
-import { ScoreBadge, StatusPill, PriorityPill, OpportunityBadge, STATUS_LABEL, getInitials, GooglePlaceBadge, getPlacesMeta, recommendedLabel } from './LeadBase';
+import { ScoreBadge, StatusPill, PriorityPill, OpportunityBadge, STATUS_LABEL, getInitials, getPlacesMeta, recommendedLabel } from './LeadBase';
 import {
   Globe2, Mail, Phone, Target, MessageSquare, CheckSquare, Bell, FileText,
   ClipboardCheck, BrainCircuit, AlertTriangle, TrendingUp, Check, Tag, Star, MapPin,
@@ -133,7 +133,6 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
                 <PriorityPill priority={lead.priority} />
                 <OpportunityBadge level={lead.opportunityLevel} />
                 <ScoreBadge score={lead.score} />
-                <GooglePlaceBadge lead={lead} />
               </div>
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500 dark:text-slate-400">
                 <span className="inline-flex items-center gap-1"><Globe2 className="w-3 h-3" />{lead.domain || lead.website || '—'}</span>
@@ -152,7 +151,11 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <label className="block">
               <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400 mb-1">Status</span>
-              <select value={lead.status} onChange={(e) => updateBasic({ status: e.target.value as LeadStatus })} className={selCls}>
+              <select value={lead.status} onChange={async (e) => {
+                const res = await leadsApi.update(lead.id, { status: e.target.value as LeadStatus });
+                if (res.success && res.data) patchLead(res.data);
+                else error('Update failed', res.error);
+              }} className={selCls}>
                 {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
               </select>
             </label>

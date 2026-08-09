@@ -218,6 +218,44 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [profileOpen]);
 
+  // Generate notifications from local data
+  useEffect(() => {
+    const notifs: { id: number; title: string; time: string; read: boolean }[] = [];
+    let id = 1;
+
+    // Recent orders (last 3)
+    orders.slice(0, 3).forEach(o => {
+      notifs.push({
+        id: id++,
+        title: `New order ${o.orderNumber} - R${o.totalAmount}`,
+        time: new Date(o.createdAt).toLocaleDateString(),
+        read: false,
+      });
+    });
+
+    // Upcoming bookings (next 3)
+    bookings.filter(b => b.status === 'upcoming').slice(0, 3).forEach(b => {
+      notifs.push({
+        id: id++,
+        title: `Booking ${b.bookingCode} with ${b.clientName}`,
+        time: `${b.date} at ${b.time}`,
+        read: false,
+      });
+    });
+
+    // Unread form submissions (last 2)
+    forms.filter(f => f.status === 'unread').slice(0, 2).forEach(f => {
+      notifs.push({
+        id: id++,
+        title: `New form submission from ${f.senderName}`,
+        time: new Date(f.submittedAt).toLocaleDateString(),
+        read: false,
+      });
+    });
+
+    setNotifications(notifs);
+  }, [orders, bookings, forms]);
+
   const handleLogout = async () => {
     await signOut();
     navigate('/login', { replace: true });

@@ -12,7 +12,7 @@ import { LeadAuditCenter } from '../components/leads/LeadAuditCenter';
 import { LeadForm } from '../components/leads/LeadForm';
 import { LeadDetailView } from '../components/leads/LeadDetailView';
 import { LeadBusinessFinder } from '../components/leads/LeadBusinessFinder';
-import { ScoreBadge, PriorityPill, StatusPill, GooglePlaceBadge } from '../components/leads/LeadBase';
+import { ScoreBadge, PriorityPill, StatusPill } from '../components/leads/LeadBase';
 import { EmptyState } from '../components/common/EmptyState';
 import {
   SearchCheck, LayoutGrid, Database, UsersRound, ArrowDownToLine, Search, Globe2, Trash2,
@@ -293,7 +293,7 @@ const LeadsTable: React.FC<{ leads: Lead[]; loading: boolean; onSelect: (id: str
               {filtered.map((l, i) => (
                 <motion.tr key={l.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15, delay: Math.min(i, 20) * 0.02 }} onClick={() => onSelect(l.id)} className="hover:bg-white/50 dark:hover:bg-white/5 transition-colors cursor-pointer">
                   <td className="py-3.5 px-4 sm:px-6">
-                    <div className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">{l.leadName}<GooglePlaceBadge lead={l} /></div>
+                    <div className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">{l.leadName}</div>
                     <div className="text-[11px] text-slate-400 flex items-center gap-1"><Globe2 className="w-3 h-3" />{l.domain || l.website || '—'}</div>
                   </td>
                   <td className="py-3.5 px-4"><StatusPill status={l.status} /></td>

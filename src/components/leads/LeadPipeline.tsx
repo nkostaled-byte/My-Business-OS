@@ -7,7 +7,7 @@ import React, { useState, useCallback, Fragment } from 'react';
 import { motion } from 'motion/react';
 import { useToast } from '../../context/ToastContext';
 import { leadsApi, formatDate } from '../../lib/leads-api';
-import { ScoreBadge, PriorityPill, StageDot, leadNameOf, GooglePlaceBadge } from './LeadBase';
+import { ScoreBadge, PriorityPill, StageDot, leadNameOf } from './LeadBase';
 import { Plus, GripVertical } from 'lucide-react';
 import type { LeadStage, Lead } from '../../types';
 
@@ -107,7 +107,6 @@ const PipelineCard = ({ lead, draggable, dragging, onDragStart, onDragEnd, onCli
       <span className="text-xs font-bold text-slate-800 dark:text-slate-100 leading-tight flex items-center gap-1">
         <GripVertical className="w-3 h-3 text-slate-300 shrink-0" />
         {leadNameOf(lead)}
-        <GooglePlaceBadge lead={lead} />
       </span>
       <ScoreBadge score={lead.score} size="sm" />
     </div>
