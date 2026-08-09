@@ -446,7 +446,7 @@ export const WebsiteManagerPage: React.FC = () => {
           </NavLink>
         </div>
 
-        {loading ? (
+        {websiteSettingsLoading ? (
           <div className="grid grid-cols-2 md:grid-cols-5 gap-4 animate-pulse">
             {[1, 2, 3, 4, 5].map((n) => (
               <div key={n} className="h-24 bg-slate-100 dark:bg-slate-800 rounded-2xl"></div>
