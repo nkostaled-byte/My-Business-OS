@@ -10,7 +10,7 @@ import { useToast } from '../../context/ToastContext';
 import { leadsApi } from '../../lib/leads-api';
 import { EmptyState } from '../common/EmptyState';
 import {
-  Search, MapPin, Star, Phone, Globe22, SearchCheck, Plus, Loader, Building2,
+  Search, MapPin, Star, Phone, Globe2, SearchCheck, Plus, Loader, Building2,
 } from 'lucide-react';
 import type { PlaceBusiness } from '../../types';
 

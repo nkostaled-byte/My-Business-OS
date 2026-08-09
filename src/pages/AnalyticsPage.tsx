@@ -8,7 +8,7 @@ import { OrderStatusBreakdown } from '../components/dashboard/OrderStatusBreakdo
 import { TopCustomersList } from '../components/dashboard/TopCustomersList';
 import { RevenueComparison } from '../components/dashboard/RevenueComparison';
 import { MotionCard } from '../components/common/MotionCard';
-import { TrendingUp, UsersRoundRound, ShoppingBag } from 'lucide-react';
+import { TrendingUp, UsersRound, ShoppingBag } from 'lucide-react';
 import { ExportDropdown } from '../components/common/ExportDropdown';
 
 export const AnalyticsPage: React.FC = () => {
