@@ -26,6 +26,7 @@ export const ProductsPage: React.FC = () => {
   const [price, setPrice] = useState('');
   const [stock, setStock] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [displayOnWebsite, setDisplayOnWebsite] = useState(false);
 
   const filteredProducts = products.filter(
     (p) =>
@@ -52,6 +53,7 @@ export const ProductsPage: React.FC = () => {
     setPrice('');
     setStock('');
     setImageUrl('');
+    setDisplayOnWebsite(false);
   };
 
   const closeModal = () => {
@@ -79,6 +81,7 @@ export const ProductsPage: React.FC = () => {
     setPrice(String(product.price));
     setStock(String(product.stock));
     setImageUrl(product.imageUrl || '');
+    setDisplayOnWebsite(product.displayOnWebsite || false);
     setIsModalOpen(true);
   };
 
@@ -94,6 +97,7 @@ export const ProductsPage: React.FC = () => {
         price: parseFloat(price) || 0,
         stock: parseInt(stock, 10) || 0,
         imageUrl: imageUrl || undefined,
+        displayOnWebsite,
       } as Partial<Product>);
       if (success) {
         addToast({ title: 'Product Updated', message: `"${name}" has been updated.`, type: 'success' });
@@ -111,6 +115,7 @@ export const ProductsPage: React.FC = () => {
         price: parseFloat(price) || 0,
         stock: parseInt(stock, 10) || 0,
         imageUrl: imageUrl || undefined,
+        displayOnWebsite,
       });
       if (result) {
         addToast({ title: 'Product Added', message: `"${name}" is now in your catalog.`, type: 'success' });
@@ -347,6 +352,19 @@ export const ProductsPage: React.FC = () => {
             label="Product Image"
             placeholder="Upload file or enter product image link..."
           />
+
+          <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <input
+              type="checkbox"
+              id="displayOnWebsite"
+              checked={displayOnWebsite}
+              onChange={(e) => setDisplayOnWebsite(e.target.checked)}
+              className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 accent-indigo-600"
+            />
+            <label htmlFor="displayOnWebsite" className="text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
+              Display on website
+            </label>
+          </div>
 
           <div className="pt-3 flex justify-end gap-2 border-t border-slate-200/50 dark:border-white/5">
             <button

@@ -142,9 +142,9 @@ export const WebsiteManagerPage: React.FC = () => {
 
   // Probe the live site whenever the linked URL changes.
   useEffect(() => {
-    if (loading) return;
+    if (websiteSettingsLoading) return;
     probeSite(websiteUrl);
-  }, [websiteUrl, loading]);
+  }, [websiteUrl, websiteSettingsLoading]);
 
   const handleSave = async () => {
     setSaving(true);

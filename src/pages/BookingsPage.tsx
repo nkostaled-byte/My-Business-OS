@@ -59,6 +59,12 @@ export const BookingsPage: React.FC = () => {
     addToast('Booking marked as completed', 'success');
   };
 
+  const handleMarkUpcoming = async (id: string, e?: React.MouseEvent) => {
+    e?.stopPropagation();
+    await updateResource('bookings', id, { status: 'upcoming' });
+    addToast('Booking marked as upcoming', 'success');
+  };
+
   const handleCancelBooking = async (id: string, e?: React.MouseEvent) => {
     e?.stopPropagation();
     await updateResource('bookings', id, { status: 'cancelled' });
@@ -242,6 +248,15 @@ export const BookingsPage: React.FC = () => {
                         >
                           <Eye className="w-4 h-4" />
                         </button>
+                        {b.status === 'confirmed' && (
+                          <button 
+                            onClick={(e) => handleMarkUpcoming(b.id, e)}
+                            title="Mark as Upcoming"
+                            className="p-1.5 rounded-lg bg-blue-50 dark:bg-blue-950/50 text-blue-600 dark:text-blue-400 hover:bg-blue-100 transition-colors"
+                          >
+                            <CalendarIcon className="w-4 h-4" />
+                          </button>
+                        )}
                         {b.status !== 'completed' && (
                           <button 
                             onClick={(e) => handleMarkComplete(b.id, e)}

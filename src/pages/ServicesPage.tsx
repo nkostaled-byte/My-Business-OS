@@ -25,6 +25,7 @@ export const ServicesPage: React.FC = () => {
   const [price, setPrice] = useState('');
   const [description, setDescription] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [displayOnWebsite, setDisplayOnWebsite] = useState(false);
 
   const resetForm = () => {
     setName('');
@@ -33,6 +34,7 @@ export const ServicesPage: React.FC = () => {
     setDescription('');
     setImageUrl('');
     setDuration('30');
+    setDisplayOnWebsite(false);
   };
 
   const closeModal = () => {
@@ -59,6 +61,7 @@ export const ServicesPage: React.FC = () => {
     setPrice(String(service.price));
     setDescription(service.description || '');
     setImageUrl(service.imageUrl || '');
+    setDisplayOnWebsite(service.displayOnWebsite || false);
     setIsModalOpen(true);
   };
 
@@ -74,6 +77,7 @@ export const ServicesPage: React.FC = () => {
         price: parseFloat(price) || 0,
         description,
         imageUrl: imageUrl || undefined,
+        displayOnWebsite,
       } as Partial<Service>);
       if (success) {
         addToast({ title: 'Service Updated', message: `"${name}" has been updated.`, type: 'success' });
@@ -90,6 +94,7 @@ export const ServicesPage: React.FC = () => {
         price: parseFloat(price) || 0,
         description,
         imageUrl: imageUrl || undefined,
+        displayOnWebsite,
       });
       if (result) {
         addToast({
@@ -314,6 +319,19 @@ export const ServicesPage: React.FC = () => {
             label="Service Photo / Cover Image"
             placeholder="Upload file or enter service image link..."
           />
+
+          <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
+            <input
+              type="checkbox"
+              id="displayOnWebsite"
+              checked={displayOnWebsite}
+              onChange={(e) => setDisplayOnWebsite(e.target.checked)}
+              className="w-4 h-4 rounded text-indigo-600 focus:ring-indigo-500 accent-indigo-600"
+            />
+            <label htmlFor="displayOnWebsite" className="text-xs font-semibold text-slate-700 dark:text-slate-300 cursor-pointer">
+              Display on website
+            </label>
+          </div>
 
           <div className="pt-3 flex justify-end gap-2 border-t border-slate-200/50 dark:border-white/5">
             <button

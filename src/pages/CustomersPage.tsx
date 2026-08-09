@@ -48,6 +48,7 @@ export const CustomersPage: React.FC = () => {
   };
 
   const openEditModal = (customer: Customer) => {
+    setSelectedCustomer(null); // Close detail modal first
     setEditingCustomer(customer);
     setName(customer.name);
     setEmail(customer.email || '');

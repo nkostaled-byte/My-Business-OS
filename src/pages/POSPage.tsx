@@ -30,7 +30,7 @@ import {
 } from 'lucide-react';
 
 export const POSPage: React.FC = () => {
-  const { products, services, orders, businessName, addOrder, updateResource } = useData();
+  const { products, services, orders, customers, businessName, addOrder, updateResource } = useData();
   const { addToast } = useToast();
 
   const [viewMode, setViewMode] = useState<'register' | 'history'>('register');
@@ -47,6 +47,10 @@ export const POSPage: React.FC = () => {
   const [saleCompleted, setSaleCompleted] = useState<boolean>(false);
   const [completedOrderNum, setCompletedOrderNum] = useState<string>('');
   const [completedOrder, setCompletedOrder] = useState<Order | null>(null);
+  
+  // Customer selection
+  const [selectedCustomerId, setSelectedCustomerId] = useState<string | null>(null);
+  const [customerSearch, setCustomerSearch] = useState('');
 
   // History State
   const [historySearch, setHistorySearch] = useState('');
@@ -138,10 +142,15 @@ export const POSPage: React.FC = () => {
       price: ci.product.price,
     }));
 
-    // Don't save "POS Counter Sale" as a customer - use a generic name
+    // Get customer name - either selected customer or walk-in
+    const selectedCustomer = selectedCustomerId 
+      ? customers.find(c => c.id === selectedCustomerId)
+      : null;
+    const customerName = selectedCustomer ? selectedCustomer.name : 'Walk-in Customer';
+
     const created = await addOrder({
       orderNumber: orderNum,
-      customerName: 'Walk-in Customer',
+      customerName,
       totalAmount: grandTotal,
       status: 'completed',
       paymentMethod,
@@ -162,7 +171,7 @@ export const POSPage: React.FC = () => {
     const savedOrder: Order = created ?? {
       id: '',
       orderNumber: orderNum,
-      customerName: 'Walk-in Customer',
+      customerName,
       status: 'completed',
       totalAmount: grandTotal,
       itemsCount: cart.reduce((a, b) => a + b.quantity, 0),
@@ -190,6 +199,8 @@ export const POSPage: React.FC = () => {
     setCompletedOrder(null);
     setIsCheckoutOpen(false);
     setSaleCompleted(false);
+    setSelectedCustomerId(null);
+    setCustomerSearch('');
   };
 
   // Filter POS history orders
@@ -702,6 +713,63 @@ export const POSPage: React.FC = () => {
                   <p className="text-xs text-slate-500 mt-0.5">
                     Total Due: R{grandTotal.toFixed(2)}
                   </p>
+                </div>
+
+                {/* Customer Selection */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">
+                    Customer (optional)
+                  </label>
+                  <input
+                    type="text"
+                    value={customerSearch}
+                    onChange={(e) => {
+                      setCustomerSearch(e.target.value);
+                      // Clear selection if search changes
+                      if (selectedCustomerId) {
+                        const selectedCustomer = customers.find(c => c.id === selectedCustomerId);
+                        if (!selectedCustomer || !selectedCustomer.name.toLowerCase().includes(e.target.value.toLowerCase())) {
+                          setSelectedCustomerId(null);
+                        }
+                      }
+                    }}
+                    placeholder="Search customer or leave blank for walk-in..."
+                    className="w-full px-3 py-2 glass-subtle rounded-xl text-xs text-slate-900 dark:text-slate-100"
+                  />
+                  {customerSearch && !selectedCustomerId && (
+                    <div className="max-h-32 overflow-y-auto glass-subtle rounded-xl border border-slate-200 dark:border-slate-700">
+                      {customers
+                        .filter(c => 
+                          c.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
+                          c.email?.toLowerCase().includes(customerSearch.toLowerCase()) ||
+                          c.phone?.includes(customerSearch)
+                        )
+                        .slice(0, 5)
+                        .map(customer => (
+                          <button
+                            key={customer.id}
+                            onClick={() => {
+                              setSelectedCustomerId(customer.id);
+                              setCustomerSearch(customer.name);
+                            }}
+                            className="w-full text-left px-3 py-2 text-xs hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors border-b border-slate-100 dark:border-slate-800 last:border-0"
+                          >
+                            <div className="font-semibold text-slate-900 dark:text-slate-100">{customer.name}</div>
+                            <div className="text-[10px] text-slate-500">{customer.phone || customer.email}</div>
+                          </button>
+                        ))}
+                      {customers.filter(c => 
+                        c.name.toLowerCase().includes(customerSearch.toLowerCase()) ||
+                        c.email?.toLowerCase().includes(customerSearch.toLowerCase()) ||
+                        c.phone?.includes(customerSearch)
+                      ).length === 0 && (
+                        <div className="px-3 py-2 text-xs text-slate-500 text-center">No customers found</div>
+                      )}
+                    </div>
+                  )}
+                  {!customerSearch && (
+                    <p className="text-[10px] text-slate-500">Walk-in customer will be recorded</p>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-3 gap-3">
