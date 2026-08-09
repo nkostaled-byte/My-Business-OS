@@ -70,8 +70,11 @@ export const BookingsPage: React.FC = () => {
       case 'completed':
         return <span className="text-[10px] font-extrabold uppercase text-emerald-600 dark:text-emerald-400">Completed</span>;
       case 'upcoming':
-      case 'in-progress':
         return <span className="text-[10px] font-extrabold uppercase text-indigo-600 dark:text-indigo-400">Upcoming</span>;
+      case 'confirmed':
+        return <span className="text-[10px] font-extrabold uppercase text-blue-600 dark:text-blue-400">Confirmed</span>;
+      case 'in-progress':
+        return <span className="text-[10px] font-extrabold uppercase text-indigo-600 dark:text-indigo-400">In Progress</span>;
       case 'cancelled':
         return <span className="text-[10px] font-extrabold uppercase text-rose-600 dark:text-rose-400">Cancelled</span>;
       default:

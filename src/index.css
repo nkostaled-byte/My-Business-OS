@@ -160,6 +160,17 @@
   ::-webkit-scrollbar-track {
     background: transparent;
   }
+
+  /* Dark mode select dropdowns */
+  .dark select {
+    background-color: rgb(30 41 59);
+    color: rgb(226 232 240);
+    border-color: rgb(51 65 85);
+  }
+  .dark select option {
+    background-color: rgb(30 41 59);
+    color: rgb(226 232 240);
+  }
 }
 
 @media print {

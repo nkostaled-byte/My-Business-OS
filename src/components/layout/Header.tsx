@@ -16,7 +16,6 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useData } from '../../context/DataContext';
-import api from '../../lib/api-client';
 import { signOut, getCurrentAuthState } from '../../lib/auth-client';
 
 interface HeaderProps {
@@ -33,7 +32,18 @@ interface SearchResult {
 
 export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   const { theme, toggleTheme } = useTheme();
-  const { profileName, profileEmail, profileAvatar, refreshAll } = useData();
+  const { 
+    profileName, 
+    profileEmail, 
+    profileAvatar, 
+    refreshAll,
+    products,
+    customers,
+    orders,
+    bookings,
+    invoices,
+    forms,
+  } = useData();
   const navigate = useNavigate();
 
   const [notifications, setNotifications] = useState<{ id: number; title: string; time: string; read: boolean }[]>([]);
@@ -49,7 +59,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const searchRef = useRef<HTMLDivElement>(null);
 
-  // Global search with 300ms debounce
+  // Global search with 300ms debounce - searches through local data
   const performSearch = useCallback(async (q: string) => {
     if (q.length < 2) {
       setSearchResults([]);
@@ -59,20 +69,96 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
 
     setSearching(true);
     try {
-      const result = await api.get<{ results: SearchResult[] }>('/api/search', { params: { q } });
-      if (result.success && result.data?.results) {
-        setSearchResults(result.data.results);
-        setSearchOpen(result.data.results.length > 0);
-      } else {
-        setSearchResults([]);
-        setSearchOpen(false);
-      }
+      const query = q.toLowerCase();
+      const results: SearchResult[] = [];
+
+      // Search products
+      products.forEach(p => {
+        if (p.name.toLowerCase().includes(query) || p.sku.toLowerCase().includes(query)) {
+          results.push({
+            result_type: 'product',
+            id: p.id,
+            title: p.name,
+            subtitle: `SKU: ${p.sku} • Stock: ${p.stock}`,
+            created_at: '',
+          });
+        }
+      });
+
+      // Search customers
+      customers.forEach(c => {
+        if (c.name.toLowerCase().includes(query) || c.email.toLowerCase().includes(query)) {
+          results.push({
+            result_type: 'customer',
+            id: c.id,
+            title: c.name,
+            subtitle: c.email,
+            created_at: '',
+          });
+        }
+      });
+
+      // Search orders
+      orders.forEach(o => {
+        if (o.orderNumber.toLowerCase().includes(query) || o.customerName.toLowerCase().includes(query)) {
+          results.push({
+            result_type: 'order',
+            id: o.id,
+            title: o.orderNumber,
+            subtitle: `${o.customerName} • R${o.totalAmount}`,
+            created_at: o.createdAt,
+          });
+        }
+      });
+
+      // Search bookings
+      bookings.forEach(b => {
+        if (b.clientName.toLowerCase().includes(query) || b.serviceName.toLowerCase().includes(query) || b.bookingCode.toLowerCase().includes(query)) {
+          results.push({
+            result_type: 'booking',
+            id: b.id,
+            title: b.bookingCode,
+            subtitle: `${b.clientName} • ${b.serviceName}`,
+            created_at: b.date,
+          });
+        }
+      });
+
+      // Search invoices
+      invoices.forEach(inv => {
+        if (inv.invoiceNumber.toLowerCase().includes(query) || (inv.clientName || '').toLowerCase().includes(query)) {
+          results.push({
+            result_type: 'invoice',
+            id: inv.id,
+            title: inv.invoiceNumber,
+            subtitle: `${inv.clientName || 'Unknown'} • R${inv.total || 0}`,
+            created_at: '',
+          });
+        }
+      });
+
+      // Search form submissions
+      forms.forEach(f => {
+        if (f.senderName.toLowerCase().includes(query) || f.formName.toLowerCase().includes(query) || f.senderEmail.toLowerCase().includes(query)) {
+          results.push({
+            result_type: 'submission',
+            id: f.id,
+            title: f.senderName,
+            subtitle: `${f.formName} • ${f.senderEmail}`,
+            created_at: f.submittedAt,
+          });
+        }
+      });
+
+      // Limit to top 10 results
+      setSearchResults(results.slice(0, 10));
+      setSearchOpen(results.length > 0);
     } catch {
       setSearchResults([]);
     } finally {
       setSearching(false);
     }
-  }, []);
+  }, [products, customers, orders, bookings, invoices, forms]);
 
   const handleSearchChange = (value: string) => {
     setSearchQuery(value);

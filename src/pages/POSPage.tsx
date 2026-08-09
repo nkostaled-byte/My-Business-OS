@@ -138,9 +138,10 @@ export const POSPage: React.FC = () => {
       price: ci.product.price,
     }));
 
+    // Don't save "POS Counter Sale" as a customer - use a generic name
     const created = await addOrder({
       orderNumber: orderNum,
-      customerName: 'POS Counter Sale',
+      customerName: 'Walk-in Customer',
       totalAmount: grandTotal,
       status: 'completed',
       paymentMethod,
@@ -161,7 +162,7 @@ export const POSPage: React.FC = () => {
     const savedOrder: Order = created ?? {
       id: '',
       orderNumber: orderNum,
-      customerName: 'POS Counter Sale',
+      customerName: 'Walk-in Customer',
       status: 'completed',
       totalAmount: grandTotal,
       itemsCount: cart.reduce((a, b) => a + b.quantity, 0),

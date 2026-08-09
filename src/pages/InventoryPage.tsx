@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
 import { InventoryItem } from '../types';
 import { DataTable, Column } from '../components/common/DataTable';
 import { Modal } from '../components/common/Modal';
-import { Boxes, AlertTriangle, Edit3 } from 'lucide-react';
+import { Boxes, AlertTriangle, Edit3, Plus } from 'lucide-react';
 
 export const InventoryPage: React.FC = () => {
   const { inventory, updateResource, isLoading } = useData();
   const { addToast } = useToast();
+  const navigate = useNavigate();
   const [editingItem, setEditingItem] = useState<InventoryItem | null>(null);
   const [stock, setStock] = useState('');
   const [minThreshold, setMinThreshold] = useState('');
@@ -147,6 +149,8 @@ export const InventoryPage: React.FC = () => {
         emptyIcon={Boxes}
         isLoading={isLoading}
         exportFilename="inventory_export"
+        onAddClick={() => navigate('/app/products')}
+        addButtonLabel="Add Product"
       />
 
       {/* Edit Stock Modal */}

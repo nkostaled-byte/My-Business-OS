@@ -5,7 +5,7 @@ import { useToast } from '../context/ToastContext';
 import { Customer } from '../types';
 import { DataTable, Column } from '../components/common/DataTable';
 import { Modal } from '../components/common/Modal';
-import { UsersRound, Mail, Phone, CalendarDays, Edit3, Trash2 } from 'lucide-react';
+import { UsersRound, Mail, Phone, CalendarDays, Edit3, Trash2, Users } from 'lucide-react';
 
 const getInitials = (name: string) =>
   name

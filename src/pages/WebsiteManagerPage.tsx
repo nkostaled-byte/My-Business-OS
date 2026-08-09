@@ -56,63 +56,70 @@ function normalizeSiteUrl(value: string): string {
 }
 
 export const WebsiteManagerPage: React.FC = () => {
-  const { businessName: ctxBusinessName, setBusinessName } = useData();
+  const { 
+    businessName: ctxBusinessName, 
+    setBusinessName,
+    websiteSettings,
+    websiteSettingsLoading,
+    refreshWebsiteSettings,
+    updateWebsiteSettings,
+  } = useData();
   const { addToast } = useToast();
   const navigate = useNavigate();
 
   const [settings, setSettings] = useState<ClientState>({
-    businessName: ctxBusinessName,
-    phone: '',
-    address: '',
-    openingHours: '',
-    ownerEmail: '',
-    websiteUrl: '',
+    businessName: websiteSettings?.businessName || ctxBusinessName,
+    phone: websiteSettings?.phone || '',
+    address: websiteSettings?.address || '',
+    openingHours: websiteSettings?.openingHours || '',
+    ownerEmail: websiteSettings?.ownerEmail || '',
+    websiteUrl: websiteSettings?.websiteUrl || '',
   });
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [websiteUrl, setWebsiteUrl] = useState('');
+  const [websiteUrl, setWebsiteUrl] = useState(normalizeSiteUrl(websiteSettings?.websiteUrl || ''));
   const [probe, setProbe] = useState<ProbeResult>({ status: 'checking', latency: null });
   const [metrics, setMetrics] = useState<SiteMetrics | null>(null);
   const [metricsError, setMetricsError] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
 
-  const loadSettings = async () => {
-    const result = await api.get<any>('/api/client-settings');
-    if (result.success && result.data) {
-      const s = result.data as Partial<ClientState>;
-      setSettings({
-        businessName: s.businessName ?? ctxBusinessName,
-        phone: s.phone ?? '',
-        address: s.address ?? '',
-        openingHours: s.openingHours ?? '',
-        ownerEmail: s.ownerEmail ?? '',
-        websiteUrl: s.websiteUrl ?? '',
-      });
-      setWebsiteUrl(normalizeSiteUrl(s.websiteUrl ?? ''));
-    }
-  };
-
-  const loadMetrics = async () => {
-    setMetricsError(null);
-    const res = await api.get<SiteMetrics>('/api/dashboard/metrics');
-    if (res.success && res.data) {
-      setMetrics(res.data);
-    } else {
-      setMetrics(null);
-      setMetricsError(res.error || 'Analytics unavailable for this plan.');
-    }
-  };
-
+  // Load metrics only (settings are cached in context)
   useEffect(() => {
     let cancelled = false;
     (async () => {
-      await Promise.allSettled([loadSettings(), loadMetrics()]);
-      if (!cancelled) setLoading(false);
+      // If we don't have cached settings, load them
+      if (!websiteSettings && !websiteSettingsLoading) {
+        await refreshWebsiteSettings();
+      }
+      // Load metrics
+      const res = await api.get<SiteMetrics>('/api/dashboard/metrics');
+      if (!cancelled) {
+        if (res.success && res.data) {
+          setMetrics(res.data);
+        } else {
+          setMetrics(null);
+          setMetricsError(res.error || 'Analytics unavailable for this plan.');
+        }
+      }
     })();
     return () => {
       cancelled = true;
     };
   }, []);
+
+  // Update local state when context settings change
+  useEffect(() => {
+    if (websiteSettings) {
+      setSettings({
+        businessName: websiteSettings.businessName || ctxBusinessName,
+        phone: websiteSettings.phone || '',
+        address: websiteSettings.address || '',
+        openingHours: websiteSettings.openingHours || '',
+        ownerEmail: websiteSettings.ownerEmail || '',
+        websiteUrl: websiteSettings.websiteUrl || '',
+      });
+      setWebsiteUrl(normalizeSiteUrl(websiteSettings.websiteUrl || ''));
+    }
+  }, [websiteSettings, ctxBusinessName]);
 
   const probeSite = async (url: string) => {
     if (!url) {
@@ -149,10 +156,10 @@ export const WebsiteManagerPage: React.FC = () => {
       openingHours: settings.openingHours,
       websiteUrl: normalized,
     };
-    const res = await api.put('/api/client-settings', payload);
+    const success = await updateWebsiteSettings(payload);
     setSaving(false);
-    if (!res.success) {
-      addToast({ title: 'Save Failed', message: res.error || 'Could not save.', type: 'error' });
+    if (!success) {
+      addToast({ title: 'Save Failed', message: 'Could not save.', type: 'error' });
       return;
     }
     if (settings.businessName) setBusinessName?.(settings.businessName);
@@ -188,49 +195,6 @@ export const WebsiteManagerPage: React.FC = () => {
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200 pb-12">
-      {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-            Website Manager
-          </h1>
-          <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
-            Manage your business website, monitor its live status, and keep your online presence up to date.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={handlePublish}
-            disabled={saving}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 shadow-md shadow-indigo-500/20 cursor-pointer transition-all disabled:opacity-60"
-          >
-            <RefreshCw className={`w-3.5 h-3.5 ${saving ? 'animate-spin' : ''}`} />
-            <span>{saving ? 'Saving...' : 'Publish Changes'}</span>
-          </button>
-          {websiteUrl ? (
-            <a
-              href={websiteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 glass-panel hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-all"
-            >
-              <span>Visit Website</span>
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-          ) : (
-            <button
-              type="button"
-              onClick={() => navigate('/app/settings')}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-700 dark:text-slate-300 glass-panel hover:bg-slate-50 dark:hover:bg-slate-800 cursor-pointer transition-all"
-            >
-              <span>Set Website URL</span>
-            </button>
-          )}
-        </div>
-      </div>
-
       {/* Website Status Card */}
       <div className="relative bg-gradient-to-r from-indigo-600 via-indigo-600 to-sky-600 text-white rounded-3xl p-6 sm:p-8 shadow-xl overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
         <div className="absolute top-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />

@@ -1,5 +1,5 @@
 export type OrderStatus = 'pending' | 'processing' | 'completed' | 'cancelled' | 'refunded';
-export type BookingStatus = 'upcoming' | 'completed' | 'cancelled' | 'in-progress';
+export type BookingStatus = 'upcoming' | 'confirmed' | 'completed' | 'cancelled' | 'in-progress';
 export type InvoiceStatus = 'draft' | 'sent' | 'paid' | 'overdue' | 'cancelled';
 export type PaymentMethod = 'cash' | 'card' | 'eft' | 'online';
 export type CustomerTier = 'VIP' | 'Regular' | 'New';
@@ -73,6 +73,7 @@ export interface Product {
   soldCount: number;
   imageUrl?: string;
   status: 'in-stock' | 'low-stock' | 'out-of-stock';
+  displayOnWebsite?: boolean;
 }
 
 export interface Service {
@@ -84,6 +85,7 @@ export interface Service {
   description?: string;
   isActive: boolean;
   imageUrl?: string;
+  displayOnWebsite?: boolean;
 }
 
 export interface Customer {

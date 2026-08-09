@@ -113,6 +113,26 @@ interface DataContextType {
   setProfileEmail: (email: string) => void;
   profileAvatar: string;
   setProfileAvatar: (avatar: string) => void;
+  
+  // Website settings (cached until logout/refresh)
+  websiteSettings: {
+    businessName: string;
+    phone: string;
+    address: string;
+    openingHours: string;
+    ownerEmail: string;
+    websiteUrl: string;
+  } | null;
+  websiteSettingsLoading: boolean;
+  refreshWebsiteSettings: () => Promise<void>;
+  updateWebsiteSettings: (settings: Partial<{
+    businessName: string;
+    phone: string;
+    address: string;
+    openingHours: string;
+    ownerEmail: string;
+    websiteUrl: string;
+  }>) => Promise<boolean>;
 
   // Subscription / plan gating
   subscription: SubscriptionStatus | null;
@@ -269,6 +289,60 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setProfileAvatarState(val);
     localStorage.setItem('my_profile_avatar', val);
   };
+
+  // Website settings (cached until logout/refresh)
+  const [websiteSettings, setWebsiteSettings] = useState<{
+    businessName: string;
+    phone: string;
+    address: string;
+    openingHours: string;
+    ownerEmail: string;
+    websiteUrl: string;
+  } | null>(null);
+  const [websiteSettingsLoading, setWebsiteSettingsLoading] = useState(false);
+
+  const refreshWebsiteSettings = useCallback(async () => {
+    setWebsiteSettingsLoading(true);
+    try {
+      const result = await api.get<any>('/api/client-settings');
+      if (result.success && result.data) {
+        const s = result.data;
+        setWebsiteSettings({
+          businessName: s.businessName ?? '',
+          phone: s.phone ?? '',
+          address: s.address ?? '',
+          openingHours: s.openingHours ?? '',
+          ownerEmail: s.ownerEmail ?? '',
+          websiteUrl: s.websiteUrl ?? '',
+        });
+      }
+    } catch (err) {
+      console.error('[DataContext] Failed to load website settings:', err);
+    } finally {
+      setWebsiteSettingsLoading(false);
+    }
+  }, []);
+
+  const updateWebsiteSettings = useCallback(async (settings: Partial<{
+    businessName: string;
+    phone: string;
+    address: string;
+    openingHours: string;
+    ownerEmail: string;
+    websiteUrl: string;
+  }>) => {
+    try {
+      const result = await api.put('/api/client-settings', settings);
+      if (result.success) {
+        setWebsiteSettings((prev) => prev ? { ...prev, ...settings } : null);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      console.error('[DataContext] Failed to update website settings:', err);
+      return false;
+    }
+  }, []);
 
   // ─── Fetch All Dashboard Data ─────────────────────────────────
 
@@ -554,13 +628,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           initialFetchDone.current = true;
           fetchAllData();
           refreshSubscription();
+          refreshWebsiteSettings();
         }
       } else {
         initialFetchDone.current = false;
       }
     });
     return unsubscribe;
-  }, [fetchAllData, refreshSubscription]);
+  }, [fetchAllData, refreshSubscription, refreshWebsiteSettings]);
 
   // ─── Context Value ────────────────────────────────────────────
 
@@ -617,6 +692,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setProfileEmail,
     profileAvatar,
     setProfileAvatar,
+    websiteSettings,
+    websiteSettingsLoading,
+    refreshWebsiteSettings,
+    updateWebsiteSettings,
     subscription,
     subscriptionLoading,
     refreshSubscription,
