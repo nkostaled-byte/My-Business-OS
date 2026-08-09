@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Plus, Calculator, Package, Calendar, Receipt, X } from 'lucide-react';
+import { Plus, CreditCard, Package, CalendarDays, ReceiptText, X } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useData } from '../../context/DataContext';
 
@@ -12,7 +12,7 @@ export const FloatingActionButton: React.FC = () => {
   const actions = [
     {
       label: 'New POS Sale',
-      icon: Calculator,
+      icon: CreditCard,
       color: 'bg-emerald-500 text-white',
       onClick: () => navigate('/app/pos'),
       minPlan: 'starter',
@@ -26,14 +26,14 @@ export const FloatingActionButton: React.FC = () => {
     },
     {
       label: 'New Booking',
-      icon: Calendar,
+      icon: CalendarDays,
       color: 'bg-indigo-500 text-white',
       onClick: () => navigate('/app/bookings'),
       minPlan: 'free',
     },
     {
       label: 'Create Invoice',
-      icon: Receipt,
+      icon: ReceiptText,
       color: 'bg-amber-500 text-white',
       onClick: () => navigate('/app/invoices'),
       minPlan: 'business',

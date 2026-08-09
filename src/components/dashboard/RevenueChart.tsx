@@ -11,7 +11,7 @@ import {
 } from 'recharts';
 import { RevenueDataPoint } from '../../types';
 import { EmptyState } from '../common/EmptyState';
-import { BarChart3 } from 'lucide-react';
+import { ChartNoAxesCombined } from 'lucide-react';
 
 interface RevenueChartProps {
   data: RevenueDataPoint[];
@@ -53,7 +53,7 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
 
       {data.length === 0 ? (
         <EmptyState
-          icon={BarChart3}
+          icon={ChartNoAxesCombined}
           title="No revenue data"
           description="Revenue analytics will appear here once orders or sales are processed."
           className="my-auto py-12"

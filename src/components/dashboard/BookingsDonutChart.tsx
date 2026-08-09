@@ -4,7 +4,7 @@ import { motion } from 'motion/react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import { BookingOverviewData } from '../../types';
 import { EmptyState } from '../common/EmptyState';
-import { Calendar } from 'lucide-react';
+import { CalendarDays } from 'lucide-react';
 
 interface BookingsDonutChartProps {
   overview: BookingOverviewData | null;
@@ -42,7 +42,7 @@ export const BookingsDonutChart: React.FC<BookingsDonutChartProps> = ({ overview
 
       {!hasData ? (
         <EmptyState
-          icon={Calendar}
+          icon={CalendarDays}
           title="No bookings recorded"
           description="Appointment statistics will display here as clients book services."
           className="my-auto py-8"

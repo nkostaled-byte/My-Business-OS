@@ -7,11 +7,11 @@ import {
   CheckCircle2,
   Star,
   ShoppingBag,
-  Calendar,
-  Calculator,
+  CalendarDays,
+  CreditCard,
   Boxes,
-  Receipt,
-  BarChart3,
+  ReceiptText,
+  ChartNoAxesCombined,
   ShieldCheck,
   ChevronRight,
   Check,
@@ -142,7 +142,7 @@ export const MarketingPage: React.FC = () => {
                 {/* Floating Annotation Cards */}
                 <div className="absolute -top-6 -right-4 sm:-right-8 glass-panel rounded-2xl p-3 animate-bounce duration-1000 flex items-center gap-3">
                   <div className="w-8 h-8 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 flex items-center justify-center">
-                    <BarChart3 className="w-4 h-4" />
+                    <ChartNoAxesCombined className="w-4 h-4" />
                   </div>
                   <div>
                     <span className="block text-xs font-bold text-slate-900 dark:text-slate-100">
@@ -201,12 +201,12 @@ export const MarketingPage: React.FC = () => {
                 desc: 'Track online store and in-person orders, status workflows, and payment history from a single dashboard.',
               },
               {
-                icon: Calendar,
+                icon: CalendarDays,
                 title: 'Online Appointments',
                 desc: 'Clients book through your website, then you manage appointments, assign staff, and track statuses.',
               },
               {
-                icon: Calculator,
+                icon: CreditCard,
                 title: 'Point of Sale (POS)',
                 desc: 'Fast touch checkout for in-person sales, cart calculation, cash, card, and EFT receipts.',
               },
@@ -216,12 +216,12 @@ export const MarketingPage: React.FC = () => {
                 desc: 'Real-time stock level monitoring, low stock thresholds, and automatic restock indicators.',
               },
               {
-                icon: Receipt,
+                icon: ReceiptText,
                 title: 'Invoicing & Billing',
                 desc: 'Professional client invoices with draft, sent, paid, and overdue status tracking.',
               },
               {
-                icon: BarChart3,
+                icon: ChartNoAxesCombined,
                 title: 'Revenue Analytics',
                 desc: 'Clear revenue charts, sales reports, customer growth metrics, and business health scores.',
               },

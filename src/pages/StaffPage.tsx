@@ -5,7 +5,7 @@ import { useToast } from '../context/ToastContext';
 import { StaffMember } from '../types';
 import { Modal } from '../components/common/Modal';
 import { EmptyState } from '../components/common/EmptyState';
-import { UserCheck, Plus, Mail, Phone, Edit3, Trash2, Briefcase } from 'lucide-react';
+import { UserRoundCog, Plus, Mail, Phone, Edit3, Trash2, Briefcase } from 'lucide-react';
 
 const getInitials = (name: string) =>
   name
@@ -132,7 +132,7 @@ export const StaffPage: React.FC = () => {
       ) : staff.length === 0 ? (
         <div className="glass-panel rounded-2xl p-6">
           <EmptyState
-            icon={UserCheck}
+            icon={UserRoundCog}
             title="No staff members listed"
             description="Add your team members to enable staff assignment for client bookings."
             actionLabel="Add Staff Member"

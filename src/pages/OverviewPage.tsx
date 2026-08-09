@@ -8,13 +8,7 @@ import { TopProductsList } from '../components/dashboard/TopProductsList';
 import { RecentBookingsWidget } from '../components/dashboard/RecentBookingsWidget';
 import { BusinessHealthCard } from '../components/dashboard/BusinessHealthCard';
 import { DashboardUpgradeCard } from '../components/dashboard/DashboardUpgradeCard';
-import { CalendarDays, Plus } from 'lucide-react';
-import {
-  DollarSign,
-  ShoppingBag,
-  Calendar,
-  Users,
-} from 'lucide-react';
+import { CalendarDays, Plus, CircleDollarSign, ShoppingBag, UserRoundPlus } from 'lucide-react';
 import { NewBookingModal } from '../components/dashboard/NewBookingModal';
 
 export const OverviewPage: React.FC = () => {
@@ -93,7 +87,7 @@ export const OverviewPage: React.FC = () => {
           title="Total Revenue"
           value={stats?.totalRevenue ?? null}
           changePercent={stats?.totalRevenueChangePercent ?? null}
-          icon={DollarSign}
+          icon={CircleDollarSign}
           isGradient={true}
           isLoading={isLoading}
         />
@@ -109,7 +103,7 @@ export const OverviewPage: React.FC = () => {
           title="Total Bookings"
           value={stats?.totalBookings ?? null}
           changePercent={stats?.totalBookingsChangePercent ?? null}
-          icon={Calendar}
+          icon={CalendarDays}
           currencyPrefix=""
           isLoading={isLoading}
         />
@@ -117,7 +111,7 @@ export const OverviewPage: React.FC = () => {
           title="New Customers"
           value={stats?.newCustomers ?? null}
           changePercent={stats?.newCustomersChangePercent ?? null}
-          icon={Users}
+          icon={UserRoundPlus}
           currencyPrefix=""
           isLoading={isLoading}
         />

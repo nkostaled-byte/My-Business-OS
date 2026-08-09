@@ -4,7 +4,7 @@ import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
 import api from '../lib/api-client';
 import {
-  Globe,
+  Globe2,
   ExternalLink,
   Copy,
   Check,
@@ -23,7 +23,7 @@ import {
   AlertTriangle,
   FileText,
   Package,
-  Scissors,
+  BriefcaseBusiness,
 } from 'lucide-react';
 
 interface ClientState {
@@ -368,7 +368,7 @@ export const WebsiteManagerPage: React.FC = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 text-xs">
           <div className="space-y-1.5">
             <span className="text-slate-400 font-medium flex items-center gap-1.5">
-              <Globe className="w-3.5 h-3.5" /> Live Website URL
+              <Globe2 className="w-3.5 h-3.5" /> Live Website URL
             </span>
             <input
               type="text"
@@ -444,7 +444,7 @@ export const WebsiteManagerPage: React.FC = () => {
         <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Website Content</h3>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {[
-            { label: 'Manage Services', desc: 'Add or edit services offered to clients', path: '/app/services', icon: Scissors },
+            { label: 'Manage Services', desc: 'Add or edit services offered to clients', path: '/app/services', icon: BriefcaseBusiness },
             { label: 'Manage Products', desc: 'Update POS and online catalog items', path: '/app/products', icon: Package },
             { label: 'Update Gallery', desc: 'Upload portfolio photos and showcase work', path: '/app/gallery', icon: FileText },
           ].map((action, idx) => {

@@ -1,7 +1,7 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { FormSubmission } from '../../types';
-import { X, Mail, Phone, Building, Calendar, Globe, Send, Archive, Trash2, CheckCircle2, Clock } from 'lucide-react';
+import { X, Mail, Phone, Building, CalendarDays, Globe2, Send, Archive, Trash2, CheckCircle2, Clock } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 
 interface SubmissionDetailDrawerProps {
@@ -99,7 +99,7 @@ export const SubmissionDetailDrawer: React.FC<SubmissionDetailDrawerProps> = ({
                   {submission.status}
                 </span>
                 <span className="text-xs text-slate-500 flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5" />
+                  <CalendarDays className="w-3.5 h-3.5" />
                   {submission.submittedAt}
                 </span>
               </div>

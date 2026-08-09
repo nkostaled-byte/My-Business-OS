@@ -8,7 +8,7 @@ import { MotionCard } from '../components/common/MotionCard';
 import { ImageUploadInput } from '../components/common/ImageUploadInput';
 import api from '../lib/api-client';
 import type { Service } from '../types';
-import { Scissors, Clock, Plus, Edit3, Trash2 } from 'lucide-react';
+import { BriefcaseBusiness, Clock, Plus, Edit3, Trash2 } from 'lucide-react';
 
 export const ServicesPage: React.FC = () => {
   const { services, addService, updateResource, deleteResource } = useData();
@@ -148,7 +148,7 @@ export const ServicesPage: React.FC = () => {
       {services.length === 0 ? (
         <div className="glass-panel rounded-2xl p-6">
           <EmptyState
-            icon={Scissors}
+            icon={BriefcaseBusiness}
             title="No services configured"
             description="Add services such as haircuts, scalp treatments, or styling for online booking."
             actionLabel="Add Service"

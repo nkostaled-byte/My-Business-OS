@@ -12,7 +12,7 @@ import {
   ShieldCheck,
   CreditCard,
   TrendingUp,
-  Globe,
+  Globe2,
   Headphones,
 } from 'lucide-react';
 
@@ -77,7 +77,7 @@ export const PricingPage: React.FC = () => {
       desc: 'Upgrade your plan as your business grows.',
     },
     {
-      icon: Globe,
+      icon: Globe2,
       title: 'Access Anywhere',
       desc: 'Manage your business from any device, anytime.',
     },

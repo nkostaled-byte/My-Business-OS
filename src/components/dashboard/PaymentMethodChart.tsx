@@ -1,13 +1,13 @@
 import React from 'react';
 import { motion } from 'motion/react';
 import { Order } from '../../types';
-import { Wallet, CreditCard, Landmark, Globe } from 'lucide-react';
+import { Wallet, CreditCard, Landmark, Globe2 } from 'lucide-react';
 
 const METHOD_META: Record<string, { label: string; icon: React.FC<{ className?: string }>; classes: string }> = {
   cash: { label: 'Cash', icon: Wallet, classes: 'bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400' },
   card: { label: 'Card', icon: CreditCard, classes: 'bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400' },
   eft: { label: 'EFT', icon: Landmark, classes: 'bg-sky-50 dark:bg-sky-500/10 text-sky-600 dark:text-sky-400' },
-  online: { label: 'Online', icon: Globe, classes: 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400' },
+  online: { label: 'Online', icon: Globe2, classes: 'bg-amber-50 dark:bg-amber-500/10 text-amber-600 dark:text-amber-400' },
 };
 
 interface PaymentMethodChartProps {

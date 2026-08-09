@@ -22,7 +22,7 @@ import {
   Loader2,
   AlertCircle,
   CheckCircle,
-  Globe,
+  Globe2,
   Clock,
   Landmark,
   Mail,
@@ -450,7 +450,7 @@ export const OnboardingPage: React.FC = () => {
                       Country
                     </label>
                     <div className="relative">
-                      <Globe className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
+                      <Globe2 className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" />
                       <select
                         value={country}
                         onChange={(e) => setCountry(e.target.value)}

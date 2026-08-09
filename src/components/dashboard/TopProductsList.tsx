@@ -33,7 +33,7 @@ export const TopProductsList: React.FC<TopProductsListProps> = ({
         </NavLink>
       </div>
 
-      {products.length === 0 ? (
+      {products.filter(p => (p.soldCount ?? 0) > 0).length === 0 ? (
         <EmptyState
           icon={Package}
           title="No product sales yet"
@@ -42,7 +42,7 @@ export const TopProductsList: React.FC<TopProductsListProps> = ({
         />
       ) : (
         <div className="divide-y divide-slate-100 dark:divide-white/5 my-auto">
-          {products.slice(0, 3).map((prod, index) => (
+          {[...products].sort((a, b) => (b.soldCount ?? 0) - (a.soldCount ?? 0)).slice(0, 3).map((prod, index) => (
             <motion.div
               key={prod.id}
               initial={{ opacity: 0, x: -10 }}
@@ -64,14 +64,14 @@ export const TopProductsList: React.FC<TopProductsListProps> = ({
                     {prod.name}
                   </h4>
                   <span className="text-[11px] text-slate-400">
-                    {prod.soldCount} sold
+                    {prod.soldCount ?? 0} sold
                   </span>
                 </div>
               </div>
               <div className="text-right">
                 <span className="text-xs font-extrabold text-slate-900 dark:text-slate-100 block">
                   {currencyPrefix}
-                  {(prod.price * prod.soldCount).toLocaleString()}
+                  {((prod.price ?? 0) * (prod.soldCount ?? 0)).toLocaleString()}
                 </span>
                 <span className="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium inline-flex items-center gap-0.5">
                   <TrendingUp className="w-2.5 h-2.5" />

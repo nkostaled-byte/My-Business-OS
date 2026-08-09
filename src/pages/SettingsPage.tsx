@@ -10,7 +10,7 @@ import { Modal } from '../components/common/Modal';
 import {
   Building2, 
   User, 
-  Users, 
+  UsersRound, 
   Bell, 
   CreditCard, 
   ShieldAlert, 
@@ -278,7 +278,7 @@ export const SettingsPage: React.FC = () => {
         {[
           { id: 'general', label: 'General', icon: User },
           { id: 'business', label: 'Business', icon: Building2 },
-          { id: 'team', label: 'Team', icon: Users },
+          { id: 'team', label: 'Team', icon: UsersRound },
           { id: 'notifications', label: 'Notifications', icon: Bell },
           { id: 'billing', label: 'Billing', icon: CreditCard },
           { id: 'invoice', label: 'Invoice', icon: FileText },

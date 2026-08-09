@@ -9,9 +9,9 @@ import {
   ChevronDown,
   Menu,
   ExternalLink,
-  Settings,
+  Settings2,
   LogOut,
-  Globe,
+  Globe2,
   Loader2,
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
@@ -316,7 +316,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                         }}
                         className="w-full text-left px-3.5 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 transition-colors cursor-pointer"
                       >
-                        <Settings className="w-3.5 h-3.5 text-slate-400" />
+                        <Settings2 className="w-3.5 h-3.5 text-slate-400" />
                         <span>Settings</span>
                       </button>
                       <button
@@ -326,7 +326,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                         }}
                         className="w-full text-left px-3.5 py-2 text-xs text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 flex items-center gap-2 transition-colors cursor-pointer"
                       >
-                        <Globe className="w-3.5 h-3.5 text-slate-400" />
+                        <Globe2 className="w-3.5 h-3.5 text-slate-400" />
                         <span>Website Manager</span>
                       </button>
                     </div>

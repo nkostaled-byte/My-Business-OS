@@ -5,7 +5,7 @@ import { useToast } from '../context/ToastContext';
 import { Invoice, InvoiceStatus } from '../types';
 import { DataTable, Column } from '../components/common/DataTable';
 import { Modal } from '../components/common/Modal';
-import { FileSpreadsheet, Eye, Download, FileText, Calendar, Mail, DollarSign, Package, Scissors, Type } from 'lucide-react';
+import { FileSpreadsheet, Eye, Download, FileText, CalendarDays, Mail, DollarSign, Package, Scissors, Type } from 'lucide-react';
 import api from '../lib/api-client';
 
 export const InvoicesPage: React.FC = () => {
@@ -639,7 +639,7 @@ export const InvoicesPage: React.FC = () => {
               </div>
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
                 <span className="text-slate-400 block mb-1 flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5" /> Due Date
+                  <CalendarDays className="w-3.5 h-3.5" /> Due Date
                 </span>
                 <span className="font-semibold text-slate-900 dark:text-slate-100">
                   {formatDate(selectedInvoice.dueDate || selectedInvoice.dueAt)}
@@ -647,7 +647,7 @@ export const InvoicesPage: React.FC = () => {
               </div>
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700">
                 <span className="text-slate-400 block mb-1 flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5" /> Issued Date
+                  <CalendarDays className="w-3.5 h-3.5" /> Issued Date
                 </span>
                 <span className="font-semibold text-slate-900 dark:text-slate-100">
                   {formatDate(selectedInvoice.issuedDate || selectedInvoice.issuedAt)}

@@ -8,7 +8,7 @@ import { Modal } from '../components/common/Modal';
 import { MotionCard } from '../components/common/MotionCard';
 import { ExportDropdown } from '../components/common/ExportDropdown';
 import {
-  Calculator,
+  CreditCard,
   Search,
   Plus,
   Minus,
@@ -263,7 +263,7 @@ export const POSPage: React.FC = () => {
                 : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
             }`}
           >
-            <Calculator className="w-4 h-4" />
+            <CreditCard className="w-4 h-4" />
             <span>Terminal</span>
           </button>
           <button
@@ -330,7 +330,7 @@ export const POSPage: React.FC = () => {
               {filteredCatalog.length === 0 ? (
                 <div className="glass-panel rounded-2xl p-6">
                   <EmptyState
-                    icon={Calculator}
+                    icon={CreditCard}
                     title="POS Catalog is Empty"
                     description="No products or services found. Add inventory to start selling."
                   />
@@ -402,7 +402,7 @@ export const POSPage: React.FC = () => {
               {/* Cart Line Items */}
               {cart.length === 0 ? (
                 <div className="py-12 text-center text-slate-400">
-                  <Calculator className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-700 mb-2" />
+                  <CreditCard className="w-10 h-10 mx-auto text-slate-300 dark:text-slate-700 mb-2" />
                   <p className="text-xs font-medium">Cart is empty</p>
                   <p className="text-[11px] text-slate-400 mt-1">Tap items on the left to add</p>
                 </div>

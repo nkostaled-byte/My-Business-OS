@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { Modal } from '../components/common/Modal';
 import { EmptyState } from '../components/common/EmptyState';
-import { Image as ImageIcon, Upload, Plus, Trash2 } from 'lucide-react';
+import { Images as ImageIcon, Upload, Plus, Trash2 } from 'lucide-react';
 
 export const GalleryPage: React.FC = () => {
   const { gallery, addGalleryItem } = useData();

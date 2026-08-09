@@ -11,7 +11,7 @@ import { leadsApi, formatDateTime } from '../../lib/leads-api';
 import { EmptyState } from '../common/EmptyState';
 import { ScoreBadge, StatusPill, PriorityPill, OpportunityBadge, STATUS_LABEL, getInitials, GooglePlaceBadge, getPlacesMeta, recommendedLabel } from './LeadBase';
 import {
-  Globe, Mail, Phone, Target, MessageSquare, CheckSquare, Bell, FileText,
+  Globe2, Mail, Phone, Target, MessageSquare, CheckSquare, Bell, FileText,
   ClipboardCheck, BrainCircuit, AlertTriangle, TrendingUp, Check, Tag, Star, MapPin,
 } from 'lucide-react';
 import type { Lead, LeadPriority, LeadStatus, ScoreDeduction } from '../../types';
@@ -136,7 +136,7 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
                 <GooglePlaceBadge lead={lead} />
               </div>
               <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-slate-500 dark:text-slate-400">
-                <span className="inline-flex items-center gap-1"><Globe className="w-3 h-3" />{lead.domain || lead.website || '—'}</span>
+                <span className="inline-flex items-center gap-1"><Globe2 className="w-3 h-3" />{lead.domain || lead.website || '—'}</span>
                 {lead.contact?.email && <span className="inline-flex items-center gap-1"><Mail className="w-3 h-3" />{lead.contact.email}</span>}
                 {lead.contact?.phone && <span className="inline-flex items-center gap-1"><Phone className="w-3 h-3" />{lead.contact.phone}</span>}
                 {lead.estimatedValue ? <span className="inline-flex items-center gap-1"><Target className="w-3 h-3" />{formatCurrency(lead.estimatedValue)}</span> : null}

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Settings, Code, BarChart3, Trash2, Copy, FileText } from 'lucide-react';
+import { Settings2, Code, ChartNoAxesCombined, Trash2, Copy, FileText } from 'lucide-react';
 
 export const FormCard: React.FC<{ form: any }> = ({ form }) => (
     <div className="glass-panel rounded-3xl p-6 space-y-4">
@@ -14,9 +14,9 @@ export const FormCard: React.FC<{ form: any }> = ({ form }) => (
             <div>Submissions: <span className="font-bold text-slate-900 dark:text-slate-100">{form.submissions}</span></div>
         </div>
         <div className="flex gap-2 pt-2">
-            <button className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200"><Settings className="w-4 h-4" /></button>
+            <button className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200"><Settings2 className="w-4 h-4" /></button>
             <button className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200"><Code className="w-4 h-4" /></button>
-            <button className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200"><BarChart3 className="w-4 h-4" /></button>
+            <button className="p-2 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-slate-200"><ChartNoAxesCombined className="w-4 h-4" /></button>
             <button className="p-2 rounded-lg bg-rose-50 text-rose-600 hover:bg-rose-100 ml-auto"><Trash2 className="w-4 h-4" /></button>
         </div>
     </div>

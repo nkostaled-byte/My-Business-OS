@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { NavLink } from 'react-router-dom';
 import { Customer } from '../../types';
 import { EmptyState } from '../common/EmptyState';
-import { Users } from 'lucide-react';
+import { UsersRound } from 'lucide-react';
 
 interface TopCustomersListProps {
   customers: Customer[];
@@ -37,7 +37,7 @@ export const TopCustomersList: React.FC<TopCustomersListProps> = ({
 
       {sorted.length === 0 ? (
         <EmptyState
-          icon={Users}
+          icon={UsersRound}
           title="No customers yet"
           description="Your highest-value customers will appear here as sales grow."
           className="my-auto py-8"

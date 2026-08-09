@@ -326,7 +326,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
         setRevenueData((metricsData.dailySales as RevenueDataPoint[]) || []);
         setTodayBookings((metricsData.todayBookings as Booking[]) || []);
-        setBusinessHealth({
+        setBusinessHealth((metricsData.businessHealth as BusinessHealth) || {
           profileCompleteness: 0,
           setupChecklist: 0,
           customerSatisfaction: 0,

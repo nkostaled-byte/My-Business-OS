@@ -12,7 +12,7 @@ import {
   Loader2,
   CreditCard,
   RefreshCw,
-  Globe,
+  Globe2,
 } from 'lucide-react';
 
 export const BillingPage: React.FC = () => {
@@ -409,7 +409,7 @@ export const BillingPage: React.FC = () => {
           {status?.hosting_subscription_active ? (
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-2xl border border-emerald-200 dark:border-emerald-800 bg-emerald-50/60 dark:bg-emerald-950/30 px-5 py-4">
               <div className="flex items-center gap-3">
-                <Globe className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
+                <Globe2 className="w-5 h-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                 <p className="text-xs text-emerald-800 dark:text-emerald-200">
                   <span className="font-bold">{hostingCurrentName}</span> hosting is active and renews automatically on{' '}
                   {status.hosting_expires_at

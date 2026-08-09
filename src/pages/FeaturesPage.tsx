@@ -2,14 +2,14 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import {
   ShoppingBag,
-  Calendar,
-  Calculator,
+  CalendarDays,
+  CreditCard,
   Package,
   Boxes,
-  Users,
-  Receipt,
-  UserCheck,
-  BarChart3,
+  UsersRound,
+  ReceiptText,
+  UserRoundCog,
+  ChartNoAxesCombined,
   ArrowRight,
 } from 'lucide-react';
 import { motion } from 'motion/react';
@@ -22,12 +22,12 @@ export const FeaturesPage: React.FC = () => {
       desc: 'Sell your products online through a website built and linked to your dashboard, with orders flowing straight into your business workspace.',
     },
     {
-      icon: Calculator,
+      icon: CreditCard,
       title: 'Point of Sale (POS)',
       desc: 'Run in-person sales at the register with products and services, apply discounts, print thermal receipts, and keep a complete order and payment history.',
     },
     {
-      icon: Calendar,
+      icon: CalendarDays,
       title: 'Online Bookings & Appointments',
       desc: 'Let clients book services through your website, then manage appointments in calendar and list views, assign staff, and track every status.',
     },
@@ -42,22 +42,22 @@ export const FeaturesPage: React.FC = () => {
       desc: 'Monitor stock levels, set reorder thresholds and unit costs, and get low-stock alerts, with quantities kept in sync as orders come in.',
     },
     {
-      icon: Receipt,
+      icon: ReceiptText,
       title: 'Invoicing with PDFs',
       desc: 'Create invoices with line items, tax, and due dates, then download branded PDFs and email them straight to clients.',
     },
     {
-      icon: Users,
+      icon: UsersRound,
       title: 'Customers & CRM',
       desc: 'Keep a central customer list with contact details, last visit, and notes so you can stay on top of repeat business.',
     },
     {
-      icon: UserCheck,
+      icon: UserRoundCog,
       title: 'Staff & Team Access',
       desc: 'Manage team members with roles and specialties, and invite staff with role-based dashboard access and clear permission limits.',
     },
     {
-      icon: BarChart3,
+      icon: ChartNoAxesCombined,
       title: 'Analytics & Reports',
       desc: 'Track revenue, orders, bookings, and customers at a glance, with trend charts, top products, and exportable reports.',
     },

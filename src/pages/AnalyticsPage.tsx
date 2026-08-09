@@ -8,7 +8,7 @@ import { OrderStatusBreakdown } from '../components/dashboard/OrderStatusBreakdo
 import { TopCustomersList } from '../components/dashboard/TopCustomersList';
 import { RevenueComparison } from '../components/dashboard/RevenueComparison';
 import { MotionCard } from '../components/common/MotionCard';
-import { TrendingUp, Users, ShoppingBag } from 'lucide-react';
+import { TrendingUp, UsersRoundRound, ShoppingBag } from 'lucide-react';
 import { ExportDropdown } from '../components/common/ExportDropdown';
 
 export const AnalyticsPage: React.FC = () => {
@@ -44,13 +44,13 @@ export const AnalyticsPage: React.FC = () => {
 
         <MotionCard delay={0.1} className="p-5">
           <span className="text-xs font-semibold text-slate-400 uppercase flex items-center gap-1.5">
-            <Users className="w-3.5 h-3.5" /> Repeat Customer Rate
+            <UsersRound className="w-3.5 h-3.5" /> Repeat Customer Rate
           </span>
           <div className="text-2xl font-extrabold text-slate-900 dark:text-slate-100 mt-2">
             {customers.length ? `${Math.min(100, Math.round((customers.filter((c) => c.ordersCount > 1).length / customers.length) * 100))}%` : '—'}
           </div>
           <span className="text-[11px] text-emerald-500 font-medium inline-flex items-center gap-1 mt-1">
-            <Users className="w-3 h-3" /> High client retention
+            <UsersRound className="w-3 h-3" /> High client retention
           </span>
         </MotionCard>
 

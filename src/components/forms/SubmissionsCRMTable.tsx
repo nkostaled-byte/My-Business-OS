@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { FormSubmission } from '../../types';
-import { Search, Filter, Download, RefreshCw, FileText, Eye, Send, Archive, Trash2, Calendar, Mail, Phone as PhoneIcon } from 'lucide-react';
+import { Search, Filter, Download, RefreshCw, FileText, Eye, Send, Archive, Trash2, CalendarDays, Mail, Phone as PhoneIcon } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 
 interface SubmissionsCRMTableProps {

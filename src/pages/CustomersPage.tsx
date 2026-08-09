@@ -5,7 +5,7 @@ import { useToast } from '../context/ToastContext';
 import { Customer } from '../types';
 import { DataTable, Column } from '../components/common/DataTable';
 import { Modal } from '../components/common/Modal';
-import { Users, Mail, Phone, Calendar, Edit3, Trash2 } from 'lucide-react';
+import { UsersRound, Mail, Phone, CalendarDays, Edit3, Trash2 } from 'lucide-react';
 
 const getInitials = (name: string) =>
   name
@@ -167,7 +167,7 @@ export const CustomersPage: React.FC = () => {
         searchPlaceholder="Search customers..."
         emptyTitle="No customers registered"
         emptyDescription="Customer records will accumulate as orders and bookings are created."
-        emptyIcon={Users}
+        emptyIcon={UsersRound}
         onAddClick={openAddModal}
         addButtonLabel="New Customer"
         isLoading={isLoading}
@@ -296,7 +296,7 @@ export const CustomersPage: React.FC = () => {
 
               <div className="p-3 rounded-xl glass-subtle">
                 <span className="text-slate-400 block mb-1 flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5" /> Last Visit
+                  <CalendarDays className="w-3.5 h-3.5" /> Last Visit
                 </span>
                 <span className="font-semibold text-slate-800 dark:text-slate-200">
                   {selectedCustomer.lastVisit || '—'}

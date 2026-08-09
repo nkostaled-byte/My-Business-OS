@@ -5,22 +5,22 @@ import { useData } from '../../context/DataContext';
 import { getPageMinPlan, getPlanTier, PLAN_NAMES } from '../../config/plans';
 import {
   LayoutDashboard,
-  BarChart3,
+  ChartNoAxesCombined,
   ShoppingBag,
   Package,
-  Scissors,
-  Calendar,
-  Users,
+  BriefcaseBusiness,
+  CalendarDays,
+  UsersRound,
   Boxes,
-  UserCheck,
-  Image,
+  UserRoundCog,
+  Images,
   Star,
   FileText,
-  Receipt,
+  ReceiptText,
+  WalletCards,
+  Settings2,
   CreditCard,
-  Settings,
-  Calculator,
-  Globe,
+  Globe2,
   Lock,
   X,
   Target,
@@ -37,23 +37,23 @@ export const STAFF_RESTRICTED_PATHS = ['/app/website', '/app/leads', '/app/invoi
 
 export const navItems = [
   { label: 'Overview', path: '/app', icon: LayoutDashboard },
-  { label: 'Analytics', path: '/app/analytics', icon: BarChart3 },
-  { label: 'Website', path: '/app/website', icon: Globe },
+  { label: 'Analytics', path: '/app/analytics', icon: ChartNoAxesCombined },
+  { label: 'Website', path: '/app/website', icon: Globe2 },
   { label: 'Orders', path: '/app/orders', icon: ShoppingBag },
-  { label: 'POS', path: '/app/pos', icon: Calculator },
+  { label: 'POS', path: '/app/pos', icon: CreditCard },
   { label: 'Products', path: '/app/products', icon: Package },
-  { label: 'Services', path: '/app/services', icon: Scissors },
-  { label: 'Bookings', path: '/app/bookings', icon: Calendar },
-  { label: 'Customers', path: '/app/customers', icon: Users },
+  { label: 'Services', path: '/app/services', icon: BriefcaseBusiness },
+  { label: 'Bookings', path: '/app/bookings', icon: CalendarDays },
+  { label: 'Customers', path: '/app/customers', icon: UsersRound },
   { label: 'Lead Gen', path: '/app/leads', icon: Target },
   { label: 'Inventory', path: '/app/inventory', icon: Boxes },
-  { label: 'Staff', path: '/app/staff', icon: UserCheck },
-  { label: 'Gallery', path: '/app/gallery', icon: Image },
+  { label: 'Staff', path: '/app/staff', icon: UserRoundCog },
+  { label: 'Gallery', path: '/app/gallery', icon: Images },
   { label: 'Reviews', path: '/app/reviews', icon: Star },
   { label: 'Forms', path: '/app/forms', icon: FileText },
-  { label: 'Invoices', path: '/app/invoices', icon: Receipt },
-  { label: 'Billing', path: '/app/billing', icon: CreditCard },
-  { label: 'Settings', path: '/app/settings', icon: Settings },
+  { label: 'Invoices', path: '/app/invoices', icon: ReceiptText },
+  { label: 'Billing', path: '/app/billing', icon: WalletCards },
+  { label: 'Settings', path: '/app/settings', icon: Settings2 },
 ];
 
 export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, role }) => {
@@ -152,7 +152,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
               >
                 {({ isActive }) => (
                   <>
-                    <Icon className={`w-4 h-4 shrink-0 relative z-10 ${isActive ? 'text-indigo-600 dark:text-indigo-400' : ''}`} />
+                    <Icon className={`w-[18px] h-[18px] shrink-0 relative z-10 ${isActive ? 'text-indigo-600 dark:text-indigo-400' : ''}`} />
                     <span className="relative z-10">{item.label}</span>
                     {isActive && (
                       <motion.div
@@ -181,9 +181,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
                     type="button"
                     onClick={() => openUpgrade(item)}
                     title={`Requires the ${required} plan`}
-                    className="relative flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-400 dark:text-slate-600 w-full text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer"
+                    className="relative flex items-center gap-3 px-3 py-2 rounded-lg text-xs sm:text-sm font-medium text-slate-400 dark:text-slate-600 w-full text-left transition-colors hover:bg-slate-50 dark:hover:bg-slate-800/40 cursor-pointer"
                   >
-                    <Icon className="w-4 h-4 shrink-0" />
+                    <Icon className="w-[18px] h-[18px] shrink-0" />
                     <span className="flex-1">{item.label}</span>
                     <Lock className="w-3 h-3 shrink-0" />
                   </button>

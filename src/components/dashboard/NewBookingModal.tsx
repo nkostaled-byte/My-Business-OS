@@ -4,7 +4,7 @@ import { useData } from '../../context/DataContext';
 import { useToast } from '../../context/ToastContext';
 import { Modal } from '../common/Modal';
 import { Booking } from '../../types';
-import { CalendarPlus, User, Phone, Clock, Banknote, Scissors } from 'lucide-react';
+import { CalendarPlus, User, Phone, Clock, Banknote, BriefcaseBusiness } from 'lucide-react';
 
 interface NewBookingModalProps {
   isOpen: boolean;
@@ -118,7 +118,7 @@ export const NewBookingModal: React.FC<NewBookingModalProps> = ({ isOpen, onClos
 
         <div>
           <label className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-            <Scissors className="w-3.5 h-3.5" /> Service
+            <BriefcaseBusiness className="w-3.5 h-3.5" /> Service
           </label>
           <select
             value={serviceId}

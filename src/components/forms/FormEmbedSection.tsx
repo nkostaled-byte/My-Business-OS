@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Copy, Check, Code, Globe, Terminal } from 'lucide-react';
+import { Copy, Check, Code, Globe2, Terminal } from 'lucide-react';
 import { useToast } from '../../context/ToastContext';
 
 export const FormEmbedSection: React.FC = () => {
@@ -37,7 +37,7 @@ export const FormEmbedSection: React.FC = () => {
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-              <Globe className="w-3.5 h-3.5 text-indigo-600" />
+              <Globe2 className="w-3.5 h-3.5 text-indigo-600" />
               Copy Embed Code
             </span>
             <button

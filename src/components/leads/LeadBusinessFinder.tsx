@@ -10,7 +10,7 @@ import { useToast } from '../../context/ToastContext';
 import { leadsApi } from '../../lib/leads-api';
 import { EmptyState } from '../common/EmptyState';
 import {
-  Search, MapPin, Star, Phone, Globe, SearchCheck, Plus, Loader, Building2,
+  Search, MapPin, Star, Phone, Globe22, SearchCheck, Plus, Loader, Building2,
 } from 'lucide-react';
 import type { PlaceBusiness } from '../../types';
 
@@ -117,7 +117,7 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
               onChange={(e) => setNoWebsiteOnly(e.target.checked)}
               className="w-3.5 h-3.5 accent-indigo-600 cursor-pointer"
             />
-            <Globe className="w-3.5 h-3.5 text-slate-400" />
+            <Globe2 className="w-3.5 h-3.5 text-slate-400" />
             Only businesses without a website
           </label>
           {result && (
@@ -181,7 +181,7 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
                   </button>
                 ) : (
                   <span className="text-[10px] text-slate-400 inline-flex items-center gap-1">
-                    <Globe className="w-3 h-3" /> No website on profile
+                    <Globe2 className="w-3 h-3" /> No website on profile
                   </span>
                 )}
                 <button
@@ -197,12 +197,12 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
           ))}
         </div>
       ) : searchedOnce && visible && visible.length === 0 && result && result.length > 0 ? (
-        <EmptyState icon={Globe} title="No leads without a website" description="Every result in this search already has a website. Turn off the filter to see all businesses." />
+        <EmptyState icon={Globe2} title="No leads without a website" description="Every result in this search already has a website. Turn off the filter to see all businesses." />
       ) : searchedOnce ? (
         <EmptyState icon={MapPin} title="No businesses found" description="Try a different keyword or a more specific location." />
       ) : (
         <div className="py-12">
-          <EmptyState icon={Globe} title="Find B2B prospects" description="Search Google Maps/Places by keyword and location, then audit their website and save them as leads." />
+          <EmptyState icon={Globe2} title="Find B2B prospects" description="Search Google Maps/Places by keyword and location, then audit their website and save them as leads." />
         </div>
       )}
     </div>

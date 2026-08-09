@@ -15,8 +15,8 @@ import { LeadBusinessFinder } from '../components/leads/LeadBusinessFinder';
 import { ScoreBadge, PriorityPill, StatusPill, GooglePlaceBadge } from '../components/leads/LeadBase';
 import { EmptyState } from '../components/common/EmptyState';
 import {
-  SearchCheck, LayoutGrid, Database, Users, ArrowDownToLine, Search, Globe, Trash2,
-  BarChart3, PieChart, CircleDollarSign, Trophy, Plus, Compass,
+  SearchCheck, LayoutGrid, Database, UsersRound, ArrowDownToLine, Search, Globe2, Trash2,
+  ChartNoAxesCombined, PieChart, CircleDollarSign, Trophy, Plus, Compass,
 } from 'lucide-react';
 import type { Lead, LeadPipeline as PipelineData, LeadStatus } from '../types';
 
@@ -150,8 +150,8 @@ export const LeadsPage: React.FC = () => {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <StatCard icon={Users} label="Total leads" value={totals.total} tone="indigo" />
-        <StatCard icon={BarChart3} label="Hot + warm" value={totals.hot + totals.warm} tone="indigo" />
+        <StatCard icon={UsersRound} label="Total leads" value={totals.total} tone="indigo" />
+        <StatCard icon={ChartNoAxesCombined} label="Hot + warm" value={totals.hot + totals.warm} tone="indigo" />
         <StatCard icon={CircleDollarSign} label="Won" value={totals.won} tone="emerald" />
         <StatCard icon={PieChart} label="Avg score" value={totals.avg} tone="amber" />
       </div>
@@ -294,7 +294,7 @@ const LeadsTable: React.FC<{ leads: Lead[]; loading: boolean; onSelect: (id: str
                 <motion.tr key={l.id} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.15, delay: Math.min(i, 20) * 0.02 }} onClick={() => onSelect(l.id)} className="hover:bg-white/50 dark:hover:bg-white/5 transition-colors cursor-pointer">
                   <td className="py-3.5 px-4 sm:px-6">
                     <div className="font-bold text-slate-900 dark:text-slate-100 flex items-center gap-1.5">{l.leadName}<GooglePlaceBadge lead={l} /></div>
-                    <div className="text-[11px] text-slate-400 flex items-center gap-1"><Globe className="w-3 h-3" />{l.domain || l.website || '—'}</div>
+                    <div className="text-[11px] text-slate-400 flex items-center gap-1"><Globe2 className="w-3 h-3" />{l.domain || l.website || '—'}</div>
                   </td>
                   <td className="py-3.5 px-4"><StatusPill status={l.status} /></td>
                   <td className="py-3.5 px-4">
@@ -378,4 +378,4 @@ function formatCurrency(n: number | null | undefined) {
 }
 
 // Re-exported icon alias to avoid name shadowing with statistic components.
-const BarChartIcon = BarChart3;
+const BarChartIcon = ChartNoAxesCombined;

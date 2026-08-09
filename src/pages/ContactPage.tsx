@@ -10,10 +10,10 @@ import {
   CheckCircle2, 
   HelpCircle, 
   Building, 
-  Users, 
+  UsersRound, 
   Handshake, 
   MessageSquare,
-  Globe,
+  Globe2,
   Share2
 } from 'lucide-react';
 
@@ -37,7 +37,7 @@ export const ContactPage: React.FC = () => {
 
   const contactCards = [
     {
-      icon: Users,
+      icon: UsersRound,
       title: 'Sales & Growth',
       desc: 'Talk with our advisors about custom software, pricing, and scaling your business.',
       contact: 'sales@mygrafixmedia.co.za'
@@ -280,7 +280,7 @@ export const ContactPage: React.FC = () => {
               <div className="w-full h-40 rounded-2xl bg-slate-200 dark:bg-slate-800 flex items-center justify-center text-slate-400 font-semibold text-xs relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-tr from-indigo-500/10 to-indigo-500/10" />
                 <span className="relative z-10 flex items-center gap-2">
-                  <Globe className="w-4 h-4 text-indigo-600" /> Cape Town, South Africa Map Grid
+                  <Globe2 className="w-4 h-4 text-indigo-600" /> Cape Town, South Africa Map Grid
                 </span>
               </div>
               <p className="text-xs text-slate-500">Global edge infrastructure deployed across South Africa & Europe.</p>

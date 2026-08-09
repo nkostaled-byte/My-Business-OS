@@ -5,7 +5,7 @@ import { ActivityItem } from '../../types';
 import { EmptyState } from '../common/EmptyState';
 import {
   ShoppingBag,
-  Calendar,
+  CalendarDays,
   CreditCard,
   User,
   Package,
@@ -23,7 +23,7 @@ export const RecentActivityFeed: React.FC<RecentActivityFeedProps> = ({ activiti
       case 'order':
         return <ShoppingBag className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />;
       case 'booking':
-        return <Calendar className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />;
+        return <CalendarDays className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />;
       case 'payment':
         return <CreditCard className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />;
       case 'customer':

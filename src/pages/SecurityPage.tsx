@@ -10,7 +10,7 @@ import {
   AlertTriangle, 
   Mail,
   ShieldAlert,
-  Users
+  UsersRound
 } from 'lucide-react';
 
 export const SecurityPage: React.FC = () => {
@@ -31,7 +31,7 @@ export const SecurityPage: React.FC = () => {
       desc: 'Secure password hashing and token-based session management protect user access.'
     },
     {
-      icon: Users,
+      icon: UsersRound,
       title: 'Role-Based Permissions',
       desc: 'Granular access controls ensure staff members only view authorized dashboard modules.'
     },

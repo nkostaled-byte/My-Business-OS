@@ -3,7 +3,7 @@ import { motion } from 'motion/react';
 import { useData } from '../context/DataContext';
 import { useToast } from '../context/ToastContext';
 import { Booking, BookingStatus } from '../types';
-import { Calendar as CalendarIcon, List, CheckCircle, XCircle, Eye, X, Phone, Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
+import { CalendarDays as CalendarIcon, List, CheckCircle, XCircle, Eye, X, Phone, Plus, Search, ChevronLeft, ChevronRight } from 'lucide-react';
 import { NewBookingModal } from '../components/dashboard/NewBookingModal';
 
 const MONTH_NAMES = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
