@@ -26,6 +26,7 @@ import {
   Clock,
   FileText,
   Banknote,
+  DollarSign,
   Palette,
   PenLine,
   Copy

@@ -39,7 +39,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   const [notifications, setNotifications] = useState<{ id: number; title: string; time: string; read: boolean }[]>([]);
   const unreadCount = notifications.filter((n) => !n.read).length;
   const [notificationsOpen, setNotificationsOpen] = useState(false);
+  const notificationsRef = useRef<HTMLDivElement>(null);
   const [profileOpen, setProfileOpen] = useState(false);
+  const profileRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
   const [searchOpen, setSearchOpen] = useState(false);
@@ -107,6 +109,28 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
+
+  // Close notifications on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (notificationsOpen && notificationsRef.current && !notificationsRef.current.contains(e.target as Node)) {
+        setNotificationsOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [notificationsOpen]);
+
+  // Close profile on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (profileOpen && profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setProfileOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [profileOpen]);
 
   const handleLogout = async () => {
     await signOut();
@@ -205,7 +229,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
           </button>
 
           {/* Notifications Bell Dropdown */}
-          <div className="relative">
+          <div className="relative" ref={notificationsRef}>
             <motion.button
               whileTap={{ scale: 0.9 }}
               onClick={() => setNotificationsOpen(!notificationsOpen)}
@@ -220,15 +244,13 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
 
             <AnimatePresence>
               {notificationsOpen && (
-                <>
-                  <div className="fixed inset-0 z-20" onClick={() => setNotificationsOpen(false)} />
-                  <motion.div
-                    initial={{ opacity: 0, scale: 0.95, y: -8 }}
-                    animate={{ opacity: 1, scale: 1, y: 0 }}
-                    exit={{ opacity: 0, scale: 0.95, y: -8 }}
-                    transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-                    className="absolute right-0 mt-2 w-72 sm:w-80 rounded-lg glass-strong py-2 z-30"
-                  >
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95, y: -8 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: -8 }}
+                  transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+                  className="absolute right-0 mt-2 w-72 sm:w-80 rounded-lg glass-strong py-2 z-30"
+                >
                     <div className="px-4 py-2 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
                       <h4 className="text-xs font-bold text-slate-900 dark:text-slate-100">
                         Notifications
@@ -260,7 +282,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                       ))}
                     </div>
                   </motion.div>
-                </>
               )}
             </AnimatePresence>
           </div>
@@ -268,7 +289,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
           <div className="h-5 w-px bg-slate-200 dark:bg-slate-800 mx-0.5" />
 
           {/* User Profile Avatar & Menu */}
-          <div className="relative">
+          <div className="relative" ref={profileRef}>
             <motion.button
               whileTap={{ scale: 0.96 }}
               onClick={() => setProfileOpen(!profileOpen)}
@@ -292,8 +313,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
 
             <AnimatePresence>
               {profileOpen && (
-                <>
-                  <div className="fixed inset-0 z-20" onClick={() => setProfileOpen(false)} />
                   <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: -8 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -341,7 +360,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                       </button>
                     </div>
                   </motion.div>
-                </>
               )}
             </AnimatePresence>
           </div>
