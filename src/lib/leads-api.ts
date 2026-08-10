@@ -179,6 +179,14 @@ export const leadsApi = {
     return api.post<LeadNote>(API.leads.notes(id), { body, author });
   },
 
+  async updateNote(id: string, noteId: string, payload: { body?: string; author?: string }): Promise<ApiResponse<void>> {
+    return api.put<void>(API.leads.noteById(id, noteId), payload);
+  },
+
+  async deleteNote(id: string, noteId: string): Promise<ApiResponse<void>> {
+    return api.del<void>(API.leads.noteById(id, noteId));
+  },
+
   async addActivity(id: string, payload: { type?: string; title: string; description?: string; metadata?: Record<string, unknown> }): Promise<ApiResponse<LeadActivity>> {
     return api.post<LeadActivity>(API.leads.activities(id), payload);
   },
@@ -211,6 +219,10 @@ export const leadsApi = {
 
   async updateFollowup(id: string, followId: string, payload: { status?: 'pending' | 'completed'; note?: string; dueAt?: string }): Promise<ApiResponse<void>> {
     return api.put<void>(API.leads.followupById(id, followId), payload);
+  },
+
+  async deleteFollowup(id: string, followId: string): Promise<ApiResponse<void>> {
+    return api.del<void>(API.leads.followupById(id, followId));
   },
 
   // ── Scan / Audit / Search ────────────────────────────────────────

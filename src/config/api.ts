@@ -67,6 +67,7 @@ export const API = {
     contacts: '/api/leads/contacts',
     contactById: (id: string) => `/api/leads/contacts/${id}`,
     notes: (id: string) => `/api/leads/${id}/notes`,
+    noteById: (id: string, noteId: string) => `/api/leads/${id}/notes/${noteId}`,
     activities: (id: string) => `/api/leads/${id}/activities`,
     tasks: (id: string) => `/api/leads/${id}/tasks`,
     taskById: (id: string, taskId: string) => `/api/leads/${id}/tasks/${taskId}`,

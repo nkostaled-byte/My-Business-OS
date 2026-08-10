@@ -13,6 +13,7 @@ import { ScoreBadge, StatusPill, PriorityPill, OpportunityBadge, STATUS_LABEL, g
 import {
   Globe2, Mail, Phone, Target, MessageSquare, CheckSquare, Bell, FileText,
   ClipboardCheck, BrainCircuit, AlertTriangle, TrendingUp, Check, Tag, Star, MapPin,
+  Pencil, Trash2, X,
 } from 'lucide-react';
 import type { Lead, LeadPriority, LeadStatus, ScoreDeduction } from '../../types';
 
@@ -36,6 +37,13 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
   const [taskTitle, setTaskTitle] = useState('');
   const [followDue, setFollowDue] = useState('');
   const [followNote, setFollowNote] = useState('');
+  const [editingNoteId, setEditingNoteId] = useState<string | null>(null);
+  const [editingNoteBody, setEditingNoteBody] = useState('');
+  const [editingTaskId, setEditingTaskId] = useState<string | null>(null);
+  const [editingTaskTitle, setEditingTaskTitle] = useState('');
+  const [editingFollowupId, setEditingFollowupId] = useState<string | null>(null);
+  const [editingFollowupNote, setEditingFollowupNote] = useState('');
+  const [editingFollowupDue, setEditingFollowupDue] = useState('');
 
   const load = async (id: string) => {
     setLoading(true);
@@ -108,6 +116,48 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
     else error('Failed', res.error);
   };
 
+  const updateNote = async (noteId: string) => {
+    if (!lead || !editingNoteBody.trim()) return;
+    const res = await leadsApi.updateNote(lead.id, noteId, { body: editingNoteBody });
+    if (res.success) { success('Note updated'); setEditingNoteId(null); setEditingNoteBody(''); load(lead.id); }
+    else error('Update failed', res.error);
+  };
+
+  const deleteNote = async (noteId: string) => {
+    if (!lead) return;
+    const res = await leadsApi.deleteNote(lead.id, noteId);
+    if (res.success) { success('Note deleted'); load(lead.id); }
+    else error('Delete failed', res.error);
+  };
+
+  const updateTask = async (taskId: string) => {
+    if (!lead || !editingTaskTitle.trim()) return;
+    const res = await leadsApi.updateTask(lead.id, taskId, { title: editingTaskTitle });
+    if (res.success) { success('Task updated'); setEditingTaskId(null); setEditingTaskTitle(''); load(lead.id); }
+    else error('Update failed', res.error);
+  };
+
+  const deleteTask = async (taskId: string) => {
+    if (!lead) return;
+    const res = await leadsApi.deleteTask(lead.id, taskId);
+    if (res.success) { success('Task deleted'); load(lead.id); }
+    else error('Delete failed', res.error);
+  };
+
+  const updateFollowup = async (followupId: string) => {
+    if (!lead || !editingFollowupDue) return;
+    const res = await leadsApi.updateFollowup(lead.id, followupId, { dueAt: new Date(editingFollowupDue).toISOString(), note: editingFollowupNote });
+    if (res.success) { success('Follow-up updated'); setEditingFollowupId(null); setEditingFollowupNote(''); setEditingFollowupDue(''); load(lead.id); }
+    else error('Update failed', res.error);
+  };
+
+  const deleteFollowup = async (followupId: string) => {
+    if (!lead) return;
+    const res = await leadsApi.deleteFollowup(lead.id, followupId);
+    if (res.success) { success('Follow-up deleted'); load(lead.id); }
+    else error('Delete failed', res.error);
+  };
+
   const deductions = (lead?.scoreBreakdown as { deductions?: ScoreDeduction[] } | null)?.deductions || [];
 
   if (!leadId) return null;
@@ -152,7 +202,7 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
             <label className="block">
               <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400 mb-1">Status</span>
               <select value={lead.status} onChange={async (e) => {
-                const res = await leadsApi.update(lead.id, { status: e.target.value as LeadStatus });
+                const res = await leadsApi.updateStatus(lead.id, e.target.value as LeadStatus);
                 if (res.success && res.data) patchLead(res.data);
                 else error('Update failed', res.error);
               }} className={selCls}>
@@ -240,9 +290,13 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
                     <TrendingUp className="w-4 h-4 text-indigo-500" />
                     <span className="text-xs font-semibold text-slate-700 dark:text-slate-200 capitalize">Opportunity: {lead.opportunityLevel || 'Not assessed'}</span>
                   </div>
-                  {lead.recommendedServices && lead.recommendedServices.length ? (
+                  {Array.isArray(lead.recommendedServices) && lead.recommendedServices.length ? (
                     <div className="mt-2 flex flex-wrap gap-1.5">
-                      {lead.recommendedServices.map((s, i) => <span key={typeof s === 'string' ? s : (s.id || i)} className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-400">{recommendedLabel(s)}</span>)}
+                      {lead.recommendedServices.map((s, i) => {
+                        const key = typeof s === 'string' ? s : (s && typeof s === 'object' && 'id' in s ? s.id : i);
+                        const label = typeof s === 'string' ? s : (s && typeof s === 'object' && 'name' in s ? s.name : '');
+                        return label ? <span key={key} className="text-[10px] font-semibold px-2 py-0.5 rounded-lg bg-indigo-100 text-indigo-700 dark:bg-indigo-950/60 dark:text-indigo-400">{label}</span> : null;
+                      })}
                     </div>
                   ) : (
                     <div className="mt-2 flex items-center gap-2">
@@ -295,8 +349,30 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
               <div className="space-y-2">
                 {(lead.notesList ?? []).map((n, i) => (
                   <div key={n.id ?? i} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700">
-                    <p className="text-xs text-slate-700 dark:text-slate-200 whitespace-pre-wrap">{n.body}</p>
-                    <span className="text-[10px] text-slate-400">{n.author || 'Me'} · {formatDateTime(n.createdAt)}</span>
+                    {editingNoteId === n.id ? (
+                      <div className="space-y-2">
+                        <input value={editingNoteBody} onChange={(e) => setEditingNoteBody(e.target.value)} className={inputCls} />
+                        <div className="flex gap-2">
+                          <button onClick={() => updateNote(n.id)} className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">Save</button>
+                          <button onClick={() => { setEditingNoteId(null); setEditingNoteBody(''); }} className="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">Cancel</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex items-start justify-between gap-2">
+                          <p className="flex-1 text-xs text-slate-700 dark:text-slate-200 whitespace-pre-wrap">{n.body}</p>
+                          <div className="flex gap-1 shrink-0">
+                            <button onClick={() => { setEditingNoteId(n.id); setEditingNoteBody(n.body); }} className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 cursor-pointer" title="Edit">
+                              <Pencil className="w-3 h-3" />
+                            </button>
+                            <button onClick={() => deleteNote(n.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 cursor-pointer" title="Delete">
+                              <Trash2 className="w-3 h-3" />
+                            </button>
+                          </div>
+                        </div>
+                        <span className="text-[10px] text-slate-400">{n.author || 'Me'} · {formatDateTime(n.createdAt)}</span>
+                      </>
+                    )}
                   </div>
                 ))}
                 {!lead.notesList?.length && <EmptyState icon={MessageSquare} title="No notes yet" description="Add a note to capture context or next steps." />}
@@ -312,12 +388,30 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
               </form>
               <div className="space-y-2">
                 {(lead.tasks ?? []).map((t) => (
-                  <div key={t.id} className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700">
-                    <button onClick={() => toggleTask(t.id, t.status)} className={`w-4 h-4 rounded border flex items-center justify-center cursor-pointer ${t.status === 'completed' ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 dark:border-slate-600'}`}>
-                      {t.status === 'completed' && <Check className="w-3 h-3" />}
-                    </button>
-                    <span className={`flex-1 text-xs ${t.status === 'completed' ? 'line-through text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>{t.title}</span>
-                    {t.dueDate && <span className="text-[10px] text-slate-400">{formatDateTime(t.dueDate)}</span>}
+                  <div key={t.id} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700">
+                    {editingTaskId === t.id ? (
+                      <div className="space-y-2">
+                        <input value={editingTaskTitle} onChange={(e) => setEditingTaskTitle(e.target.value)} className={inputCls} />
+                        <div className="flex gap-2">
+                          <button onClick={() => updateTask(t.id)} className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">Save</button>
+                          <button onClick={() => { setEditingTaskId(null); setEditingTaskTitle(''); }} className="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">Cancel</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <button onClick={() => toggleTask(t.id, t.status)} className={`w-4 h-4 rounded border flex items-center justify-center cursor-pointer ${t.status === 'completed' ? 'bg-emerald-500 border-emerald-500 text-white' : 'border-slate-300 dark:border-slate-600'}`}>
+                          {t.status === 'completed' && <Check className="w-3 h-3" />}
+                        </button>
+                        <span className={`flex-1 text-xs ${t.status === 'completed' ? 'line-through text-slate-400' : 'text-slate-700 dark:text-slate-200'}`}>{t.title}</span>
+                        {t.dueDate && <span className="text-[10px] text-slate-400">{formatDateTime(t.dueDate)}</span>}
+                        <button onClick={() => { setEditingTaskId(t.id); setEditingTaskTitle(t.title); }} className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 cursor-pointer" title="Edit">
+                          <Pencil className="w-3 h-3" />
+                        </button>
+                        <button onClick={() => deleteTask(t.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 cursor-pointer" title="Delete">
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
                 {!lead.tasks?.length && <EmptyState icon={CheckSquare} title="No tasks" description="Break this lead into actionable follow-up tasks." />}
@@ -336,11 +430,30 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
               </form>
               <div className="space-y-2">
                 {(lead.followups ?? []).map((f) => (
-                  <div key={f.id} className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700">
-                    <Bell className="w-3.5 h-3.5 text-slate-400" />
-                    <span className="flex-1 text-xs text-slate-700 dark:text-slate-200">{f.note || 'Follow-up'}</span>
-                    <span className="text-[10px] text-slate-400">{formatDateTime(f.dueAt)}</span>
-                    <span className={`text-[10px] font-semibold px-2 py-0.5 rounded capitalize ${f.status === 'completed' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950/50' : 'bg-amber-100 text-amber-600 dark:bg-amber-950/50'}`}>{f.status}</span>
+                  <div key={f.id} className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-100 dark:border-slate-700">
+                    {editingFollowupId === f.id ? (
+                      <div className="space-y-2">
+                        <input type="datetime-local" value={editingFollowupDue} onChange={(e) => setEditingFollowupDue(e.target.value)} className={inputCls} />
+                        <input value={editingFollowupNote} onChange={(e) => setEditingFollowupNote(e.target.value)} placeholder="Note" className={inputCls} />
+                        <div className="flex gap-2">
+                          <button onClick={() => updateFollowup(f.id)} className="px-3 py-1.5 rounded-lg text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-700 cursor-pointer">Save</button>
+                          <button onClick={() => { setEditingFollowupId(null); setEditingFollowupNote(''); setEditingFollowupDue(''); }} className="px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 cursor-pointer">Cancel</button>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center gap-2">
+                        <Bell className="w-3.5 h-3.5 text-slate-400" />
+                        <span className="flex-1 text-xs text-slate-700 dark:text-slate-200">{f.note || 'Follow-up'}</span>
+                        <span className="text-[10px] text-slate-400">{formatDateTime(f.dueAt)}</span>
+                        <span className={`text-[10px] font-semibold px-2 py-0.5 rounded capitalize ${f.status === 'completed' ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-950/50' : 'bg-amber-100 text-amber-600 dark:bg-amber-950/50'}`}>{f.status}</span>
+                        <button onClick={() => { setEditingFollowupId(f.id); setEditingFollowupNote(f.note || ''); setEditingFollowupDue(f.dueAt ? new Date(f.dueAt).toISOString().slice(0, 16) : ''); }} className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 cursor-pointer" title="Edit">
+                          <Pencil className="w-3 h-3" />
+                        </button>
+                        <button onClick={() => deleteFollowup(f.id)} className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 cursor-pointer" title="Delete">
+                          <Trash2 className="w-3 h-3" />
+                        </button>
+                      </div>
+                    )}
                   </div>
                 ))}
                 {!lead.followups?.length && <EmptyState icon={Bell} title="No follow-ups" description="Schedule a follow-up to stay on top of this lead." />}
