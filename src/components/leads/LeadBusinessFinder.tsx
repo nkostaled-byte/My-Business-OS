@@ -39,9 +39,14 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
     const q = query.trim();
     if (!q || searching) return;
     setSearching(true);
-    const data = await leadsApi.findBusinesses({ q, location: location.trim() || undefined, limit: 15 });
+    const res = await leadsApi.findBusinesses({ q, location: location.trim() || undefined, limit: 15 });
     setSearching(false);
-    setResult(data);
+    if (res.error) {
+      error('Search failed', res.error);
+      setResult([]);
+    } else {
+      setResult(res.data);
+    }
     setSearchedOnce(true);
   };
 

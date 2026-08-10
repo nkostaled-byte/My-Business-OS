@@ -242,9 +242,12 @@ export const leadsApi = {
   },
 
   // ── Find businesses (Google Places) ─────────────────────────────
-  async findBusinesses(params?: { q?: string; location?: string; limit?: number }): Promise<PlaceBusiness[]> {
-    const res = await api.get<PlaceBusiness[]>(API.leads.findBusinesses, { params: params as Record<string, string> | undefined });
-    return res.success && res.data ? res.data : [];
+  async findBusinesses(params?: { q?: string; location?: string; limit?: number }): Promise<{ data: PlaceBusiness[]; error?: string }> {
+    const res = await api.get<{ candidates?: PlaceBusiness[]; data?: PlaceBusiness[]; error?: string }>(API.leads.findBusinesses, { params: params as Record<string, string> | undefined });
+    if (res.success && res.data) {
+      return { data: res.data.data || res.data.candidates || (Array.isArray(res.data) ? res.data : []), error: res.data.error };
+    }
+    return { data: [], error: res.error || 'Search failed' };
   },
 
   // ── Bulk ─────────────────────────────────────────────────────────
