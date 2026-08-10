@@ -73,8 +73,10 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
   const updateBasic = async (payload: Partial<Lead>) => {
     if (!lead) return;
     const res = await leadsApi.update(lead.id, payload);
-    if (res.success && res.data) patchLead(res.data);
-    else error('Update failed', res.error);
+    if (res.success) {
+      if (res.data) patchLead(res.data);
+      else load(lead.id);
+    } else error('Update failed', res.error);
   };
 
   const convert = async () => {
@@ -203,8 +205,10 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
               <span className="block text-[10px] font-semibold uppercase tracking-wide text-slate-400 mb-1">Status</span>
               <select value={lead.status} onChange={async (e) => {
                 const res = await leadsApi.updateStatus(lead.id, e.target.value as LeadStatus);
-                if (res.success && res.data) patchLead(res.data);
-                else error('Update failed', res.error);
+                if (res.success) {
+                  if (res.data) patchLead(res.data);
+                  else load(lead.id);
+                } else error('Update failed', res.error);
               }} className={selCls}>
                 {STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABEL[s]}</option>)}
               </select>
@@ -307,15 +311,21 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
                 </div>
               </div>
 
-              {lead.aiSummary && (
-                <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-50 dark:from-indigo-950/40 dark:to-indigo-950/30 border border-indigo-200/60 dark:border-indigo-900">
-                  <div className="flex items-center gap-2 mb-2">
-                    <BrainCircuit className="w-4 h-4 text-indigo-500" />
-                    <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Sales angle</span>
+              {(() => {
+                const s = lead.aiSummary;
+                if (!s) return null;
+                const text = typeof s === 'string' ? s : (typeof s === 'object' && (s.salesMessage || s.whatIsWrong)) ? (s.salesMessage || s.whatIsWrong) : null;
+                if (!text) return null;
+                return (
+                  <div className="p-4 rounded-2xl bg-gradient-to-br from-indigo-50 to-indigo-50 dark:from-indigo-950/40 dark:to-indigo-950/30 border border-indigo-200/60 dark:border-indigo-900">
+                    <div className="flex items-center gap-2 mb-2">
+                      <BrainCircuit className="w-4 h-4 text-indigo-500" />
+                      <span className="text-xs font-bold text-slate-700 dark:text-slate-300">Sales angle</span>
+                    </div>
+                    <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-200">{text}</p>
                   </div>
-                  <p className="text-xs leading-relaxed text-slate-700 dark:text-slate-200">{lead.aiSummary}</p>
-                </div>
-              )}
+                );
+              })()}
 
               {deductions.length ? (
                 <div>

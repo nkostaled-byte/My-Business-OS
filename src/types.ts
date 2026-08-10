@@ -380,7 +380,7 @@ export interface Lead {
   scoreBreakdown?: { deductions?: ScoreDeduction[] } | null;
   opportunityLevel?: OpportunityLevel | null;
   recommendedServices?: RecommendedService[] | string[] | null;
-  aiSummary?: string | null;
+  aiSummary?: string | AiBrief | Record<string, unknown> | null;
   emails?: string[] | null;
   phones?: string[] | null;
   socialLinks?: Record<string, string> | null;
