@@ -9,6 +9,10 @@ interface ExportDropdownProps {
   filename?: string;
 }
 
+function isMobileBrowser(): boolean {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+}
+
 export const ExportDropdown: React.FC<ExportDropdownProps> = ({ table = 'customers', filename = 'export' }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [exporting, setExporting] = useState<string | null>(null);
@@ -22,16 +26,29 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({ table = 'custome
     try {
       const result = await api.exportCsv(table);
       if (result.success && result.csvContent) {
-        // Create a Blob and trigger download
         const blob = new Blob([result.csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
-        const link = document.createElement('a');
-        link.href = url;
-        link.download = result.fileName || `${filename}.csv`;
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-        URL.revokeObjectURL(url);
+        if (isMobileBrowser()) {
+          const win = window.open(url, '_blank');
+          if (!win) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = result.fileName || `${filename}.csv`;
+            link.target = '_blank';
+            link.rel = 'noopener noreferrer';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+          }
+        } else {
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = result.fileName || `${filename}.csv`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+        setTimeout(() => URL.revokeObjectURL(url), 60_000);
         setSuccess('CSV');
         showSuccess('CSV downloaded successfully', `${filename}.csv`);
       } else {
@@ -46,7 +63,6 @@ export const ExportDropdown: React.FC<ExportDropdownProps> = ({ table = 'custome
   };
 
   const handleExportPdf = () => {
-    // PDF export is not supported via Worker API yet
     setSuccess('PDF');
     setTimeout(() => setSuccess(null), 3000);
     setIsOpen(false);

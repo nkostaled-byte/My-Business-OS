@@ -262,10 +262,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   };
 
   return (
-    <header className="sticky top-0 z-30 glass-nav px-4 sm:px-6 py-3 transition-colors border-b-0">
+    <header className="sticky top-0 z-30 glass-nav px-3 sm:px-6 py-2.5 sm:py-3 transition-colors border-b-0">
       <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
         {/* Left Side: Mobile Menu Button & Search */}
-        <div className="flex items-center gap-3 flex-1 max-w-md" ref={searchRef}>
+        <div className="flex items-center gap-2 sm:gap-3 flex-1 max-w-md" ref={searchRef}>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={onOpenMobileMenu}

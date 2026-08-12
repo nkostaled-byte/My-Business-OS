@@ -26,6 +26,9 @@
     "vite": "^6.2.3"
   },
   "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
+    "typescript": "^7.0.2",
     "wrangler": "^4.119.0"
   }
 }

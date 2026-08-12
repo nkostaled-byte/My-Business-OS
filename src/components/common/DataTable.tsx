@@ -55,7 +55,7 @@ export function DataTable<T extends { id: string }>({
   return (
     <div className="glass-panel rounded-2xl overflow-hidden">
       {/* Table Action Bar */}
-      <div className="p-4 sm:p-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-slate-200/50 dark:border-white/5">
+      <div className="p-3 sm:p-5 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-slate-200/50 dark:border-white/5">
         <div className="relative flex-1 max-w-sm">
           <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
@@ -101,12 +101,12 @@ export function DataTable<T extends { id: string }>({
           />
         </div>
       ) : (
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs sm:text-sm">
+        <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
+          <table className="w-full text-left text-xs sm:text-sm min-w-[500px]">
             <thead>
               <tr className="bg-slate-50/60 dark:bg-white/5 border-b border-slate-200/50 dark:border-white/5 text-slate-500 dark:text-slate-400 font-medium">
                 {columns.map((col, idx) => (
-                  <th key={idx} className={`py-3 px-4 sm:px-6 ${col.className || ''}`}>
+                  <th key={idx} className={`py-3 px-3 sm:px-6 whitespace-nowrap ${col.className || ''}`}>
                     {col.header}
                   </th>
                 ))}
@@ -122,7 +122,7 @@ export function DataTable<T extends { id: string }>({
                   className="hover:bg-white/50 dark:hover:bg-white/5 transition-colors"
                 >
                   {columns.map((col, idx) => (
-                    <td key={idx} className={`py-3.5 px-4 sm:px-6 ${col.className || ''}`}>
+                    <td key={idx} className={`py-3.5 px-3 sm:px-6 ${col.className || ''}`}>
                       {col.cell
                         ? col.cell(row)
                         : col.accessorKey

@@ -36,7 +36,7 @@ export const Modal: React.FC<ModalProps> = ({
   return (
     <AnimatePresence>
       {isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto overscroll-contain">
           {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
@@ -53,15 +53,15 @@ export const Modal: React.FC<ModalProps> = ({
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94, y: 12 }}
             transition={{ type: 'spring', damping: 25, stiffness: 350 }}
-            className={`relative w-full ${maxWidth} glass-strong rounded-2xl p-6 z-10 my-8`}
+            className={`relative w-full ${maxWidth} glass-strong rounded-2xl p-4 sm:p-6 z-10 my-4 sm:my-8 max-h-[calc(100dvh-2rem)] sm:max-h-[calc(100dvh-4rem)] flex flex-col`}
           >
-            <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
-              <div>
-                <h3 className="text-lg font-semibold text-slate-900 dark:text-slate-100">
+            <div className="flex items-start justify-between pb-4 border-b border-slate-100 dark:border-slate-800 shrink-0">
+              <div className="min-w-0 flex-1 pr-2">
+                <h3 className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100 truncate">
                   {title}
                 </h3>
                 {subtitle && (
-                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+                  <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5 truncate">
                     {subtitle}
                   </p>
                 )}
@@ -70,13 +70,14 @@ export const Modal: React.FC<ModalProps> = ({
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 onClick={onClose}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer shrink-0"
+                aria-label="Close dialog"
               >
                 <X className="w-5 h-5" />
               </motion.button>
             </div>
 
-            <div className="mt-4">{children}</div>
+            <div className="mt-4 overflow-y-auto overscroll-contain flex-1 min-h-0">{children}</div>
           </motion.div>
         </div>
       )}

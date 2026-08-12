@@ -275,7 +275,7 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Tabs Navigation */}
-      <div className="flex items-center gap-1 border-b border-slate-200 dark:border-slate-800 overflow-x-auto scrollbar-none">
+      <div className="flex items-center gap-1 border-b border-slate-200 dark:border-slate-800 overflow-x-auto scrollbar-none -webkit-overflow-scrolling-touch">
         {[
           { id: 'general', label: 'General', icon: User },
           { id: 'business', label: 'Business', icon: Building2 },
@@ -291,13 +291,13 @@ export const SettingsPage: React.FC = () => {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`relative flex items-center gap-2 px-4 py-3 text-xs sm:text-sm font-semibold whitespace-nowrap transition-all cursor-pointer ${
+              className={`relative flex items-center gap-1.5 sm:gap-2 px-3 sm:px-4 py-3 text-[11px] sm:text-sm font-semibold whitespace-nowrap transition-all cursor-pointer ${
                 isActive
                   ? 'text-indigo-600 dark:text-indigo-400 font-bold'
                   : 'text-slate-500 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              <Icon className="w-4 h-4" />
+              <Icon className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
               <span>{tab.label}</span>
               {isActive && (
                 <motion.div
@@ -311,7 +311,7 @@ export const SettingsPage: React.FC = () => {
       </div>
 
       {/* Content Form / Panel */}
-      <div className="glass-panel rounded-3xl p-6 sm:p-8 max-w-3xl">
+      <div className="glass-panel rounded-2xl sm:rounded-3xl p-4 sm:p-6 lg:p-8 max-w-3xl">
         <form onSubmit={handleSave} className="space-y-6">
           <AnimatePresence mode="wait">
             {activeTab === 'general' && (

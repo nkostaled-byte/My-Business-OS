@@ -13,7 +13,6 @@ import {
   Plus,
   Minus,
   Trash2,
-  CreditCard,
   Banknote,
   Building2,
   CheckCircle2,
@@ -348,7 +347,7 @@ export const POSPage: React.FC = () => {
                   />
                 </div>
               ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-3.5 max-h-[600px] overflow-y-auto pr-1">
+                <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-2 sm:gap-3.5 max-h-[50vh] sm:max-h-[600px] overflow-y-auto pr-1 -webkit-overflow-scrolling-touch">
                   {filteredCatalog.map((item) => (
                     <motion.div
                       key={item.id}
@@ -639,9 +638,9 @@ export const POSPage: React.FC = () => {
                 />
               </div>
             ) : (
-              <div className="glass-panel rounded-3xl overflow-hidden">
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left border-collapse">
+              <div className="glass-panel rounded-2xl overflow-hidden">
+                <div className="overflow-x-auto -webkit-overflow-scrolling-touch">
+                  <table className="w-full text-left border-collapse min-w-[600px]">
                     <thead>
                       <tr className="border-b border-slate-200/50 dark:border-white/5 bg-slate-50/60 dark:bg-white/5 text-[11px] font-bold text-slate-400 uppercase tracking-wider">
                         <th className="py-3.5 px-4 sm:px-6">Receipt #</th>
@@ -702,8 +701,8 @@ export const POSPage: React.FC = () => {
 
       {/* Checkout Payment Modal */}
       {isCheckoutOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs">
-          <div className="glass-strong rounded-3xl p-6 max-w-md w-full space-y-5 animate-in zoom-in-95">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 bg-slate-900/60 backdrop-blur-xs">
+          <div className="glass-strong rounded-2xl sm:rounded-3xl p-4 sm:p-6 max-w-md w-full space-y-5 animate-in zoom-in-95 max-h-[calc(100dvh-1.5rem)] overflow-y-auto">
             {!saleCompleted ? (
               <>
                 <div className="text-center">

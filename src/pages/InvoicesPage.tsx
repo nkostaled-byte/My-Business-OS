@@ -7,6 +7,7 @@ import { DataTable, Column } from '../components/common/DataTable';
 import { Modal } from '../components/common/Modal';
 import { FileSpreadsheet, Eye, Download, FileText, CalendarDays, Mail, DollarSign, Package, Scissors, Type } from 'lucide-react';
 import api from '../lib/api-client';
+import { downloadPdf } from '../lib/pdf-download';
 
 export const InvoicesPage: React.FC = () => {
   const { invoices, setInvoices, isLoading, products, services, customers } = useData();
@@ -160,28 +161,16 @@ export const InvoicesPage: React.FC = () => {
     if (downloading === id) return;
     setDownloading(id);
     try {
-      const token = localStorage.getItem('grafix_auth_token');
-      const pdfUrl = api.getUrl(`/api/invoices/${id}/pdf`);
-      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-      if (isIOS) {
-        window.open(pdfUrl, '_blank');
-        addToast({ title: 'PDF Opened', message: `${invoice.invoiceNumber || 'Invoice'} PDF opened in new tab.`, type: 'success' });
-      } else {
-        const response = await fetch(pdfUrl, { headers: token ? { Authorization: `Bearer ${token}` } : {} });
-        if (!response.ok) {
-          addToast({ title: 'Download Failed', message: 'Could not generate PDF.', type: 'error' });
-          return;
+      const filename = invoice.invoiceNumber || 'invoice';
+      const result = await downloadPdf(`/api/invoices/${id}/pdf`, filename);
+      if (result.success) {
+        if (result.openedInNewTab) {
+          addToast({ title: 'PDF Ready', message: `${filename} opened — use your browser's Share/Save options to save it.`, type: 'success' });
+        } else {
+          addToast({ title: 'PDF Downloaded', message: `${filename}.pdf saved.`, type: 'success' });
         }
-        const blob = await response.blob();
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `${invoice.invoiceNumber || 'invoice'}.pdf`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        addToast({ title: 'PDF Downloaded', message: `${invoice.invoiceNumber || 'Invoice'} PDF saved.`, type: 'success' });
+      } else {
+        addToast({ title: 'Download Failed', message: result.error || 'Could not generate PDF.', type: 'error' });
       }
     } catch {
       addToast({ title: 'Download Failed', message: 'Network error while downloading PDF.', type: 'error' });
@@ -406,9 +395,9 @@ export const InvoicesPage: React.FC = () => {
                 + Add Item
               </button>
             </div>
-            <div className="space-y-2 max-h-72 overflow-y-auto pr-1">
+            <div className="space-y-2 max-h-72 overflow-y-auto pr-1 -webkit-overflow-scrolling-touch">
               {lineItems.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-1.5">
+                <div key={idx} className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
                   {/* Source type toggle */}
                   <div className="flex gap-px border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden flex-shrink-0">
                     <button

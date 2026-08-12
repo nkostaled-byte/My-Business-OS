@@ -29,21 +29,21 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-      className="p-6 rounded-xl glass-panel flex flex-col justify-between h-full"
+      className="p-4 sm:p-6 rounded-xl glass-panel flex flex-col justify-between h-full"
     >
-      <div className="flex items-center justify-between mb-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-4">
         <div>
-          <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">
+          <h3 className="text-sm sm:text-base font-bold text-slate-900 dark:text-slate-100">
             Revenue Overview
           </h3>
-          <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+          <p className="text-[11px] sm:text-xs text-slate-500 dark:text-slate-400 mt-0.5">
             Track business earnings over time
           </p>
         </div>
         <select
           value={period}
           onChange={(e) => setPeriod(e.target.value)}
-          className="px-3 py-1.5 rounded-lg text-xs font-medium glass-subtle text-slate-700 dark:text-slate-200 focus:outline-hidden cursor-pointer"
+          className="px-3 py-1.5 rounded-lg text-[11px] sm:text-xs font-medium glass-subtle text-slate-700 dark:text-slate-200 focus:outline-hidden cursor-pointer"
         >
           <option>This Month</option>
           <option>Last Quarter</option>
@@ -63,10 +63,10 @@ export const RevenueChart: React.FC<RevenueChartProps> = ({
           initial={{ opacity: 0, scale: 0.98 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.35, delay: 0.1 }}
-          className="w-full h-64 mt-2"
+          className="w-full h-48 sm:h-64 mt-2"
         >
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <AreaChart data={data} margin={{ top: 10, right: 5, left: -25, bottom: 0 }}>
               <defs>
                 <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
                   <stop offset="5%" stopColor="#4F46E5" stopOpacity={0.28} />
