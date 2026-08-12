@@ -89,7 +89,6 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
       <form onSubmit={search} className="glass-panel rounded-xl p-4 sm:p-5">
         <div className="grid grid-cols-1 sm:grid-cols-[1fr_240px_auto] gap-2">
           <input
-            autoFocus
             className={inputCls}
             value={query}
             onChange={(e) => setQuery(e.target.value)}

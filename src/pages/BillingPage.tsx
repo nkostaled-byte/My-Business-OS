@@ -168,14 +168,6 @@ export const BillingPage: React.FC = () => {
               </>
             ) : (
               <>
-                <span className="inline-flex items-center gap-1.5 text-indigo-300 text-xs font-bold">
-                  <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
-                  {status?.subscription_active
-                    ? `Active Tier: ${currentPlanName} Plan`
-                    : status?.has_subscription
-                      ? `Plan: ${currentPlanName} (auto-renew off)`
-                      : `Plan: ${currentPlanName} Plan`}
-                </span>
                 <h2 className="text-xl sm:text-2xl font-extrabold mt-3">My Business OS Workspace</h2>
                 <p className="text-xs sm:text-sm text-indigo-200 mt-1 max-w-xl">
                   {status?.subscription_active

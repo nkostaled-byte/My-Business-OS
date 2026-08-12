@@ -165,7 +165,7 @@ export const LeadDetailView: React.FC<Props> = ({ leadId, onClose, onUpdated }) 
   if (!leadId) return null;
 
   return (
-    <Modal isOpen={Boolean(leadId)} onClose={onClose} title="Lead Details" subtitle={lead?.companyName || lead?.leadName} maxWidth="max-w-3xl">
+    <Modal isOpen={Boolean(leadId)} onClose={onClose} title="Lead Details" subtitle={lead?.companyName || lead?.leadName} maxWidth="max-w-2xl sm:max-w-3xl">
       {loading && !lead ? (
         <div className="py-16 flex items-center justify-center">
           <div className="w-8 h-8 border-2 border-indigo-600 border-t-transparent rounded-full animate-spin" />

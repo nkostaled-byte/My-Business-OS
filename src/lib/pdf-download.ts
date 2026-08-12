@@ -11,10 +11,6 @@ function isMobileBrowser(): boolean {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
-function isIOS(): boolean {
-  return /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
-}
-
 export interface PdfDownloadResult {
   success: boolean;
   openedInNewTab: boolean;
@@ -29,16 +25,11 @@ export async function downloadPdf(
   const token = getStoredToken();
 
   if (isMobileBrowser()) {
-    if (isIOS()) {
-      window.open(pdfUrl, '_blank');
-    } else {
-      try {
-        const headers: Record<string, string> = {};
-        if (token) headers['Authorization'] = `Bearer ${token}`;
-        const response = await fetch(pdfUrl, { headers });
-        if (!response.ok) {
-          return { success: false, openedInNewTab: false, error: `Server returned ${response.status}` };
-        }
+    try {
+      const headers: Record<string, string> = {};
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const response = await fetch(pdfUrl, { headers });
+      if (response.ok) {
         const blob = await response.blob();
         const blobUrl = URL.createObjectURL(blob);
         const win = window.open(blobUrl, '_blank');
@@ -51,14 +42,14 @@ export async function downloadPdf(
           document.body.appendChild(a);
           a.click();
           document.body.removeChild(a);
-          setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
-          return { success: true, openedInNewTab: false };
         }
         setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
-      } catch {
-        window.open(pdfUrl, '_blank');
+        return { success: true, openedInNewTab: true };
       }
+    } catch {
+      // fetch failed — fall through to direct navigation
     }
+    window.open(pdfUrl, '_blank');
     return { success: true, openedInNewTab: true };
   }
 

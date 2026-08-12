@@ -46,7 +46,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   } = useData();
   const navigate = useNavigate();
 
-  const [notifications, setNotifications] = useState<{ id: number; title: string; time: string; read: boolean }[]>([]);
+  const [notifications, setNotifications] = useState<{ id: number; title: string; time: string; read: boolean; route: string }[]>([]);
   const unreadCount = notifications.filter((n) => !n.read).length;
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const notificationsRef = useRef<HTMLDivElement>(null);
@@ -220,7 +220,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
 
   // Generate notifications from local data
   useEffect(() => {
-    const notifs: { id: number; title: string; time: string; read: boolean }[] = [];
+    const notifs: { id: number; title: string; time: string; read: boolean; route: string }[] = [];
     let id = 1;
 
     // Recent orders (last 3)
@@ -230,6 +230,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
         title: `New order ${o.orderNumber} - R${o.totalAmount}`,
         time: new Date(o.createdAt).toLocaleDateString(),
         read: false,
+        route: '/app/orders',
       });
     });
 
@@ -240,6 +241,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
         title: `Booking ${b.bookingCode} with ${b.clientName}`,
         time: `${b.date} at ${b.time}`,
         read: false,
+        route: '/app/bookings',
       });
     });
 
@@ -250,6 +252,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
         title: `New form submission from ${f.senderName}`,
         time: new Date(f.submittedAt).toLocaleDateString(),
         read: false,
+        route: '/app/forms',
       });
     });
 
@@ -261,8 +264,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
     navigate('/login', { replace: true });
   };
 
+  const handleNotificationClick = (n: { id: number; route: string }) => {
+    setNotificationsOpen(false);
+    setNotifications((prev) => prev.map((notif) => notif.id === n.id ? { ...notif, read: true } : notif));
+    navigate(n.route);
+  };
+
   return (
-    <header className="sticky top-0 z-30 glass-nav px-3 sm:px-6 py-2.5 sm:py-3 transition-colors border-b-0">
+    <header className="fixed top-0 left-0 right-0 lg:sticky lg:top-0 z-30 glass-nav px-3 sm:px-6 py-2.5 sm:py-3 transition-colors border-b-0">
       <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
         {/* Left Side: Mobile Menu Button & Search */}
         <div className="flex items-center gap-2 sm:gap-3 flex-1 max-w-md" ref={searchRef}>
@@ -390,9 +399,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                     </div>
                     <div className="divide-y divide-slate-100 dark:divide-slate-800/60 max-h-64 overflow-y-auto">
                       {notifications.map((n) => (
-                        <div
+                        <button
                           key={n.id}
-                          className="p-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors flex items-start justify-between gap-2"
+                          onClick={() => handleNotificationClick(n)}
+                          className="w-full text-left p-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors flex items-start justify-between gap-2 cursor-pointer"
                         >
                           <div>
                             <p className="text-xs font-medium text-slate-800 dark:text-slate-200 leading-snug">
@@ -402,7 +412,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                               {n.time}
                             </span>
                           </div>
-                        </div>
+                        </button>
                       ))}
                     </div>
                   </motion.div>

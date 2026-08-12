@@ -326,7 +326,7 @@ export const BookingsPage: React.FC = () => {
           <div className="grid grid-cols-7 gap-1 sm:gap-2">
             {calendarCells.map((dayNum, idx) => {
               if (dayNum === null) {
-                return <div key={idx} className="min-h-[50px] sm:min-h-[100px]" />;
+                return <div key={idx} className="min-h-[60px] sm:min-h-[100px]" />;
               }
 
               const dateStr = formatDateStr(calendarYear, calendarMonth, dayNum);
@@ -336,7 +336,7 @@ export const BookingsPage: React.FC = () => {
               return (
                 <div 
                   key={idx} 
-                  className={`min-h-[50px] sm:min-h-[100px] p-1 sm:p-2 rounded-xl sm:rounded-2xl border transition-all ${
+                  className={`min-h-[60px] sm:min-h-[100px] p-1 sm:p-2 rounded-xl sm:rounded-2xl border transition-all ${
                     isToday 
                       ? 'border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20' 
                       : 'border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30'
@@ -353,12 +353,12 @@ export const BookingsPage: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="space-y-0.5 sm:space-y-1 overflow-y-auto max-h-[40px] sm:max-h-[70px]">
+                  <div className="space-y-0.5 sm:space-y-1 overflow-y-auto max-h-[50px] sm:max-h-[70px]">
                     {dayBookings.map(b => (
                       <div 
                         key={b.id}
                         onClick={() => setSelectedBooking(b)}
-                        className={`p-0.5 sm:p-1.5 rounded-lg sm:rounded-xl text-[8px] sm:text-[10px] font-bold truncate cursor-pointer transition-transform hover:scale-[1.02] shadow-2xs ${
+                        className={`p-1 sm:p-1.5 rounded-lg sm:rounded-xl text-[9px] sm:text-[10px] font-bold truncate cursor-pointer transition-transform hover:scale-[1.02] shadow-2xs ${
                           b.status === 'completed' 
                             ? 'bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300' 
                             : b.status === 'cancelled'
@@ -367,7 +367,7 @@ export const BookingsPage: React.FC = () => {
                         }`}
                         title={`${b.clientName} - ${b.serviceName} (${b.time})`}
                       >
-                        <span className="opacity-75 hidden sm:inline">{b.time}</span> {b.clientName}
+                        <span className="opacity-75 hidden sm:inline">{b.time} </span>{b.clientName}
                       </div>
                     ))}
                   </div>

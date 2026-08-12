@@ -90,7 +90,7 @@ export const PublicHeader: React.FC = () => {
 
           <NavLink
             to="/login"
-            className="px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 active:scale-[0.98] transition-all cursor-pointer"
+            className="hidden sm:inline-block px-4 py-2.5 rounded-xl text-xs sm:text-sm font-bold text-white bg-indigo-600 hover:bg-indigo-500 shadow-md shadow-indigo-500/20 active:scale-[0.98] transition-all cursor-pointer"
           >
             Get Started
           </NavLink>

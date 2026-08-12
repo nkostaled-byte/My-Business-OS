@@ -75,7 +75,6 @@ export const LeadAuditCenter: React.FC<Props> = ({ isOpen, onClose, onLeadSaved,
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Business website URL *</label>
               <input
-                autoFocus
                 className={inputCls}
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
