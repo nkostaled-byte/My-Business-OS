@@ -402,9 +402,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                         <button
                           key={n.id}
                           onClick={() => handleNotificationClick(n)}
-                          className="w-full text-left p-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors flex items-start justify-between gap-2 cursor-pointer"
+                          className="w-full text-left p-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors flex items-start gap-2 cursor-pointer"
                         >
-                          <div>
+                          <div className="flex items-center pt-1">
+                            {!n.read && (
+                              <span className="w-2 h-2 rounded-full bg-indigo-600 shrink-0" />
+                            )}
+                          </div>
+                          <div className="flex-1 min-w-0">
                             <p className="text-xs font-medium text-slate-800 dark:text-slate-200 leading-snug">
                               {n.title}
                             </p>
