@@ -30,6 +30,7 @@ export const BookingsPage: React.FC = () => {
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [selectedBooking, setSelectedBooking] = useState<Booking | null>(null);
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
+  const [expandedDay, setExpandedDay] = useState<string | null>(null);
 
   const now = new Date();
   const [calendarYear, setCalendarYear] = useState(now.getFullYear());
@@ -137,23 +138,23 @@ export const BookingsPage: React.FC = () => {
           <div className="flex p-1 bg-slate-100 dark:bg-slate-800 rounded-xl self-start sm:self-auto border border-slate-200 dark:border-slate-700">
             <button 
               onClick={() => setViewMode('calendar')} 
-              className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                 viewMode === 'calendar' 
                   ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' 
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              <CalendarIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> <span className="hidden sm:inline">Calendar</span><span className="sm:hidden">Cal</span>
+              <CalendarIcon className="w-4 h-4" /> Calendar View
             </button>
             <button 
               onClick={() => setViewMode('list')} 
-              className={`flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-[11px] sm:text-xs font-bold transition-all ${
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all ${
                 viewMode === 'list' 
                   ? 'bg-white dark:bg-slate-700 text-indigo-600 dark:text-indigo-400 shadow-sm' 
                   : 'text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200'
               }`}
             >
-              <List className="w-3.5 h-3.5 sm:w-4 sm:h-4" /> List
+              <List className="w-4 h-4" /> List View
             </button>
           </div>
         </div>
@@ -332,6 +333,7 @@ export const BookingsPage: React.FC = () => {
               const dateStr = formatDateStr(calendarYear, calendarMonth, dayNum);
               const dayBookings = filteredBookings.filter(b => b.date === dateStr);
               const isToday = isCurrentMonth && dayNum === todayDate;
+              const isExpanded = expandedDay === dateStr;
 
               return (
                 <div 
@@ -340,9 +342,12 @@ export const BookingsPage: React.FC = () => {
                     isToday 
                       ? 'border-indigo-500 bg-indigo-50/20 dark:bg-indigo-950/20' 
                       : 'border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30'
-                  }`}
+                  } ${isExpanded ? 'col-span-7 sm:col-span-1' : ''}`}
                 >
-                  <div className="flex items-center justify-between mb-0.5 sm:mb-1.5">
+                  <div 
+                    className="flex items-center justify-between mb-0.5 sm:mb-1.5 cursor-pointer"
+                    onClick={() => setExpandedDay(isExpanded ? null : dateStr)}
+                  >
                     <span className={`text-[10px] sm:text-xs font-extrabold ${isToday ? 'text-indigo-600 dark:text-indigo-400 bg-indigo-100 dark:bg-indigo-900 px-1 sm:px-1.5 py-0.5 rounded-md' : 'text-slate-700 dark:text-slate-300'}`}>
                       {dayNum}
                     </span>
@@ -353,7 +358,7 @@ export const BookingsPage: React.FC = () => {
                     )}
                   </div>
 
-                  <div className="space-y-0.5 sm:space-y-1 overflow-y-auto max-h-[50px] sm:max-h-[70px]">
+                  <div className={`space-y-0.5 sm:space-y-1 overflow-y-auto ${isExpanded ? 'max-h-none' : 'max-h-[50px] sm:max-h-[70px]'}`}>
                     {dayBookings.map(b => (
                       <div 
                         key={b.id}
@@ -367,7 +372,7 @@ export const BookingsPage: React.FC = () => {
                         }`}
                         title={`${b.clientName} - ${b.serviceName} (${b.time})`}
                       >
-                        <span className="opacity-75 hidden sm:inline">{b.time} </span>{b.clientName}
+                        <span className="opacity-75">{b.time} </span>{b.clientName}
                       </div>
                     ))}
                   </div>
