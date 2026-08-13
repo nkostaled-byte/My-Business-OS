@@ -4,7 +4,7 @@
 Implemented strategic motion design across the dashboard following Emil Kowalski's animation philosophy: **restraint, purpose, and consistency**. All animations use Motion (framer-motion successor) for unified control.
 
 ## Animation Principles Applied
-
+ 
 ### The Gate (Every Animation Must Pass)
 1. **Frequency** - How often will users see this?
 2. **Purpose** - Feedback, spatial consistency, state indication, preventing jarring changes, or delight
