@@ -39,6 +39,7 @@ import {
   signOut,
   signInWithGoogle,
 } from '../lib/auth-client';
+import { getPostHog } from '../lib/posthog';
 
 // ─── Business Types ───────────────────────────────────────────────
 
@@ -184,6 +185,8 @@ export const OnboardingPage: React.FC = () => {
       const client = result.client;
       if (client?.client_id) {
         await setClientInfo(client.client_id, client.business_name || businessName);
+        const ph = getPostHog();
+        if (ph) ph.capture('business_created', { business_type: businessType || undefined });
         setSuccess('Business created successfully! Redirecting to your dashboard...');
         setTimeout(() => navigate('/app', { replace: true }), 1200);
       } else {
@@ -214,6 +217,8 @@ export const OnboardingPage: React.FC = () => {
         const client = result.client;
         if (client?.client_id) {
           await setClientInfo(client.client_id, client.business_name || 'My Business');
+          const ph = getPostHog();
+          if (ph) ph.capture('business_claimed', { status: result.status });
           setSuccess('Business claimed successfully! Redirecting to your dashboard...');
           setTimeout(() => navigate('/app', { replace: true }), 1200);
         } else {

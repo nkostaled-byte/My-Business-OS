@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { usePostHog } from 'posthog-js/react';
 import { ThemeProvider } from './context/ThemeContext';
 import { DataProvider } from './context/DataContext';
 import { ToastProvider } from './context/ToastContext';
 import { initializeAuth, subscribeToAuth, AuthState, DEFAULT_AUTH_STATE } from './lib/auth-client';
+import { PageViewTracker } from './components/analytics/PageViewTracker';
 
 import { PublicLayout } from './components/layout/PublicLayout';
 import { DashboardLayout } from './components/layout/DashboardLayout';
@@ -40,6 +42,25 @@ import { InvoicesPage } from './pages/InvoicesPage';
 import { BillingPage } from './pages/BillingPage';
 import { SettingsPage } from './pages/SettingsPage';
 import { PaystackCallbackPage } from './pages/PaystackCallbackPage';
+
+// ─── User Identification ──────────────────────────────────────────
+
+function UserIdentifier({ authState }: { authState: AuthState }) {
+  const posthog = usePostHog();
+
+  useEffect(() => {
+    if (!posthog) return;
+    if (authState.isAuthenticated && authState.user) {
+      posthog.identify(authState.user.id, {
+        email: authState.user.email || undefined,
+      });
+    } else {
+      posthog.reset();
+    }
+  }, [authState.isAuthenticated, authState.user, posthog]);
+
+  return null;
+}
 
 // ─── Loading Spinner ──────────────────────────────────────────────
 
@@ -101,6 +122,8 @@ export default function App() {
       <DataProvider>
         <ToastProvider>
           <BrowserRouter>
+            <PageViewTracker />
+            <UserIdentifier authState={authState} />
             <Routes>
               {/* ─── Public Website Layout ─────────────────────────── */}
               <Route element={<PublicLayout />}>

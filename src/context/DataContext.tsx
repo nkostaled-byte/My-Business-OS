@@ -19,6 +19,7 @@ import { DashboardResource } from '../config/api';
 import { subscribeToAuth } from '../lib/auth-client';
 import { SubscriptionStatus } from '../lib/api-client';
 import { PLAN_TIERS, PLAN_NAMES, getPlanTier } from '../config/plans';
+import { getPostHog } from '../lib/posthog';
 import {
   DashboardStats,
   RevenueDataPoint,
@@ -497,6 +498,10 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       const result = await api.post<T>(`/api/dashboard/${resource}`, data);
       if (result.success && result.data) {
+        if (resource === 'bookings') {
+          const ph = getPostHog();
+          if (ph) ph.capture('booking_created', { service: (data as any)?.serviceName || undefined });
+        }
         // Optimistic update: add to local state
         switch (resource) {
           case 'products': setProducts((prev) => [result.data as unknown as Product, ...prev]); break;
@@ -593,7 +598,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [createResource]);
 
   const addOrder = useCallback(async (data: Partial<Order>) => {
-    return createResource('orders', data as unknown as Record<string, unknown>) as unknown as Order | null;
+    const result = await createResource('orders', data as unknown as Record<string, unknown>) as unknown as Order | null;
+    if (result) {
+      const ph = getPostHog();
+      if (ph) ph.capture('order_created', { total: data.totalAmount || 0 });
+    }
+    return result;
   }, [createResource]);
 
   const addCustomer = useCallback(async (data: Partial<Customer>) => {
@@ -601,7 +611,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [createResource]);
 
   const addInvoice = useCallback(async (data: Partial<Invoice>) => {
-    return createResource('invoices', data as unknown as Record<string, unknown>) as unknown as Invoice | null;
+    const result = await createResource('invoices', data as unknown as Record<string, unknown>) as unknown as Invoice | null;
+    if (result) {
+      const ph = getPostHog();
+      if (ph) ph.capture('invoice_created', { total: data.total || 0 });
+    }
+    return result;
   }, [createResource]);
 
   const addService = useCallback(async (data: Partial<Service>) => {
