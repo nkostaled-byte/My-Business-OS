@@ -1,11 +1,10 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { useAI, ChatMessage } from '../../context/AIContext';
 import {
-  MessageCircle,
+  Bot,
   X,
   Send,
-  Sparkles,
   Trash2,
   Loader2,
   AlertCircle,
@@ -16,6 +15,7 @@ export const AIChat: React.FC = () => {
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -23,11 +23,35 @@ export const AIChat: React.FC = () => {
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      inputRef.current.focus();
+      setTimeout(() => inputRef.current?.focus(), 100);
     }
   }, [isOpen]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        closeChat();
+      }
+    };
+
+    const handleClickOutside = (e: MouseEvent) => {
+      if (panelRef.current && !panelRef.current.contains(e.target as Node)) {
+        closeChat();
+      }
+    };
+
+    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen, closeChat]);
+
+  const handleSubmit = useCallback((e: React.FormEvent) => {
     e.preventDefault();
     if (input.trim() && !isProcessing) {
       sendMessage(input);
@@ -36,7 +60,7 @@ export const AIChat: React.FC = () => {
         inputRef.current.style.height = 'auto';
       }
     }
-  };
+  }, [input, isProcessing, sendMessage]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -62,29 +86,29 @@ export const AIChat: React.FC = () => {
     return (
       <motion.div
         key={msg.id}
-        initial={{ opacity: 0, y: 8 }}
+        initial={{ opacity: 0, y: 6 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.18 }}
         className={`flex ${isUser ? 'justify-end' : 'justify-start'}`}
       >
-        <div className={`max-w-[85%] ${isUser ? 'order-1' : 'order-1'}`}>
+        <div className="max-w-[85%]">
           {!isUser && (
             <div className="flex items-center gap-1.5 mb-1">
-              <div className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
-                <Sparkles className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
+              <div className="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                <Bot className="w-3 h-3 text-slate-500 dark:text-slate-400" />
               </div>
-              <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500">
+              <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">
                 Assistant
               </span>
             </div>
           )}
           <div
-            className={`px-3.5 py-2.5 rounded-2xl text-xs sm:text-sm leading-relaxed ${
+            className={`px-3.5 py-2.5 rounded-xl text-xs sm:text-sm leading-relaxed ${
               isUser
-                ? 'bg-indigo-600 text-white rounded-br-md'
+                ? 'bg-indigo-600 text-white rounded-br-sm'
                 : msg.isError
-                ? 'bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/50 rounded-bl-md'
-                : 'glass-subtle text-slate-800 dark:text-slate-200 rounded-bl-md'
+                ? 'bg-rose-50 dark:bg-rose-950/30 text-rose-700 dark:text-rose-300 border border-rose-200 dark:border-rose-800/50 rounded-bl-sm'
+                : 'bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 rounded-bl-sm'
             }`}
           >
             {msg.isError && (
@@ -95,9 +119,9 @@ export const AIChat: React.FC = () => {
             )}
             <p className="whitespace-pre-wrap">{msg.content}</p>
             {msg.toolsUsed && msg.toolsUsed.length > 0 && (
-              <div className="mt-2 pt-1.5 border-t border-slate-200/50 dark:border-slate-700/50">
+              <div className="mt-2 pt-1.5 border-t border-slate-200/40 dark:border-slate-700/40">
                 <span className="text-[9px] text-slate-400 dark:text-slate-500 font-medium">
-                  Searched: {msg.toolsUsed.join(', ')}
+                  Data: {msg.toolsUsed.join(', ')}
                 </span>
               </div>
             )}
@@ -112,98 +136,76 @@ export const AIChat: React.FC = () => {
 
   return (
     <>
-      {/* Floating trigger button */}
+      {/* Launcher button — positioned left of the FAB */}
       <motion.button
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.92 }}
-        onClick={openChat}
-        className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-20 z-40 w-12 h-12 rounded-2xl flex items-center justify-center text-white shadow-xl cursor-pointer transition-colors ${
-          isOpen
-            ? 'bg-slate-700 dark:bg-slate-600'
-            : 'bg-indigo-600 hover:bg-indigo-500 shadow-indigo-500/30'
-        }`}
+        whileHover={{ scale: 1.06 }}
+        whileTap={{ scale: 0.94 }}
+        onClick={isOpen ? closeChat : openChat}
+        className="fixed bottom-4 right-[4.5rem] sm:bottom-6 sm:right-[5rem] z-40 w-11 h-11 rounded-xl flex items-center justify-center text-white shadow-lg cursor-pointer transition-colors bg-slate-800 dark:bg-slate-700 hover:bg-slate-700 dark:hover:bg-slate-600"
         title="AI Assistant"
+        aria-label={isOpen ? 'Close AI Assistant' : 'Open AI Assistant'}
       >
-        <AnimatePresence mode="wait">
-          {isOpen ? (
-            <motion.div
-              key="close"
-              initial={{ opacity: 0, rotate: -90 }}
-              animate={{ opacity: 1, rotate: 0 }}
-              exit={{ opacity: 0, rotate: 90 }}
-              transition={{ duration: 0.15 }}
-            >
-              <X className="w-5 h-5" />
-            </motion.div>
-          ) : (
-            <motion.div
-              key="open"
-              initial={{ opacity: 0, rotate: 90 }}
-              animate={{ opacity: 1, rotate: 0 }}
-              exit={{ opacity: 0, rotate: -90 }}
-              transition={{ duration: 0.15 }}
-            >
-              <MessageCircle className="w-5 h-5" />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <Bot className="w-5 h-5" />
       </motion.button>
 
       {/* Chat panel */}
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop */}
+            {/* Backdrop — click outside to close */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-2xs lg:hidden"
-              onClick={closeChat}
+              transition={{ duration: 0.15 }}
+              className="fixed inset-0 z-40 bg-transparent"
+              aria-hidden="true"
             />
 
             {/* Panel */}
             <motion.div
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
+              ref={panelRef}
+              initial={{ opacity: 0, y: 12, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 20, scale: 0.95 }}
-              transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
-              className="fixed bottom-20 right-4 sm:bottom-24 sm:right-6 z-50 w-[calc(100vw-2rem)] sm:w-96 max-h-[70vh] sm:max-h-[600px] glass-strong rounded-2xl flex flex-col overflow-hidden shadow-2xl"
+              exit={{ opacity: 0, y: 12, scale: 0.97 }}
+              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+              className="fixed bottom-[4.5rem] right-4 sm:bottom-[5rem] sm:right-6 z-50 w-[calc(100vw-2rem)] max-w-sm sm:w-[22rem] rounded-xl flex flex-col overflow-hidden shadow-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-900"
+              style={{ maxHeight: 'min(65vh, 560px)' }}
             >
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800 shrink-0">
                 <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-xl bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
-                    <Sparkles className="w-4 h-4 text-indigo-600 dark:text-indigo-400" />
+                  <div className="w-7 h-7 rounded-lg bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                    <Bot className="w-4 h-4 text-slate-600 dark:text-slate-300" />
                   </div>
                   <div>
-                    <h3 className="text-sm font-bold text-slate-900 dark:text-slate-100 leading-none">
-                      AI Assistant
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-slate-100 leading-none">
+                      Assistant
                     </h3>
                     <p className="text-[10px] text-slate-400 dark:text-slate-500 mt-0.5">
-                      Ask about your business
+                      Business data queries
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-0.5">
                   {messages.length > 0 && (
                     <motion.button
-                      whileHover={{ scale: 1.1 }}
-                      whileTap={{ scale: 0.9 }}
+                      whileHover={{ scale: 1.08 }}
+                      whileTap={{ scale: 0.92 }}
                       onClick={clearMessages}
-                      className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                      className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
                       title="Clear conversation"
+                      aria-label="Clear conversation"
                     >
                       <Trash2 className="w-4 h-4" />
                     </motion.button>
                   )}
                   <motion.button
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.9 }}
+                    whileHover={{ scale: 1.08 }}
+                    whileTap={{ scale: 0.92 }}
                     onClick={closeChat}
-                    className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer lg:hidden"
-                    aria-label="Close chat"
+                    className="p-1.5 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                    aria-label="Close assistant"
                   >
                     <X className="w-4 h-4" />
                   </motion.button>
@@ -211,26 +213,24 @@ export const AIChat: React.FC = () => {
               </div>
 
               {/* Messages */}
-              <div className="flex-1 overflow-y-auto px-4 py-3 space-y-4 min-h-0">
+              <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-0 overscroll-contain">
                 {messages.length === 0 && (
-                  <div className="flex flex-col items-center justify-center h-full text-center py-8">
-                    <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-900/30 flex items-center justify-center mb-3">
-                      <Sparkles className="w-6 h-6 text-indigo-500 dark:text-indigo-400" />
+                  <div className="flex flex-col items-center justify-center text-center py-10">
+                    <div className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 flex items-center justify-center mb-3">
+                      <Bot className="w-5 h-5 text-slate-500 dark:text-slate-400" />
                     </div>
-                    <h4 className="text-sm font-bold text-slate-900 dark:text-slate-100 mb-1">
-                      How can I help you?
+                    <h4 className="text-sm font-semibold text-slate-900 dark:text-slate-100 mb-1">
+                      How can I help?
                     </h4>
-                    <p className="text-[11px] text-slate-400 dark:text-slate-500 max-w-[200px] leading-relaxed">
+                    <p className="text-[11px] text-slate-400 dark:text-slate-500 max-w-[180px] leading-relaxed">
                       Ask about bookings, orders, products, revenue, or any business data.
                     </p>
                     <div className="mt-4 flex flex-wrap gap-1.5 justify-center">
                       {['Today\'s bookings', 'Revenue this month', 'Low stock products'].map((suggestion) => (
                         <button
                           key={suggestion}
-                          onClick={() => {
-                            sendMessage(suggestion);
-                          }}
-                          className="px-2.5 py-1 rounded-lg text-[10px] font-medium glass-subtle text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                          onClick={() => sendMessage(suggestion)}
+                          className="px-2.5 py-1.5 rounded-lg text-[10px] font-medium bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer border border-slate-200/60 dark:border-slate-700/60"
                         >
                           {suggestion}
                         </button>
@@ -241,24 +241,24 @@ export const AIChat: React.FC = () => {
                 {messages.map(renderMessage)}
                 {isProcessing && (
                   <motion.div
-                    initial={{ opacity: 0, y: 8 }}
+                    initial={{ opacity: 0, y: 6 }}
                     animate={{ opacity: 1, y: 0 }}
                     className="flex justify-start"
                   >
                     <div className="max-w-[85%]">
                       <div className="flex items-center gap-1.5 mb-1">
-                        <div className="w-5 h-5 rounded-full bg-indigo-100 dark:bg-indigo-900/50 flex items-center justify-center">
-                          <Sparkles className="w-3 h-3 text-indigo-600 dark:text-indigo-400" />
+                        <div className="w-5 h-5 rounded-md bg-slate-100 dark:bg-slate-800 flex items-center justify-center">
+                          <Bot className="w-3 h-3 text-slate-500 dark:text-slate-400" />
                         </div>
-                        <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500">
+                        <span className="text-[10px] font-medium text-slate-400 dark:text-slate-500">
                           Assistant
                         </span>
                       </div>
-                      <div className="glass-subtle px-3.5 py-2.5 rounded-2xl rounded-bl-md">
+                      <div className="bg-slate-100 dark:bg-slate-800 px-3.5 py-2.5 rounded-xl rounded-bl-sm">
                         <div className="flex items-center gap-2">
-                          <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-500" />
+                          <Loader2 className="w-3.5 h-3.5 animate-spin text-slate-400" />
                           <span className="text-xs text-slate-500 dark:text-slate-400">
-                            Thinking...
+                            Working...
                           </span>
                         </div>
                       </div>
@@ -279,16 +279,17 @@ export const AIChat: React.FC = () => {
                     placeholder="Ask about your business..."
                     rows={1}
                     disabled={isProcessing}
-                    className="flex-1 resize-none bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 rounded-xl px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-300 dark:focus:border-indigo-600 transition-all disabled:opacity-50 max-h-[120px]"
+                    className="flex-1 resize-none bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-400 dark:focus:border-indigo-500 transition-all disabled:opacity-50 max-h-[120px]"
                   />
                   <motion.button
                     type="submit"
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     disabled={!input.trim() || isProcessing}
-                    className="w-9 h-9 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center shrink-0 cursor-pointer disabled:opacity-40 disabled:cursor-default transition-colors"
+                    className="w-8 h-8 rounded-lg bg-indigo-600 hover:bg-indigo-500 text-white flex items-center justify-center shrink-0 cursor-pointer disabled:opacity-30 disabled:cursor-default transition-colors"
+                    aria-label="Send message"
                   >
-                    <Send className="w-4 h-4" />
+                    <Send className="w-3.5 h-3.5" />
                   </motion.button>
                 </div>
               </form>
