@@ -2,13 +2,22 @@ import React, { createContext, useContext, useState, useCallback, useRef } from 
 import api from '../lib/api-client';
 import posthog from '../lib/posthog';
 
+export interface PendingAction {
+  id: string;
+  type: string;
+  label: string;
+  destructive: boolean;
+  fields: Record<string, string | number>;
+}
+
 export interface ChatMessage {
   id: string;
   role: 'user' | 'assistant';
   content: string;
   timestamp: Date;
-  toolsUsed?: string[];
   isError?: boolean;
+  pendingAction?: PendingAction;
+  actionStatus?: 'pending' | 'completed' | 'cancelled' | 'failed';
 }
 
 interface AIContextType {
@@ -18,6 +27,7 @@ interface AIContextType {
   openChat: () => void;
   closeChat: () => void;
   sendMessage: (message: string) => Promise<void>;
+  confirmAction: (actionId: string, confirmed: boolean) => Promise<void>;
   clearMessages: () => void;
 }
 
@@ -73,13 +83,14 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
           role: 'assistant',
           content: result.data.reply,
           timestamp: new Date(),
-          toolsUsed: result.data.tools_used,
+          pendingAction: result.data.pending_action,
+          actionStatus: result.data.pending_action ? 'pending' : undefined,
         };
         setMessages(prev => [...prev, assistantMsg]);
 
-        if (posthog.__loaded && result.data.tools_used && result.data.tools_used.length > 0) {
-          posthog.capture('ai_tool_used', {
-            tools_count: result.data.tools_used.length,
+        if (posthog.__loaded && result.data.pending_action) {
+          posthog.capture('ai_write_action_requested', {
+            action_type: result.data.pending_action.type,
           });
         }
       } else {
@@ -107,12 +118,86 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     }
   }, []);
 
+  const confirmAction = useCallback(async (actionId: string, confirmed: boolean) => {
+    if (processingRef.current) return;
+    processingRef.current = true;
+    setIsProcessing(true);
+
+    if (posthog.__loaded) {
+      posthog.capture(confirmed ? 'ai_write_action_confirmed' : 'ai_write_action_cancelled', {
+        action_id: actionId,
+      });
+    }
+
+    try {
+      const result = await api.confirmAiAction(actionId, confirmed);
+
+      if (result.success && result.data) {
+        const data = result.data;
+        const resultMsg: ChatMessage = {
+          id: generateMessageId(),
+          role: 'assistant',
+          content: data.reply,
+          timestamp: new Date(),
+          actionStatus: data.status === 'completed' ? 'completed' : data.status === 'cancelled' ? 'cancelled' : 'failed',
+        };
+        setMessages(prev => prev.map(msg =>
+          msg.pendingAction?.id === actionId
+            ? { ...msg, actionStatus: data.status as ChatMessage['actionStatus'] }
+            : msg
+        ));
+        setMessages(prev => [...prev, resultMsg]);
+
+        if (posthog.__loaded && data.status === 'completed') {
+          posthog.capture('ai_write_action_completed', {
+            action_type: data.action_type,
+          });
+        } else if (posthog.__loaded && data.status === 'failed') {
+          posthog.capture('ai_write_action_failed', {
+            action_type: data.action_type,
+          });
+        }
+      } else {
+        const errorMsg: ChatMessage = {
+          id: generateMessageId(),
+          role: 'assistant',
+          content: result.error || 'Sorry, the action could not be completed. Please try again.',
+          timestamp: new Date(),
+          isError: true,
+        };
+        setMessages(prev => prev.map(msg =>
+          msg.pendingAction?.id === actionId ? { ...msg, actionStatus: 'failed' } : msg
+        ));
+        setMessages(prev => [...prev, errorMsg]);
+
+        if (posthog.__loaded) {
+          posthog.capture('ai_write_action_failed');
+        }
+      }
+    } catch {
+      const errorMsg: ChatMessage = {
+        id: generateMessageId(),
+        role: 'assistant',
+        content: 'Sorry, the action could not be completed. Please try again.',
+        timestamp: new Date(),
+        isError: true,
+      };
+      setMessages(prev => prev.map(msg =>
+        msg.pendingAction?.id === actionId ? { ...msg, actionStatus: 'failed' } : msg
+      ));
+      setMessages(prev => [...prev, errorMsg]);
+    } finally {
+      setIsProcessing(false);
+      processingRef.current = false;
+    }
+  }, []);
+
   const clearMessages = useCallback(() => {
     setMessages([]);
   }, []);
 
   return (
-    <AIContext.Provider value={{ messages, isOpen, isProcessing, openChat, closeChat, sendMessage, clearMessages }}>
+    <AIContext.Provider value={{ messages, isOpen, isProcessing, openChat, closeChat, sendMessage, confirmAction, clearMessages }}>
       {children}
     </AIContext.Provider>
   );

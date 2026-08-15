@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { useAI, ChatMessage } from '../../context/AIContext';
+import { useAI, ChatMessage, PendingAction } from '../../context/AIContext';
 import {
   Bot,
   X,
@@ -8,10 +8,12 @@ import {
   Trash2,
   Loader2,
   AlertCircle,
+  Check,
+  ShieldAlert,
 } from 'lucide-react';
 
 export const AIChat: React.FC = () => {
-  const { messages, isOpen, isProcessing, openChat, closeChat, sendMessage, clearMessages } = useAI();
+  const { messages, isOpen, isProcessing, openChat, closeChat, sendMessage, confirmAction, clearMessages } = useAI();
   const [input, setInput] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -91,6 +93,85 @@ export const AIChat: React.FC = () => {
       .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
   };
 
+  const renderConfirmationCard = (action: PendingAction, status?: ChatMessage['actionStatus']) => {
+    if (status === 'completed' || status === 'cancelled') return null;
+
+    const isFailed = status === 'failed';
+    const fieldEntries = Object.entries(action.fields);
+
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 6 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.18, delay: 0.1 }}
+        className="mt-2 border border-slate-200 dark:border-slate-700 rounded-xl overflow-hidden bg-white dark:bg-slate-800"
+      >
+        {/* Card header */}
+        <div className={`px-3 py-2 flex items-center gap-2 ${
+          action.destructive
+            ? 'bg-rose-50 dark:bg-rose-950/30 border-b border-rose-200 dark:border-rose-800/50'
+            : 'bg-slate-50 dark:bg-slate-800 border-b border-slate-200 dark:border-slate-700'
+        }`}>
+          {action.destructive ? (
+            <ShieldAlert className={`w-3.5 h-3.5 ${isFailed ? 'text-rose-500' : 'text-rose-600 dark:text-rose-400'}`} />
+          ) : (
+            <Check className={`w-3.5 h-3.5 ${isFailed ? 'text-rose-500' : 'text-slate-500 dark:text-slate-400'}`} />
+          )}
+          <span className={`text-[11px] font-semibold ${
+            action.destructive
+              ? 'text-rose-700 dark:text-rose-300'
+              : 'text-slate-700 dark:text-slate-300'
+          }`}>
+            {action.label}
+          </span>
+          {action.destructive && (
+            <span className="text-[9px] font-bold text-rose-600 dark:text-rose-400 uppercase ml-auto">
+              Destructive
+            </span>
+          )}
+        </div>
+
+        {/* Fields */}
+        <div className="px-3 py-2 space-y-1">
+          {fieldEntries.map(([key, value]) => (
+            <div key={key} className="flex items-baseline gap-2 text-[11px]">
+              <span className="text-slate-400 dark:text-slate-500 font-medium capitalize min-w-[70px]">
+                {key}
+              </span>
+              <span className="text-slate-800 dark:text-slate-200 font-medium">
+                {String(value)}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        {/* Actions */}
+        {status !== 'failed' && (
+          <div className="px-3 py-2 border-t border-slate-100 dark:border-slate-700 flex items-center gap-2">
+            <button
+              onClick={() => confirmAction(action.id, false)}
+              disabled={isProcessing}
+              className="flex-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer disabled:opacity-50 border border-slate-200 dark:border-slate-700"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={() => confirmAction(action.id, true)}
+              disabled={isProcessing}
+              className={`flex-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold text-white transition-colors cursor-pointer disabled:opacity-50 ${
+                action.destructive
+                  ? 'bg-rose-600 hover:bg-rose-500'
+                  : 'bg-indigo-600 hover:bg-indigo-500'
+              }`}
+            >
+              {action.destructive ? 'Confirm' : 'Confirm'}
+            </button>
+          </div>
+        )}
+      </motion.div>
+    );
+  };
+
   const renderMessage = (msg: ChatMessage) => {
     const isUser = msg.role === 'user';
 
@@ -130,6 +211,14 @@ export const AIChat: React.FC = () => {
             )}
             <p className="whitespace-pre-wrap">{cleanMarkdown(msg.content)}</p>
           </div>
+
+          {/* Confirmation card for pending actions */}
+          {!isUser && msg.pendingAction && (
+            <div className="mt-1.5 ml-0">
+              {renderConfirmationCard(msg.pendingAction, msg.actionStatus)}
+            </div>
+          )}
+
           <span className={`block text-[9px] text-slate-400 dark:text-slate-500 mt-1 ${isUser ? 'text-right' : 'text-left'}`}>
             {formatTime(msg.timestamp)}
           </span>

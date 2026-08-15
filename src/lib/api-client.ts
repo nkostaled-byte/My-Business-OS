@@ -503,10 +503,29 @@ export const api = {
    */
   async aiChat(
     message: string
-  ): Promise<ApiResponse<{ reply: string; tools_used: string[] }>> {
+  ): Promise<ApiResponse<{ reply: string; tools_used: string[]; pending_action?: PendingAction }>> {
     return this.post('/api/ai/chat', { message });
   },
+
+  /**
+   * Confirm or cancel a pending AI write action
+   * POST /api/ai/confirm
+   */
+  async confirmAiAction(
+    actionId: string,
+    confirmed: boolean = true
+  ): Promise<ApiResponse<{ reply: string; action_type: string; status: string }>> {
+    return this.post('/api/ai/confirm', { action_id: actionId, confirmed });
+  },
 };
+
+export interface PendingAction {
+  id: string;
+  type: string;
+  label: string;
+  destructive: boolean;
+  fields: Record<string, string | number>;
+}
 
 export default api;
 
