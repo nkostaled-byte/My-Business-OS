@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
+  Search,
   Bell,
   Sun,
   Moon,
@@ -10,6 +11,7 @@ import {
   Settings2,
   LogOut,
   Globe2,
+  Loader2,
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useData } from '../../context/DataContext';
@@ -17,6 +19,13 @@ import { signOut } from '../../lib/auth-client';
 
 interface HeaderProps {
   onOpenMobileMenu: () => void;
+}
+
+interface SearchResult {
+  result_type: 'customer' | 'product' | 'submission' | 'invoice' | 'booking' | 'order';
+  id: string;
+  title: string;
+  subtitle: string;
 }
 
 interface NotificationItem {
@@ -73,6 +82,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
     profileName, 
     profileEmail, 
     profileAvatar, 
+    products,
+    customers,
     orders,
     bookings,
     invoices,
@@ -88,6 +99,14 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   const notificationsRef = useRef<HTMLDivElement>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [searching, setSearching] = useState(false);
+  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const searchRef = useRef<HTMLDivElement>(null);
 
   // Close notifications on click outside
   useEffect(() => {
@@ -179,6 +198,131 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
     setNotifications(notifs);
   }, [orders, bookings, forms, invoices, notifPrefs]);
 
+  // Global search with 300ms debounce
+  const performSearch = useCallback((q: string) => {
+    if (q.length < 2) {
+      setSearchResults([]);
+      setSearchOpen(false);
+      return;
+    }
+
+    setSearching(true);
+    const query = q.toLowerCase();
+    const results: SearchResult[] = [];
+
+    // Search products
+    products.forEach(p => {
+      if (p.name.toLowerCase().includes(query) || p.sku.toLowerCase().includes(query)) {
+        results.push({
+          result_type: 'product',
+          id: p.id,
+          title: p.name,
+          subtitle: `SKU: ${p.sku} • Stock: ${p.stock}`,
+        });
+      }
+    });
+
+    // Search customers
+    customers.forEach(c => {
+      if (c.name.toLowerCase().includes(query) || c.email.toLowerCase().includes(query)) {
+        results.push({
+          result_type: 'customer',
+          id: c.id,
+          title: c.name,
+          subtitle: c.email,
+        });
+      }
+    });
+
+    // Search orders
+    orders.forEach(o => {
+      if (o.orderNumber.toLowerCase().includes(query) || o.customerName.toLowerCase().includes(query)) {
+        results.push({
+          result_type: 'order',
+          id: o.id,
+          title: o.orderNumber,
+          subtitle: `${o.customerName} • R${o.totalAmount}`,
+        });
+      }
+    });
+
+    // Search bookings
+    bookings.forEach(b => {
+      if (b.clientName.toLowerCase().includes(query) || b.serviceName.toLowerCase().includes(query) || b.bookingCode.toLowerCase().includes(query)) {
+        results.push({
+          result_type: 'booking',
+          id: b.id,
+          title: b.bookingCode,
+          subtitle: `${b.clientName} • ${b.serviceName}`,
+        });
+      }
+    });
+
+    // Search invoices
+    invoices.forEach(inv => {
+      if (inv.invoiceNumber.toLowerCase().includes(query) || (inv.clientName || '').toLowerCase().includes(query)) {
+        results.push({
+          result_type: 'invoice',
+          id: inv.id,
+          title: inv.invoiceNumber,
+          subtitle: `${inv.clientName || 'Unknown'} • R${inv.total || 0}`,
+        });
+      }
+    });
+
+    // Search form submissions
+    forms.forEach(f => {
+      if (f.senderName.toLowerCase().includes(query) || f.formName.toLowerCase().includes(query) || f.senderEmail.toLowerCase().includes(query)) {
+        results.push({
+          result_type: 'submission',
+          id: f.id,
+          title: f.senderName,
+          subtitle: `${f.formName} • ${f.senderEmail}`,
+        });
+      }
+    });
+
+    setSearchResults(results.slice(0, 10));
+    setSearchOpen(results.length > 0);
+    setSearching(false);
+  }, [products, customers, orders, bookings, invoices, forms]);
+
+  const handleSearchChange = (value: string) => {
+    setSearchQuery(value);
+    if (searchTimeoutRef.current) {
+      clearTimeout(searchTimeoutRef.current);
+    }
+    searchTimeoutRef.current = setTimeout(() => {
+      performSearch(value);
+    }, 300);
+  };
+
+  const handleSearchResultClick = (result: SearchResult) => {
+    setSearchOpen(false);
+    setSearchQuery('');
+    const resourceMap: Record<string, string> = {
+      customer: '/app/customers',
+      product: '/app/products',
+      submission: '/app/forms',
+      invoice: '/app/invoices',
+      booking: '/app/bookings',
+      order: '/app/orders',
+    };
+    const path = resourceMap[result.result_type] || '/app';
+    navigate(path);
+  };
+
+  // Close search on click outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
+        setSearchOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
   const handleLogout = async () => {
     await signOut();
     navigate('/login', { replace: true });
@@ -204,8 +348,8 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   return (
     <header className="fixed top-0 left-0 right-0 lg:left-64 z-20 glass-nav px-3 sm:px-6 py-2.5 sm:py-3 transition-colors border-b border-slate-200/60 dark:border-slate-800/60">
       <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
-        {/* Left Side: Mobile Menu Button */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        {/* Left Side: Mobile Menu Button & Search */}
+        <div className="flex items-center gap-2 sm:gap-3 flex-1 max-w-md" ref={searchRef}>
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={onOpenMobileMenu}
@@ -214,6 +358,58 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
           >
             <Menu className="w-5 h-5" />
           </motion.button>
+
+          <div className="relative w-full hidden sm:block">
+            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <input
+              type="text"
+              placeholder="Search anything..."
+              value={searchQuery}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              onFocus={() => { if (searchResults.length > 0) setSearchOpen(true); }}
+              className="w-full pl-9 pr-4 py-2 glass-subtle rounded-lg text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 transition-all"
+            />
+
+            {/* Search Results Dropdown */}
+            <AnimatePresence>
+              {searchOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -4 }}
+                  transition={{ duration: 0.15 }}
+                  className="absolute top-full left-0 right-0 mt-1 rounded-lg glass-strong py-1.5 z-50 max-h-64 overflow-y-auto shadow-lg"
+                >
+                  {searching && (
+                    <div className="flex items-center justify-center py-3">
+                      <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
+                    </div>
+                  )}
+                  {!searching && searchResults.length === 0 && (
+                    <div className="px-3 py-3 text-xs text-slate-400 text-center">
+                      No results found
+                    </div>
+                  )}
+                  {!searching && searchResults.map((result) => (
+                    <button
+                      key={`${result.result_type}-${result.id}`}
+                      onClick={() => handleSearchResultClick(result)}
+                      className="w-full text-left px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
+                    >
+                      <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">
+                        {result.title}
+                      </p>
+                      <p className="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
+                        <span className="capitalize">{result.result_type}</span>
+                        <span>·</span>
+                        <span>{result.subtitle}</span>
+                      </p>
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
         </div>
 
         {/* Right Side: Theme Toggle, Notifications, Profile */}
