@@ -1,7 +1,5 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { useData } from '../context/DataContext';
-import { PRICING_PLANS } from '../data/pricingData';
 import {
   ArrowRight,
   CheckCircle2,
@@ -12,16 +10,13 @@ import {
   Boxes,
   ReceiptText,
   ChartNoAxesCombined,
-  ShieldCheck,
   ChevronRight,
-  Check,
 } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import { Sun, Moon } from 'lucide-react';
 
 export const MarketingPage: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
-  const { businessName, businessLogo } = useData();
 
   return (
     <div className="selection:bg-indigo-100 selection:text-indigo-900 relative">
@@ -244,78 +239,6 @@ export const MarketingPage: React.FC = () => {
                 </div>
               );
             })}
-          </div>
-        </div>
-      </section>
-
-      {/* Pricing Preview Section */}
-      <section className="py-20 bg-slate-50 dark:bg-slate-950 border-t border-slate-200/60 dark:border-slate-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-12">
-          <div className="text-center max-w-2xl mx-auto space-y-3">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400">
-              Simple & Transparent Plans
-            </h2>
-            <p className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-              Invest in your business growth
-            </p>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              All plans include core OS capabilities with zero setup fees. Cancel anytime.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-            {PRICING_PLANS.map((plan) => (
-              <div
-                key={plan.id}
-                className={`glass-panel rounded-3xl p-6 flex flex-col justify-between transition-all relative ${
-                  plan.isPopular
-                    ? 'border-2 border-indigo-500 shadow-indigo-500/15'
-                    : ''
-                }`}
-              >
-                {plan.badge && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 text-indigo-600 dark:text-indigo-400 text-[10px] font-extrabold uppercase tracking-wider">
-                    {plan.badge}
-                  </div>
-                )}
-                <div>
-                  <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mt-1">
-                    {plan.name}
-                  </h3>
-                  <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-1 min-h-[28px]">
-                    {plan.tagline}
-                  </p>
-
-                  <div className="my-4">
-                    <div className="flex items-baseline gap-1">
-                      <span className="text-3xl font-extrabold text-slate-900 dark:text-white">
-                        R{plan.monthlyPrice}
-                      </span>
-                      <span className="text-xs text-slate-500 font-medium">/month</span>
-                    </div>
-                    <p className="text-[10px] text-slate-400">{plan.monthlyBillingText}</p>
-                  </div>
-
-                  <div className="w-full h-px bg-slate-100 dark:bg-slate-800 my-4" />
-
-                  <ul className="space-y-2 text-xs text-slate-700 dark:text-slate-300 font-medium mb-6">
-                    {plan.features.slice(0, 5).map((feat, i) => (
-                      <li key={i} className="flex items-center gap-2">
-                        <Check className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
-                        <span>{feat}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                <NavLink
-                  to="/pricing"
-                  className="w-full py-2.5 rounded-xl text-xs font-bold text-center text-slate-800 dark:text-white bg-slate-100 dark:bg-slate-800 hover:bg-indigo-600 hover:text-white transition-all block shadow-xs"
-                >
-                  View Plan Details
-                </NavLink>
-              </div>
-            ))}
           </div>
         </div>
       </section>

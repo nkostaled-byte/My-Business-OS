@@ -1,14 +1,13 @@
 import React from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
-import { useData } from '../../context/DataContext';
 import { MY_GRAFIX_LOGO } from '../../constants';
 import { Sun, Moon } from 'lucide-react';
 
+const PLATFORM_NAME = 'My Business OS';
+
 export const PublicHeader: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
-  const { businessName, businessLogo } = useData();
-  const navigate = useNavigate();
 
   const navItems = [
     { name: 'Features', path: '/features' },
@@ -23,11 +22,11 @@ export const PublicHeader: React.FC = () => {
         {/* Logo */}
         <NavLink to="/" className="flex items-center gap-3 group">
           <div className="w-10 h-10 flex items-center justify-center">
-            <img src={businessLogo || MY_GRAFIX_LOGO} alt={businessName} className="w-full h-full object-contain" />
+            <img src={MY_GRAFIX_LOGO} alt={PLATFORM_NAME} className="w-full h-full object-contain" />
           </div>
           <div>
             <span className="text-xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 block leading-none">
-              {businessName}
+              {PLATFORM_NAME}
             </span>
             <span className="text-[10px] font-semibold text-indigo-600 dark:text-indigo-400 tracking-wider uppercase">
               Enterprise Suite

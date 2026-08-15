@@ -1,20 +1,19 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { useData } from '../../context/DataContext';
 import { MY_GRAFIX_LOGO } from '../../constants';
 
-export const PublicFooter: React.FC = () => {
-  const { businessName, businessLogo } = useData();
+const PLATFORM_NAME = 'My Business OS';
 
+export const PublicFooter: React.FC = () => {
   return (
     <footer className="bg-slate-900 text-slate-400 py-12 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-4 gap-8">
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 flex items-center justify-center text-white font-bold">
-              <img src={businessLogo || MY_GRAFIX_LOGO} alt={businessName} className="w-full h-full object-contain" />
+              <img src={MY_GRAFIX_LOGO} alt={PLATFORM_NAME} className="w-full h-full object-contain" />
             </div>
-            <span className="text-lg font-bold text-white">{businessName || 'Business OS'}</span>
+            <span className="text-lg font-bold text-white">{PLATFORM_NAME}</span>
           </div>
           <p className="text-xs text-slate-400 leading-relaxed">
             The complete operating system for modern business teams. Bookings, POS, Orders, Invoices, Inventory, and CRM in one platform.
