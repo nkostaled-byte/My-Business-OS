@@ -46,7 +46,7 @@ export const StatCard: React.FC<StatCardProps> = ({
           y: -2,
           boxShadow: '0 2px 4px rgba(15,23,42,0.05), 0 14px 32px -8px rgba(15,23,42,0.25)',
         }}
-        transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
         className="relative overflow-hidden rounded-xl bg-slate-900 dark:bg-[#12161c] p-4 sm:p-6 text-white shadow-panel flex flex-col justify-between h-28 sm:h-38"
       >
         {/* Background decorative sparkline pattern */}
@@ -97,7 +97,7 @@ export const StatCard: React.FC<StatCardProps> = ({
         y: -2,
         boxShadow: '0 2px 4px rgba(15,23,42,0.04), 0 12px 28px -6px rgba(15,23,42,0.12)',
       }}
-      transition={{ type: 'spring', stiffness: 400, damping: 25 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
       className="p-4 sm:p-6 rounded-xl glass-panel flex flex-col justify-between h-28 sm:h-38"
     >
       <div className="flex items-center justify-between">

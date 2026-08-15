@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion } from 'motion/react';
 import { PRICING_PLANS } from '../../data/pricingData';
 import { Zap, ArrowRight } from 'lucide-react';
 import { UpgradeModal } from '../modals/UpgradeModal';
@@ -12,7 +13,12 @@ export const DashboardUpgradeCard: React.FC = () => {
 
   return (
     <>
-      <div className="rounded-xl bg-slate-900 dark:bg-[#12161c] text-white p-6 sm:p-8 shadow-panel relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-white/5">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+        className="rounded-xl bg-slate-900 dark:bg-[#12161c] text-white p-6 sm:p-8 shadow-panel relative overflow-hidden flex flex-col md:flex-row items-center justify-between gap-6 border border-white/5"
+      >
         {/* Background Decorative Glow */}
         <div className="absolute -right-10 -bottom-10 w-60 h-60 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
 
@@ -39,7 +45,7 @@ export const DashboardUpgradeCard: React.FC = () => {
             <ArrowRight className="w-4 h-4" />
           </button>
         </div>
-      </div>
+      </motion.div>
 
       <UpgradeModal
         isOpen={isModalOpen}

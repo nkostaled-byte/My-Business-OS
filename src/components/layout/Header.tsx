@@ -346,7 +346,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 lg:left-64 z-20 glass-nav px-3 sm:px-6 py-2.5 sm:py-3 transition-colors border-b border-slate-200/60 dark:border-slate-800/60">
+    <header className="fixed top-0 left-0 right-0 lg:left-64 z-30 glass-nav px-3 sm:px-6 py-2.5 sm:py-3 transition-colors border-b border-slate-200/60 dark:border-slate-800/60">
       <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
         {/* Left Side: Mobile Menu Button & Search */}
         <div className="flex items-center gap-2 sm:gap-3 flex-1 max-w-md" ref={searchRef}>

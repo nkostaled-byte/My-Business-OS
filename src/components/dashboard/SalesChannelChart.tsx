@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'motion/react';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 import { Order } from '../../types';
 
@@ -20,7 +21,12 @@ export const SalesChannelChart: React.FC<SalesChannelChartProps> = ({ orders }) 
   const total = posRevenue + onlineRevenue;
 
   return (
-    <div className="p-6 rounded-xl glass-panel flex flex-col justify-between h-full">
+    <motion.div
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      className="p-6 rounded-xl glass-panel flex flex-col justify-between h-full"
+    >
       <div>
         <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Sales Channels</h3>
         <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
@@ -84,6 +90,6 @@ export const SalesChannelChart: React.FC<SalesChannelChartProps> = ({ orders }) 
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };

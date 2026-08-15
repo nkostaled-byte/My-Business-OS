@@ -15,7 +15,7 @@ import {
 
 export const MarketingPage: React.FC = () => {
   return (
-    <div className="selection:bg-indigo-100 selection:text-indigo-900 relative">
+    <div className="selection:bg-indigo-100 selection:text-indigo-900 relative mt-px">
       {/* Hero Section */}
       <section className="relative pt-12 pb-20 lg:pt-20 lg:pb-32 overflow-hidden">
         {/* Decorative background glow */}
@@ -176,9 +176,6 @@ export const MarketingPage: React.FC = () => {
       <section id="features" className="py-20 bg-white dark:bg-slate-900/50 border-t border-slate-200/60 dark:border-slate-800">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <h2 className="text-xs font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-2">
-              Everything in one OS
-            </h2>
             <p className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
               Designed specifically for service & product businesses
             </p>

@@ -22,10 +22,15 @@ export const OrderStatusBreakdown: React.FC<OrderStatusBreakdownProps> = ({ orde
 
   if (total === 0) {
     return (
-      <div className="p-6 rounded-xl glass-panel flex flex-col justify-between h-full">
+      <motion.div
+        initial={{ opacity: 0, y: 12 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+        className="p-6 rounded-xl glass-panel flex flex-col justify-between h-full"
+      >
         <h3 className="text-base font-bold text-slate-900 dark:text-slate-100">Order Status</h3>
         <div className="text-center py-8 text-xs text-slate-400">No orders recorded yet</div>
-      </div>
+      </motion.div>
     );
   }
 
