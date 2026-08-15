@@ -38,7 +38,7 @@ export const DashboardLayout: React.FC<{ role?: 'owner' | 'admin' | 'staff' | nu
         <div className="relative z-10 lg:pl-64 flex flex-col min-h-screen">
           <Header onOpenMobileMenu={() => setMobileOpen(true)} />
           
-          <main className="flex-1 pt-14 sm:pt-16 p-3 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto overflow-x-hidden">
+          <main className="flex-1 px-3 sm:px-6 lg:px-8 py-6 sm:py-8 max-w-7xl w-full mx-auto overflow-x-hidden">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}

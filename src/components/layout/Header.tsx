@@ -1,33 +1,22 @@
-import React, { useState, useRef, useCallback, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
-  Search,
   Bell,
   Sun,
   Moon,
   ChevronDown,
   Menu,
-  ExternalLink,
   Settings2,
   LogOut,
   Globe2,
-  Loader2,
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useData } from '../../context/DataContext';
-import { signOut, getCurrentAuthState } from '../../lib/auth-client';
+import { signOut } from '../../lib/auth-client';
 
 interface HeaderProps {
   onOpenMobileMenu: () => void;
-}
-
-interface SearchResult {
-  result_type: 'customer' | 'product' | 'submission' | 'invoice' | 'booking' | 'order';
-  id: string;
-  title: string;
-  subtitle: string;
-  created_at: string;
 }
 
 interface NotificationItem {
@@ -84,9 +73,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
     profileName, 
     profileEmail, 
     profileAvatar, 
-    refreshAll,
-    products,
-    customers,
     orders,
     bookings,
     invoices,
@@ -102,149 +88,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   const notificationsRef = useRef<HTMLDivElement>(null);
   const [profileOpen, setProfileOpen] = useState(false);
   const profileRef = useRef<HTMLDivElement>(null);
-  const [searchQuery, setSearchQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<SearchResult[]>([]);
-  const [searchOpen, setSearchOpen] = useState(false);
-  const [searching, setSearching] = useState(false);
-  const searchTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const searchRef = useRef<HTMLDivElement>(null);
-
-  // Global search with 300ms debounce - searches through local data
-  const performSearch = useCallback(async (q: string) => {
-    if (q.length < 2) {
-      setSearchResults([]);
-      setSearchOpen(false);
-      return;
-    }
-
-    setSearching(true);
-    try {
-      const query = q.toLowerCase();
-      const results: SearchResult[] = [];
-
-      // Search products
-      products.forEach(p => {
-        if (p.name.toLowerCase().includes(query) || p.sku.toLowerCase().includes(query)) {
-          results.push({
-            result_type: 'product',
-            id: p.id,
-            title: p.name,
-            subtitle: `SKU: ${p.sku} • Stock: ${p.stock}`,
-            created_at: '',
-          });
-        }
-      });
-
-      // Search customers
-      customers.forEach(c => {
-        if (c.name.toLowerCase().includes(query) || c.email.toLowerCase().includes(query)) {
-          results.push({
-            result_type: 'customer',
-            id: c.id,
-            title: c.name,
-            subtitle: c.email,
-            created_at: '',
-          });
-        }
-      });
-
-      // Search orders
-      orders.forEach(o => {
-        if (o.orderNumber.toLowerCase().includes(query) || o.customerName.toLowerCase().includes(query)) {
-          results.push({
-            result_type: 'order',
-            id: o.id,
-            title: o.orderNumber,
-            subtitle: `${o.customerName} • R${o.totalAmount}`,
-            created_at: o.createdAt,
-          });
-        }
-      });
-
-      // Search bookings
-      bookings.forEach(b => {
-        if (b.clientName.toLowerCase().includes(query) || b.serviceName.toLowerCase().includes(query) || b.bookingCode.toLowerCase().includes(query)) {
-          results.push({
-            result_type: 'booking',
-            id: b.id,
-            title: b.bookingCode,
-            subtitle: `${b.clientName} • ${b.serviceName}`,
-            created_at: b.date,
-          });
-        }
-      });
-
-      // Search invoices
-      invoices.forEach(inv => {
-        if (inv.invoiceNumber.toLowerCase().includes(query) || (inv.clientName || '').toLowerCase().includes(query)) {
-          results.push({
-            result_type: 'invoice',
-            id: inv.id,
-            title: inv.invoiceNumber,
-            subtitle: `${inv.clientName || 'Unknown'} • R${inv.total || 0}`,
-            created_at: '',
-          });
-        }
-      });
-
-      // Search form submissions
-      forms.forEach(f => {
-        if (f.senderName.toLowerCase().includes(query) || f.formName.toLowerCase().includes(query) || f.senderEmail.toLowerCase().includes(query)) {
-          results.push({
-            result_type: 'submission',
-            id: f.id,
-            title: f.senderName,
-            subtitle: `${f.formName} • ${f.senderEmail}`,
-            created_at: f.submittedAt,
-          });
-        }
-      });
-
-      // Limit to top 10 results
-      setSearchResults(results.slice(0, 10));
-      setSearchOpen(results.length > 0);
-    } catch {
-      setSearchResults([]);
-    } finally {
-      setSearching(false);
-    }
-  }, [products, customers, orders, bookings, invoices, forms]);
-
-  const handleSearchChange = (value: string) => {
-    setSearchQuery(value);
-    if (searchTimeoutRef.current) {
-      clearTimeout(searchTimeoutRef.current);
-    }
-    searchTimeoutRef.current = setTimeout(() => {
-      performSearch(value);
-    }, 300);
-  };
-
-  const handleSearchResultClick = (result: SearchResult) => {
-    setSearchOpen(false);
-    setSearchQuery('');
-    const resourceMap: Record<string, string> = {
-      customer: '/app/customers',
-      product: '/app/products',
-      submission: '/app/forms',
-      invoice: '/app/invoices',
-      booking: '/app/bookings',
-      order: '/app/orders',
-    };
-    const path = resourceMap[result.result_type] || '/app';
-    navigate(path);
-  };
-
-  // Close search on click outside
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node)) {
-        setSearchOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
-  }, []);
 
   // Close notifications on click outside
   useEffect(() => {
@@ -359,10 +202,10 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 glass-nav px-3 sm:px-6 py-2.5 sm:py-3 transition-colors border-b border-slate-200/60 dark:border-slate-800/60">
+    <header className="sticky top-0 z-20 glass-nav px-3 sm:px-6 py-2.5 sm:py-3 transition-colors border-b border-slate-200/60 dark:border-slate-800/60">
       <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
-        {/* Left Side: Mobile Menu Button & Search */}
-        <div className="flex items-center gap-2 sm:gap-3 flex-1 max-w-md" ref={searchRef}>
+        {/* Left Side: Mobile Menu Button */}
+        <div className="flex items-center gap-2 sm:gap-3">
           <motion.button
             whileTap={{ scale: 0.9 }}
             onClick={onOpenMobileMenu}
@@ -371,61 +214,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
           >
             <Menu className="w-5 h-5" />
           </motion.button>
-
-          <div className="relative w-full">
-            <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-            <input
-              type="text"
-              placeholder="Search anything..."
-              value={searchQuery}
-              onChange={(e) => handleSearchChange(e.target.value)}
-              onFocus={() => { if (searchResults.length > 0) setSearchOpen(true); }}
-              className="w-full pl-9 pr-12 py-2 glass-subtle rounded-lg text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 shadow-panel focus:outline-hidden focus:ring-2 focus:ring-indigo-500/20 transition-all"
-            />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 hidden sm:flex items-center gap-0.5 px-1.5 py-0.5 rounded-md bg-slate-50 dark:bg-white/5 border border-slate-200 dark:border-white/10 text-[10px] font-mono font-medium text-slate-400 shadow-panel">
-              ⌘K
-            </div>
-
-            {/* Search Results Dropdown */}
-            <AnimatePresence>
-              {searchOpen && (
-                <motion.div
-                  initial={{ opacity: 0, y: -4 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -4 }}
-                  transition={{ duration: 0.15 }}
-                  className="absolute top-full left-0 right-0 mt-1 rounded-lg glass-strong py-1.5 z-50 max-h-64 overflow-y-auto"
-                >
-                  {searching && (
-                    <div className="flex items-center justify-center py-3">
-                      <Loader2 className="w-4 h-4 animate-spin text-slate-400" />
-                    </div>
-                  )}
-                  {!searching && searchResults.length === 0 && (
-                    <div className="px-3 py-3 text-xs text-slate-400 text-center">
-                      No results found
-                    </div>
-                  )}
-                  {!searching && searchResults.map((result) => (
-                    <button
-                      key={`${result.result_type}-${result.id}`}
-                      onClick={() => handleSearchResultClick(result)}
-                      className="w-full text-left px-3 py-2 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer"
-                    >
-                      <p className="text-xs font-medium text-slate-800 dark:text-slate-200 truncate">
-                        {result.title}
-                      </p>
-                      <p className="text-[11px] text-slate-400 flex items-center gap-1.5 mt-0.5">
-                        <span className="capitalize">{result.result_type}</span>
-                        <span>·</span>
-                        <span>{result.subtitle}</span>
-                      </p>
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
         </div>
 
         {/* Right Side: Theme Toggle, Notifications, Profile */}
