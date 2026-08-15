@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { Building2, ShieldCheck, Heart, Award, ArrowRight } from 'lucide-react';
 
 export const CompanyPage: React.FC = () => {
@@ -15,29 +16,44 @@ export const CompanyPage: React.FC = () => {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div className="glass-panel p-8 rounded-3xl">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+          className="glass-panel p-8 rounded-3xl"
+        >
           <ShieldCheck className="w-10 h-10 text-indigo-600 mb-4" />
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Security & Reliability</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
             Encrypted data storage, 99.9% uptime SLA, and automated daily backups for peace of mind.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="glass-panel p-8 rounded-3xl">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
+          className="glass-panel p-8 rounded-3xl"
+        >
           <Heart className="w-10 h-10 text-indigo-600 mb-4" />
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Customer First</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
             Dedicated customer support team ready to assist with onboardings, training, and custom setups.
           </p>
-        </div>
+        </motion.div>
 
-        <div className="glass-panel p-8 rounded-3xl">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.25, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
+          className="glass-panel p-8 rounded-3xl"
+        >
           <Award className="w-10 h-10 text-indigo-600 mb-4" />
           <h3 className="text-lg font-bold text-slate-900 dark:text-white mb-2">Constant Innovation</h3>
           <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
             Bi-weekly feature updates driven by user feedback and business requirements.
           </p>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

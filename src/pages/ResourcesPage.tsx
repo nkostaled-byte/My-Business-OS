@@ -1,5 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import { motion } from 'motion/react';
 import { BookOpen, Video, FileText, HelpCircle, ArrowRight } from 'lucide-react';
 
 export const ResourcesPage: React.FC = () => {
@@ -34,8 +35,11 @@ export const ResourcesPage: React.FC = () => {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
         {articles.map((art, idx) => (
-          <div
+          <motion.div
             key={idx}
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.25, delay: idx * 0.06, ease: [0.16, 1, 0.3, 1] }}
             className="glass-panel p-8 rounded-3xl transition-all flex flex-col justify-between"
           >
             <div>
@@ -56,7 +60,7 @@ export const ResourcesPage: React.FC = () => {
               <span>Read article</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </a>
-          </div>
+          </motion.div>
         ))}
       </div>
     </div>

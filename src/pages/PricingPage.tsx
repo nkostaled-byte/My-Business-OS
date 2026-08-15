@@ -210,13 +210,16 @@ export const PricingPage: React.FC = () => {
 
         {/* Pricing Cards Grid */}
         <div id="pricing-cards" className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
-          {PRICING_PLANS.map((plan) => {
+          {PRICING_PLANS.map((plan, idx) => {
             const price = isYearly ? plan.yearlyPrice : plan.monthlyPrice;
             const billingText = isYearly ? plan.yearlyBillingText : plan.monthlyBillingText;
 
             return (
-              <div
+              <motion.div
                 key={plan.id}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: idx * 0.06, ease: [0.16, 1, 0.3, 1] }}
                 className={`glass-panel rounded-3xl p-5 sm:p-6 flex flex-col justify-between transition-all relative ${
                   plan.isPopular
                     ? 'border-2 border-indigo-500 shadow-indigo-500/20 lg:-translate-y-2'
@@ -291,7 +294,7 @@ export const PricingPage: React.FC = () => {
                     </button>
                   )}
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
@@ -300,8 +303,11 @@ export const PricingPage: React.FC = () => {
         <div className="pt-8 max-w-6xl mx-auto">
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[...sideFeaturesLeft, ...sideFeaturesRight].map((feat, idx) => (
-              <div
+              <motion.div
                 key={idx}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.25, delay: idx * 0.06, ease: [0.16, 1, 0.3, 1] }}
                 className="glass-panel p-6 rounded-3xl flex items-start gap-4"
               >
                 <div className="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
@@ -313,7 +319,7 @@ export const PricingPage: React.FC = () => {
                     {feat.desc}
                   </p>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
