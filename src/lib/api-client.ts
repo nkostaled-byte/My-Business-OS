@@ -494,6 +494,18 @@ export const api = {
   ): Promise<ApiResponse<{ plan?: string; subscription_active?: boolean; hosting_plan?: string | null }>> {
     return this.post('/api/paystack/cancel', { product });
   },
+
+  // ─── AI Chat ─────────────────────────────────────────────────────
+
+  /**
+   * Send a message to the AI assistant
+   * POST /api/ai/chat
+   */
+  async aiChat(
+    message: string
+  ): Promise<ApiResponse<{ reply: string; tools_used: string[] }>> {
+    return this.post('/api/ai/chat', { message });
+  },
 };
 
 export default api;

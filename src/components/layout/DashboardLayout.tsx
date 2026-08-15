@@ -7,6 +7,7 @@ import { ToastProvider } from '../../context/ToastContext';
 import { FloatingActionButton } from '../common/FloatingActionButton';
 import { UpgradeRequired } from '../common/UpgradeRequired';
 import { AppBackdrop } from '../common/AppBackdrop';
+import { AIChat } from '../common/AIChat';
 import { useData } from '../../context/DataContext';
 import { getPageMinPlan, getPlanTier } from '../../config/plans';
 
@@ -54,6 +55,7 @@ export const DashboardLayout: React.FC<{ role?: 'owner' | 'admin' | 'staff' | nu
         </div>
 
         {!locked && <FloatingActionButton />}
+        {!locked && <AIChat />}
       </div>
     </ToastProvider>
   );
