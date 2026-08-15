@@ -80,6 +80,17 @@ export const AIChat: React.FC = () => {
     return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  const cleanMarkdown = (text: string): string => {
+    return text
+      .replace(/\*\*(.+?)\*\*/g, '$1')
+      .replace(/\*(.+?)\*/g, '$1')
+      .replace(/__(.+?)__/g, '$1')
+      .replace(/_(.+?)_/g, '$1')
+      .replace(/^#{1,6}\s+/gm, '')
+      .replace(/`(.+?)`/g, '$1')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+  };
+
   const renderMessage = (msg: ChatMessage) => {
     const isUser = msg.role === 'user';
 
@@ -117,14 +128,7 @@ export const AIChat: React.FC = () => {
                 <span className="text-[10px] font-bold uppercase">Error</span>
               </div>
             )}
-            <p className="whitespace-pre-wrap">{msg.content}</p>
-            {msg.toolsUsed && msg.toolsUsed.length > 0 && (
-              <div className="mt-2 pt-1.5 border-t border-slate-200/40 dark:border-slate-700/40">
-                <span className="text-[9px] text-slate-400 dark:text-slate-500 font-medium">
-                  Data: {msg.toolsUsed.join(', ')}
-                </span>
-              </div>
-            )}
+            <p className="whitespace-pre-wrap">{cleanMarkdown(msg.content)}</p>
           </div>
           <span className={`block text-[9px] text-slate-400 dark:text-slate-500 mt-1 ${isUser ? 'text-right' : 'text-left'}`}>
             {formatTime(msg.timestamp)}
