@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { usePostHog } from 'posthog-js/react';
+import posthog from './lib/posthog';
 import { ThemeProvider } from './context/ThemeContext';
 import { DataProvider } from './context/DataContext';
 import { ToastProvider } from './context/ToastContext';
@@ -46,10 +46,8 @@ import { PaystackCallbackPage } from './pages/PaystackCallbackPage';
 // ─── User Identification ──────────────────────────────────────────
 
 function UserIdentifier({ authState }: { authState: AuthState }) {
-  const posthog = usePostHog();
-
   useEffect(() => {
-    if (!posthog) return;
+    if (!posthog.__loaded) return;
     if (authState.isAuthenticated && authState.user) {
       posthog.identify(authState.user.id, {
         email: authState.user.email || undefined,
@@ -57,7 +55,7 @@ function UserIdentifier({ authState }: { authState: AuthState }) {
     } else {
       posthog.reset();
     }
-  }, [authState.isAuthenticated, authState.user, posthog]);
+  }, [authState.isAuthenticated, authState.user]);
 
   return null;
 }

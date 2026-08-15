@@ -1,16 +1,15 @@
 import React, { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { usePostHog } from 'posthog-js/react';
+import posthog from '../../lib/posthog';
 
 export const PageViewTracker: React.FC = () => {
   const location = useLocation();
-  const posthog = usePostHog();
 
   useEffect(() => {
-    if (posthog) {
+    if (posthog.__loaded) {
       posthog.capture('$pageview');
     }
-  }, [location.pathname, posthog]);
+  }, [location.pathname]);
 
   return null;
 };

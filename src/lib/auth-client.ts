@@ -16,7 +16,7 @@
 
 import { createClient, SupabaseClient, Session, AuthResponse, User } from '@supabase/supabase-js';
 import { storeToken, clearToken, api } from './api-client';
-import { getPostHog } from './posthog';
+import posthog from './posthog';
 
 // ─── Supabase Client ──────────────────────────────────────────────
 
@@ -373,8 +373,7 @@ export async function signInWithGoogle(): Promise<void> {
     },
   });
   if (error) throw error;
-  const ph = getPostHog();
-  if (ph) ph.capture('user_signed_in', { method: 'google' });
+  if (posthog.__loaded) posthog.capture('user_signed_in', { method: 'google' });
 }
 
 /**
@@ -383,9 +382,8 @@ export async function signInWithGoogle(): Promise<void> {
 export async function signInWithEmail(email: string, password: string): Promise<AuthResponse> {
   const supabase = getSupabaseClient();
   const response = await supabase.auth.signInWithPassword({ email, password });
-  if (response.data.user) {
-    const ph = getPostHog();
-    if (ph) ph.capture('user_signed_in', { method: 'email' });
+  if (response.data.user && posthog.__loaded) {
+    posthog.capture('user_signed_in', { method: 'email' });
   }
   return response;
 }
@@ -396,9 +394,8 @@ export async function signInWithEmail(email: string, password: string): Promise<
 export async function signUpWithEmail(email: string, password: string): Promise<AuthResponse> {
   const supabase = getSupabaseClient();
   const response = await supabase.auth.signUp({ email, password });
-  if (response.data.user) {
-    const ph = getPostHog();
-    if (ph) ph.capture('user_signed_up', { method: 'email' });
+  if (response.data.user && posthog.__loaded) {
+    posthog.capture('user_signed_up', { method: 'email' });
   }
   return response;
 }
