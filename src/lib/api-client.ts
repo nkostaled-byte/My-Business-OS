@@ -525,7 +525,19 @@ export const api = {
   async confirmAiAction(
     actionId: string,
     confirmed: boolean = true
-  ): Promise<ApiResponse<{ reply: string; action_type: string; status: string }>> {
+  ): Promise<ApiResponse<{
+    reply: string;
+    action_type: string;
+    status: string;
+    type?: string;
+    booking?: {
+      id: string;
+      customer_id?: string;
+      service_id?: string;
+      date?: string;
+      time?: string;
+    } | null;
+  }>> {
     return this.post('/api/ai/confirm', { action_id: actionId, confirmed });
   },
 };

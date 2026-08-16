@@ -207,7 +207,7 @@ export const AIChat: React.FC = () => {
                   : 'bg-indigo-600 hover:bg-indigo-500'
               }`}
             >
-              Confirm
+              {isBooking ? 'Confirm booking' : 'Confirm'}
             </button>
             <button
               onClick={() => handleConfirmAction(action, false)}

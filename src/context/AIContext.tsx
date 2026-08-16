@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import api from '../lib/api-client';
 import posthog from '../lib/posthog';
+import { useData } from './DataContext';
 
 export interface PendingAction {
   id: string;
@@ -109,10 +110,19 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   const processingRef = useRef(false);
   const pendingActionRef = useRef<PendingAction | null>(null);
   const messagesRef = useRef<ChatMessage[]>([]);
+  const { refreshResource } = useData();
 
   useEffect(() => {
     messagesRef.current = messages;
   }, [messages]);
+
+  const refreshCalendar = useCallback(async () => {
+    try {
+      await Promise.all([refreshResource('bookings'), refreshResource('customers')]);
+    } catch (err) {
+      console.error('[AIContext] Failed to refresh calendar data:', err);
+    }
+  }, [refreshResource]);
 
   const openChat = useCallback(() => {
     setIsOpen(true);
@@ -176,6 +186,10 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
                 : msg
             ));
             setMessages(prev => [...prev, resultMsg]);
+
+            if (data.status === 'completed' && data.action_type === 'create_booking') {
+              refreshCalendar();
+            }
 
             if (posthog.__loaded && data.status === 'completed') {
               posthog.capture('ai_write_action_completed', {
@@ -266,6 +280,9 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
               : msg
           ));
           pendingActionRef.current = null;
+          if (data.status === 'completed' && data.action_type === 'create_booking') {
+            refreshCalendar();
+          }
           if (posthog.__loaded && data.status === 'completed') {
             posthog.capture('ai_write_action_completed', {
               action_type: data.action_type,
@@ -342,6 +359,10 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
             : msg
         ));
         setMessages(prev => [...prev, resultMsg]);
+
+        if (data.status === 'completed' && data.action_type === 'create_booking') {
+          refreshCalendar();
+        }
 
         if (posthog.__loaded && data.status === 'completed') {
           posthog.capture('ai_write_action_completed', {
