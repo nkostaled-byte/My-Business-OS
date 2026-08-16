@@ -15,6 +15,7 @@ import {
 export const AIChat: React.FC = () => {
   const { messages, isOpen, isProcessing, openChat, closeChat, sendMessage, confirmAction, clearMessages } = useAI();
   const [input, setInput] = useState('');
+  const [processingActionId, setProcessingActionId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
@@ -93,11 +94,29 @@ export const AIChat: React.FC = () => {
       .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
   };
 
-  const renderConfirmationCard = (action: PendingAction, status?: ChatMessage['actionStatus']) => {
-    if (status === 'completed' || status === 'cancelled') return null;
+  const handleConfirmAction = async (action: PendingAction, confirmed: boolean) => {
+    if (isProcessing || processingActionId) return;
+    setProcessingActionId(action.id);
+    try {
+      await confirmAction(action.id, confirmed);
+    } finally {
+      setProcessingActionId(null);
+    }
+  };
 
+  const renderConfirmationCard = (action: PendingAction, status?: ChatMessage['actionStatus']) => {
+    const isCompleted = status === 'completed';
+    const isCancelled = status === 'cancelled';
     const isFailed = status === 'failed';
-    const fieldEntries = Object.entries(action.fields);
+    const isProcessingAction = processingActionId === action.id;
+    const isBooking = action.type === 'create_booking';
+    const fieldEntries = Object.entries(action.fields || {});
+
+    const statusLabel = isCompleted
+      ? (isBooking ? 'Booking confirmed' : `${action.label} completed`)
+      : isCancelled
+      ? (isBooking ? 'Booking cancelled' : `${action.label} cancelled`)
+      : '';
 
     return (
       <motion.div
@@ -115,7 +134,7 @@ export const AIChat: React.FC = () => {
           {action.destructive ? (
             <ShieldAlert className={`w-3.5 h-3.5 ${isFailed ? 'text-rose-500' : 'text-rose-600 dark:text-rose-400'}`} />
           ) : (
-            <Check className={`w-3.5 h-3.5 ${isFailed ? 'text-rose-500' : 'text-slate-500 dark:text-slate-400'}`} />
+            <Check className={`w-3.5 h-3.5 ${isFailed ? 'text-rose-500' : isCompleted ? 'text-emerald-500' : 'text-slate-500 dark:text-slate-400'}`} />
           )}
           <span className={`text-[11px] font-semibold ${
             action.destructive
@@ -145,26 +164,57 @@ export const AIChat: React.FC = () => {
           ))}
         </div>
 
-        {/* Actions */}
-        {status !== 'failed' && (
+        {/* Status / Actions */}
+        {isCompleted || isCancelled ? (
+          <div className="px-3 py-2.5 border-t border-slate-100 dark:border-slate-700">
+            <div className="flex items-center gap-2">
+              {isCompleted ? (
+                <Check className="w-3.5 h-3.5 text-emerald-500" />
+              ) : (
+                <X className="w-3.5 h-3.5 text-slate-400" />
+              )}
+              <span className={`text-[11px] font-semibold ${
+                isCompleted ? 'text-emerald-600 dark:text-emerald-400' : 'text-slate-500 dark:text-slate-400'
+              }`}>
+                {statusLabel}
+              </span>
+            </div>
+          </div>
+        ) : isFailed ? (
+          <div className="px-3 py-2.5 border-t border-slate-100 dark:border-slate-700">
+            <div className="flex items-center gap-2">
+              <AlertCircle className="w-3.5 h-3.5 text-rose-500" />
+              <span className="text-[11px] font-semibold text-rose-600 dark:text-rose-400">
+                Action failed
+              </span>
+            </div>
+          </div>
+        ) : isProcessingAction ? (
+          <div className="px-3 py-2.5 border-t border-slate-100 dark:border-slate-700 flex items-center justify-center gap-2">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-500" />
+            <span className="text-[11px] font-semibold text-slate-600 dark:text-slate-300">
+              {isBooking ? 'Creating booking…' : 'Processing…'}
+            </span>
+          </div>
+        ) : (
           <div className="px-3 py-2 border-t border-slate-100 dark:border-slate-700 flex items-center gap-2">
             <button
-              onClick={() => confirmAction(action.id, false)}
-              disabled={isProcessing}
-              className="flex-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer disabled:opacity-50 border border-slate-200 dark:border-slate-700"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={() => confirmAction(action.id, true)}
-              disabled={isProcessing}
+              onClick={() => handleConfirmAction(action, true)}
+              disabled={isProcessing || !!processingActionId}
               className={`flex-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold text-white transition-colors cursor-pointer disabled:opacity-50 ${
                 action.destructive
                   ? 'bg-rose-600 hover:bg-rose-500'
                   : 'bg-indigo-600 hover:bg-indigo-500'
               }`}
             >
-              {action.destructive ? 'Confirm' : 'Confirm'}
+              Confirm
+            </button>
+            <button
+              onClick={() => handleConfirmAction(action, false)}
+              disabled={isProcessing || !!processingActionId}
+              className="flex-1 px-3 py-1.5 rounded-lg text-[11px] font-semibold text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer disabled:opacity-50 border border-slate-200 dark:border-slate-700"
+            >
+              Cancel
             </button>
           </div>
         )}
