@@ -44,6 +44,7 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
   const [isOpen, setIsOpen] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
   const processingRef = useRef(false);
+  const pendingActionRef = useRef<PendingAction | null>(null);
 
   const openChat = useCallback(() => {
     setIsOpen(true);
@@ -58,13 +59,113 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
   const sendMessage = useCallback(async (message: string) => {
     if (processingRef.current || !message.trim()) return;
+
+    const trimmedMessage = message.trim();
+    const lowerMessage = trimmedMessage.toLowerCase();
+
+    // Check if there's a pending action and user is confirming/cancelling
+    if (pendingActionRef.current) {
+      const confirmKeywords = ['yes', 'confirm', 'ok', 'okay', 'sure', 'do it', 'go ahead', 'proceed', 'yep', 'yeah'];
+      const cancelKeywords = ['no', 'cancel', 'nevermind', 'never mind', 'dont', "don't", 'stop', 'nope', 'nah'];
+
+      const isConfirm = confirmKeywords.some(kw => lowerMessage === kw || lowerMessage.includes(kw));
+      const isCancel = cancelKeywords.some(kw => lowerMessage === kw || lowerMessage.includes(kw));
+
+      if (isConfirm || isCancel) {
+        const actionId = pendingActionRef.current.id;
+        const confirmed = isConfirm;
+        pendingActionRef.current = null; // Clear immediately to prevent double-processing
+
+        processingRef.current = true;
+        setIsProcessing(true);
+
+        const userMsg: ChatMessage = {
+          id: generateMessageId(),
+          role: 'user',
+          content: trimmedMessage,
+          timestamp: new Date(),
+        };
+        setMessages(prev => [...prev, userMsg]);
+
+        if (posthog.__loaded) {
+          posthog.capture(confirmed ? 'ai_write_action_confirmed' : 'ai_write_action_cancelled', {
+            action_id: actionId,
+          });
+        }
+
+        try {
+          const result = await api.confirmAiAction(actionId, confirmed);
+
+          if (result.success && result.data) {
+            const data = result.data;
+            const resultMsg: ChatMessage = {
+              id: generateMessageId(),
+              role: 'assistant',
+              content: data.reply,
+              timestamp: new Date(),
+              actionStatus: data.status === 'completed' ? 'completed' : data.status === 'cancelled' ? 'cancelled' : 'failed',
+            };
+            setMessages(prev => prev.map(msg =>
+              msg.pendingAction?.id === actionId
+                ? { ...msg, actionStatus: data.status as ChatMessage['actionStatus'] }
+                : msg
+            ));
+            setMessages(prev => [...prev, resultMsg]);
+
+            if (posthog.__loaded && data.status === 'completed') {
+              posthog.capture('ai_write_action_completed', {
+                action_type: data.action_type,
+              });
+            } else if (posthog.__loaded && data.status === 'failed') {
+              posthog.capture('ai_write_action_failed', {
+                action_type: data.action_type,
+              });
+            }
+          } else {
+            const errorMsg: ChatMessage = {
+              id: generateMessageId(),
+              role: 'assistant',
+              content: result.error || 'Sorry, the action could not be completed. Please try again.',
+              timestamp: new Date(),
+              isError: true,
+            };
+            setMessages(prev => prev.map(msg =>
+              msg.pendingAction?.id === actionId ? { ...msg, actionStatus: 'failed' } : msg
+            ));
+            setMessages(prev => [...prev, errorMsg]);
+
+            if (posthog.__loaded) {
+              posthog.capture('ai_write_action_failed');
+            }
+          }
+        } catch {
+          const errorMsg: ChatMessage = {
+            id: generateMessageId(),
+            role: 'assistant',
+            content: 'Sorry, the action could not be completed. Please try again.',
+            timestamp: new Date(),
+            isError: true,
+          };
+          setMessages(prev => prev.map(msg =>
+            msg.pendingAction?.id === actionId ? { ...msg, actionStatus: 'failed' } : msg
+          ));
+          setMessages(prev => [...prev, errorMsg]);
+        } finally {
+          setIsProcessing(false);
+          processingRef.current = false;
+        }
+        return;
+      }
+    }
+
+    // Normal message flow
     processingRef.current = true;
     setIsProcessing(true);
 
     const userMsg: ChatMessage = {
       id: generateMessageId(),
       role: 'user',
-      content: message.trim(),
+      content: trimmedMessage,
       timestamp: new Date(),
     };
 
@@ -75,7 +176,7 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
     }
 
     try {
-      const result = await api.aiChat(message.trim());
+      const result = await api.aiChat(trimmedMessage);
 
       if (result.success && result.data) {
         const assistantMsg: ChatMessage = {
@@ -88,10 +189,16 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
         };
         setMessages(prev => [...prev, assistantMsg]);
 
-        if (posthog.__loaded && result.data.pending_action) {
-          posthog.capture('ai_write_action_requested', {
-            action_type: result.data.pending_action.type,
-          });
+        // Update the pending action ref
+        if (result.data.pending_action) {
+          pendingActionRef.current = result.data.pending_action;
+          if (posthog.__loaded) {
+            posthog.capture('ai_write_action_requested', {
+              action_type: result.data.pending_action.type,
+            });
+          }
+        } else {
+          pendingActionRef.current = null;
         }
       } else {
         const errorMsg: ChatMessage = {
@@ -120,6 +227,7 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
   const confirmAction = useCallback(async (actionId: string, confirmed: boolean) => {
     if (processingRef.current) return;
+    pendingActionRef.current = null; // Clear the pending action ref
     processingRef.current = true;
     setIsProcessing(true);
 
@@ -194,6 +302,7 @@ export const AIProvider: React.FC<{ children: React.ReactNode }> = ({ children }
 
   const clearMessages = useCallback(() => {
     setMessages([]);
+    pendingActionRef.current = null;
   }, []);
 
   return (
