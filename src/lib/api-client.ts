@@ -502,9 +502,20 @@ export const api = {
    * POST /api/ai/chat
    */
   async aiChat(
-    message: string
-  ): Promise<ApiResponse<{ reply: string; tools_used: string[]; pending_action?: PendingAction }>> {
-    return this.post('/api/ai/chat', { message });
+    message: string,
+    options?: { history?: { role: 'user' | 'assistant'; content: string }[] }
+  ): Promise<ApiResponse<{
+    reply: string;
+    tools_used: string[];
+    pending_action?: PendingAction;
+    action_id?: string;
+    action_type?: string;
+    status?: string;
+  }>> {
+    return this.post('/api/ai/chat', {
+      message,
+      history: options?.history || [],
+    });
   },
 
   /**
