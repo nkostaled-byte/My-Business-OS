@@ -8,6 +8,7 @@ import {
   signUpWithEmail,
   claimWithInviteCode,
   getCurrentAuthState,
+  initializeAuth,
   refreshAuthState,
 } from '../lib/auth-client';
 
@@ -45,7 +46,10 @@ export const LoginPage: React.FC = () => {
         setError(authError.message || 'Failed to sign in.');
         return;
       }
-      // Auth state listener will trigger navigation
+      const restored = await initializeAuth();
+      if (restored.isAuthenticated) {
+        navigate(restored.clientId ? '/app' : '/onboarding', { replace: true });
+      }
     } catch (err: any) {
       setError(err?.message || 'An unexpected error occurred.');
     } finally {

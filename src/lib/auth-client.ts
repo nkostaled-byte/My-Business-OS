@@ -54,6 +54,7 @@ export const DEFAULT_AUTH_STATE: AuthState = {
 type AuthListener = (state: AuthState) => void;
 let authListeners: AuthListener[] = [];
 let currentAuthState: AuthState = { ...DEFAULT_AUTH_STATE };
+let supabaseAuthListenerRegistered = false;
 
 export function subscribeToAuth(listener: AuthListener): () => void {
   authListeners.push(listener);
@@ -209,6 +210,75 @@ function makeUnauthenticatedState(): AuthState {
   };
 }
 
+function registerSupabaseAuthListener(supabase: SupabaseClient): void {
+  if (supabaseAuthListenerRegistered) return;
+  supabaseAuthListenerRegistered = true;
+
+  supabase.auth.onAuthStateChange(async (_event: string, session: Session | null) => {
+    console.log('[AUTH] onAuthStateChange fired', { event: _event, hasSession: !!session });
+
+    if (_event === 'INITIAL_SESSION') {
+      console.log('[AUTH] Skipping INITIAL_SESSION — handled by initializeAuth()');
+      return;
+    }
+
+    syncTokenFromSession(session);
+
+    if (!session?.user) {
+      const newState = makeUnauthenticatedState();
+      currentAuthState = newState;
+      notifyListeners(newState);
+      return;
+    }
+
+    const existingClientId = currentAuthState.clientId;
+    if (existingClientId) {
+      const newState: AuthState = {
+        user: session.user,
+        session,
+        clientId: existingClientId,
+        businessName: currentAuthState.businessName,
+        role: currentAuthState.role,
+        isAuthenticated: true,
+        isLoading: false,
+        authError: null,
+      };
+      currentAuthState = newState;
+      notifyListeners(newState);
+      return;
+    }
+
+    let clientId: string | null = null;
+    let businessName: string | null = null;
+    let role: AuthState['role'] = null;
+    let authError: string | null = null;
+    try {
+      const linkStatus = await checkClientLink(session.access_token);
+      if (linkStatus.linked && linkStatus.clientId) {
+        clientId = linkStatus.clientId;
+        businessName = linkStatus.businessName;
+        role = linkStatus.role;
+      }
+    } catch (err) {
+      console.warn('[AUTH] Auth event client-link lookup failed:', err);
+      authError = err instanceof Error ? err.message : 'Unable to verify business association.';
+    }
+
+    const newState: AuthState = {
+      user: session.user,
+      session,
+      clientId,
+      businessName,
+      role,
+      isAuthenticated: true,
+      isLoading: false,
+      authError,
+    };
+    currentAuthState = newState;
+    notifyListeners(newState);
+  });
+}
+
 export async function initializeAuth(): Promise<AuthState> {
   console.log('[AUTH] App initialization started');
 
@@ -241,6 +311,7 @@ export async function initializeAuth(): Promise<AuthState> {
 
 async function _initializeAuthInner(): Promise<AuthState> {
   const supabase = getSupabaseClient();
+  registerSupabaseAuthListener(supabase);
 
   try {
     console.log('[AUTH] Calling Supabase getSession()');
@@ -308,80 +379,6 @@ async function _initializeAuthInner(): Promise<AuthState> {
 
     currentAuthState = state;
     notifyListeners(state);
-
-    supabase.auth.onAuthStateChange(async (_event: string, session: Session | null) => {
-      console.log('[AUTH] onAuthStateChange fired', { event: _event, hasSession: !!session });
-
-      if (_event === 'INITIAL_SESSION') {
-        console.log('[AUTH] Skipping INITIAL_SESSION — handled by initializeAuth()');
-        return;
-      }
-
-      syncTokenFromSession(session);
-
-      if (!session?.user) {
-        const newState = makeUnauthenticatedState();
-        currentAuthState = newState;
-        notifyListeners(newState);
-        return;
-      }
-
-      const existingClientId = currentAuthState.clientId;
-      const existingBusinessName = currentAuthState.businessName;
-      const existingRole = currentAuthState.role;
-
-      if (existingClientId) {
-        console.log('[AUTH] Preserving existing client info', { clientId: existingClientId });
-        const newState: AuthState = {
-          user: session.user,
-          session,
-          clientId: existingClientId,
-          businessName: existingBusinessName,
-          role: existingRole,
-          isAuthenticated: true,
-          isLoading: false,
-          authError: null,
-        };
-        currentAuthState = newState;
-        notifyListeners(newState);
-        return;
-      }
-
-      let newClientId: string | null = null;
-      let newBusinessName: string | null = null;
-      let newRole: AuthState['role'] = null;
-      let authError: string | null = null;
-      try {
-        const linkStatus = await checkClientLink(session.access_token);
-        if (linkStatus.linked && linkStatus.clientId) {
-          newClientId = linkStatus.clientId;
-          newBusinessName = linkStatus.businessName;
-          newRole = linkStatus.role;
-        }
-      } catch (err) {
-        console.warn('[AUTH] onAuthStateChange checkClientLink() failed:', err);
-        authError = err instanceof Error ? err.message : 'Unable to verify business association.';
-        const persisted = getPersistedClientLink();
-        if (persisted.clientId) {
-          newClientId = persisted.clientId;
-          newBusinessName = persisted.businessName;
-        }
-      }
-
-      const newState: AuthState = {
-        user: session.user,
-        session,
-        clientId: newClientId,
-        businessName: newBusinessName,
-        role: newRole,
-        isAuthenticated: true,
-        isLoading: false,
-        authError,
-      };
-
-      currentAuthState = newState;
-      notifyListeners(newState);
-    });
 
     return state;
   } catch (err) {
