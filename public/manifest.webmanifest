@@ -1,0 +1,32 @@
+{
+  "name": "My Business OS",
+  "short_name": "MyBusinessOS",
+  "description": "Business management dashboard for bookings, orders, inventory, and more.",
+  "start_url": "/app",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "theme_color": "#4f46e5",
+  "background_color": "#0a0c0f",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "https://res.cloudinary.com/dvvugpu04/image/upload/w_192,h_192,c_fill/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://res.cloudinary.com/dvvugpu04/image/upload/w_512,h_512,c_fill/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "https://res.cloudinary.com/dvvugpu04/image/upload/w_512,h_512,c_fill/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

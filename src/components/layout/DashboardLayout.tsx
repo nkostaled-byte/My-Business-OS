@@ -32,14 +32,14 @@ export const DashboardLayout: React.FC<{ role?: 'owner' | 'admin' | 'staff' | nu
 
   return (
     <ToastProvider>
-      <div className="relative min-h-screen bg-[#f7f8fa] dark:bg-[#0a0c0f] text-slate-900 dark:text-slate-100 transition-colors font-sans">
+      <div className="relative min-h-screen min-h-dvh bg-[#f7f8fa] dark:bg-[#0a0c0f] text-slate-900 dark:text-slate-100 transition-colors font-sans">
         <AppBackdrop />
         <Sidebar mobileOpen={mobileOpen} onCloseMobile={() => setMobileOpen(false)} role={role} />
         
-        <div className="relative z-10 lg:pl-64 flex flex-col min-h-screen">
+        <div className="relative z-10 lg:pl-64 flex flex-col min-h-screen min-h-dvh">
           <Header onOpenMobileMenu={() => setMobileOpen(true)} />
           
-          <main className="flex-1 pt-20 sm:pt-24 px-3 sm:px-6 lg:px-8 pb-6 sm:pb-8 max-w-7xl w-full mx-auto overflow-x-hidden">
+          <main className="flex-1 pt-20 sm:pt-16 lg:pt-24 px-3 sm:px-6 lg:px-8 pb-24 sm:pb-8 max-w-7xl w-full mx-auto overflow-x-hidden" style={{ paddingTop: 'max(5rem, calc(env(safe-area-inset-top, 0px) + 4rem))' }}>
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}

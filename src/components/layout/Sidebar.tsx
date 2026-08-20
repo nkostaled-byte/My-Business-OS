@@ -107,6 +107,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
         className={`fixed top-0 bottom-0 left-0 z-40 w-64 glass-strong border-r border-slate-200/70 dark:border-white/5 flex flex-col justify-between transition-transform duration-300 ease-in-out lg:translate-x-0 ${
           mobileOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
+        style={{
+          paddingTop: 'env(safe-area-inset-top, 0px)',
+          paddingBottom: 'env(safe-area-inset-bottom, 0px)',
+        }}
       >
         {/* Top Header / Logo */}
         <div className="p-5 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
