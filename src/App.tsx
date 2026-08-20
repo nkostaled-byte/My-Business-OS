@@ -109,11 +109,37 @@ export default function App() {
   const [authState, setAuthState] = useState<AuthState>(DEFAULT_AUTH_STATE);
 
   useEffect(() => {
-    // Initialize auth session restore
-    initializeAuth().then(setAuthState);
+    console.log('[AUTH] App useEffect — starting auth initialization');
 
-    // Subscribe to auth changes
-    const unsubscribe = subscribeToAuth(setAuthState);
+    initializeAuth().then((state) => {
+      console.log('[AUTH] initializeAuth() resolved, setting state', {
+        isLoading: state.isLoading,
+        isAuthenticated: state.isAuthenticated,
+        hasUser: !!state.user,
+        hasClientId: !!state.clientId,
+      });
+      setAuthState(state);
+    }).catch((err) => {
+      console.error('[AUTH] initializeAuth() rejected:', err);
+      setAuthState({
+        user: null,
+        session: null,
+        clientId: null,
+        businessName: null,
+        role: null,
+        isAuthenticated: false,
+        isLoading: false,
+      });
+    });
+
+    const unsubscribe = subscribeToAuth((state) => {
+      console.log('[AUTH] Auth state changed via subscription', {
+        isLoading: state.isLoading,
+        isAuthenticated: state.isAuthenticated,
+        hasUser: !!state.user,
+      });
+      setAuthState(state);
+    });
     return unsubscribe;
   }, []);
 

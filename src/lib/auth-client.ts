@@ -1,24 +1,6 @@
-/**
- * Auth Client — Supabase Authentication & Session Management
- * ============================================================
- *
- * Manages Supabase Auth lifecycle for the dashboard:
- * - Google OAuth sign-in
- * - Email/password sign-in and sign-up
- * - Business linking (create or claim)
- * - Session persistence and auto-restore after refresh
- * - Logout
- *
- * Important: Authentication and business-linking are DECOUPLED.
- * A user can be authenticated without having a business (client_id).
- * The onboarding flow handles business creation/claiming.
- */
-
 import { createClient, SupabaseClient, Session, AuthResponse, User } from '@supabase/supabase-js';
 import { storeToken, clearToken, api } from './api-client';
 import posthog from './posthog';
-
-// ─── Supabase Client ──────────────────────────────────────────────
 
 const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL || '';
 const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY || '';
@@ -30,6 +12,7 @@ export function getSupabaseClient(): SupabaseClient {
     if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
       throw new Error('Missing Supabase credentials. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY.');
     }
+    console.log('[AUTH] Creating Supabase client', { url: SUPABASE_URL, hasAnonKey: !!SUPABASE_ANON_KEY });
     supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
       auth: {
         persistSession: true,
@@ -128,25 +111,37 @@ function getPersistedClientLink(): { clientId: string | null; businessName: stri
   }
 }
 
-// ─── Business Linking ─────────────────────────────────────────────
+const CLIENT_LINK_TIMEOUT_MS = 10_000;
 
-/**
- * Check if the authenticated user is already linked to a business.
- * Uses a lightweight GET endpoint — does NOT create anything.
- */
+function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
+  return new Promise<T>((resolve, reject) => {
+    const timer = setTimeout(() => {
+      reject(new Error(`[AUTH] Timeout: ${label} did not resolve within ${ms}ms`));
+    }, ms);
+    promise.then(
+      (val) => { clearTimeout(timer); resolve(val); },
+      (err) => { clearTimeout(timer); reject(err); }
+    );
+  });
+}
+
 export async function checkClientLink(): Promise<{ linked: boolean; clientId: string | null; businessName: string | null; role: 'owner' | 'admin' | 'staff' | null }> {
-  const result = await api.get<any>('/api/claim-account/status');
+  console.log('[AUTH] checkClientLink() started');
+  const result = await withTimeout(
+    api.get<any>('/api/claim-account/status'),
+    CLIENT_LINK_TIMEOUT_MS,
+    'checkClientLink'
+  );
+  console.log('[AUTH] checkClientLink() response received', { success: result.success, error: result.error });
   if (result.success) {
-    // Worker returns { success: true, linked: true, clientId: "...", businessName: "...", role: "..." }
-    // The api client returns the entire body as `result`, so properties are on `result` directly
     const linked = result.linked === true;
     const clientId = result.clientId || null;
     const businessName = result.businessName || null;
     const role = result.role || null;
-    // Persist to localStorage for tab-switch resilience
     if (linked && clientId) {
       persistClientLink(clientId, businessName);
     }
+    console.log('[AUTH] checkClientLink() result', { linked, clientId, businessName, role });
     return { linked, clientId, businessName, role };
   }
   return { linked: false, clientId: null, businessName: null, role: null };
@@ -191,52 +186,82 @@ export async function claimWithInviteCode(claimCode: string): Promise<{ status: 
   return result as unknown as { status: string; client?: any };
 }
 
-// ─── Core Auth Functions ──────────────────────────────────────────
+const AUTH_INIT_TIMEOUT_MS = 20_000;
 
-/**
- * Initialize auth — restore session on app mount.
- * Resolves business ownership from the Worker (database), NOT localStorage.
- * The Worker is the source of truth for business linking.
- */
+function makeUnauthenticatedState(): AuthState {
+  return {
+    user: null,
+    session: null,
+    clientId: null,
+    businessName: null,
+    role: null,
+    isAuthenticated: false,
+    isLoading: false,
+  };
+}
+
 export async function initializeAuth(): Promise<AuthState> {
+  console.log('[AUTH] App initialization started');
+
+  const safetyTimeout = new Promise<AuthState>((resolve) => {
+    setTimeout(() => {
+      console.error('[AUTH] SAFETY TIMEOUT: initializeAuth did not complete within', AUTH_INIT_TIMEOUT_MS, 'ms');
+      resolve(makeUnauthenticatedState());
+    }, AUTH_INIT_TIMEOUT_MS);
+  });
+
+  const authInit = _initializeAuthInner();
+
+  try {
+    const result = await Promise.race([authInit, safetyTimeout]);
+    console.log('[AUTH] Auth initialization completed', {
+      isAuthenticated: result.isAuthenticated,
+      isLoading: result.isLoading,
+      hasUser: !!result.user,
+      hasClientId: !!result.clientId,
+    });
+    return result;
+  } catch (err) {
+    console.error('[AUTH] Unexpected error in initializeAuth race:', err);
+    const errorState = makeUnauthenticatedState();
+    currentAuthState = errorState;
+    notifyListeners(errorState);
+    return errorState;
+  }
+}
+
+async function _initializeAuthInner(): Promise<AuthState> {
   const supabase = getSupabaseClient();
 
   try {
-    // Try to restore existing session
-    const { data: { session } } = await supabase.auth.getSession();
+    console.log('[AUTH] Calling Supabase getSession()');
+    const { data: { session }, error: sessionError } = await supabase.auth.getSession();
 
-    // ─── DIAGNOSTIC: Log session details ───────────────────────────
-    console.log('[Auth] initializeAuth session check:', {
-      hasSession: !!session,
+    if (sessionError) {
+      console.error('[AUTH] getSession() returned error:', sessionError.message);
+    }
+
+    console.log('[AUTH] getSession() resolved', {
+      sessionFound: !!session,
+      accessTokenAvailable: !!session?.access_token,
+      refreshTokenAvailable: !!session?.refresh_token,
       userId: session?.user?.id || null,
-      email: session?.user?.email || null,
-      accessTokenExists: !!session?.access_token,
-      accessTokenLength: session?.access_token?.length || 0,
-      accessTokenPreview: session?.access_token ? session.access_token.substring(0, 20) + '...' : null,
-      refreshTokenExists: !!session?.refresh_token,
     });
-    // ───────────────────────────────────────────────────────────────
 
     if (session) {
       syncTokenFromSession(session);
     }
 
     if (!session?.user) {
-      const state: AuthState = {
-        user: null,
-        session: null,
-        clientId: null,
-        businessName: null,
-        role: null,
-        isAuthenticated: false,
-        isLoading: false,
-      };
+      console.log('[AUTH] No valid session found — showing login');
+      const state = makeUnauthenticatedState();
       currentAuthState = state;
       notifyListeners(state);
       return state;
     }
 
-    // User is authenticated — resolve business ownership from the Worker (database)
+    console.log('[AUTH] Session found — calling checkClientLink()');
+
     let clientId: string | null = null;
     let businessName: string | null = null;
     let role: AuthState['role'] = null;
@@ -248,14 +273,12 @@ export async function initializeAuth(): Promise<AuthState> {
         businessName = linkStatus.businessName;
         role = linkStatus.role;
       }
+      console.log('[AUTH] Client ID resolved', { clientId, businessName, role });
     } catch (linkErr) {
-      // If the Worker is unreachable (e.g. cold start, tab switch), fall back
-      // to persisted client link from localStorage so the user isn't
-      // incorrectly redirected to onboarding.
-      console.warn('[Auth] Failed to check business link from Worker:', linkErr);
+      console.warn('[AUTH] checkClientLink() failed:', linkErr);
       const persisted = getPersistedClientLink();
       if (persisted.clientId) {
-        console.log('[Auth] Using persisted client link as fallback:', persisted);
+        console.log('[AUTH] Using persisted client link as fallback:', persisted);
         clientId = persisted.clientId;
         businessName = persisted.businessName;
       }
@@ -271,30 +294,20 @@ export async function initializeAuth(): Promise<AuthState> {
       isLoading: false,
     };
 
-    // Store in-memory for synchronous access
     currentAuthState = state;
     notifyListeners(state);
 
-    // Listen for auth state changes (sign in, sign out, token refresh)
     supabase.auth.onAuthStateChange(async (_event: string, session: Session | null) => {
+      console.log('[AUTH] onAuthStateChange fired', { event: _event, hasSession: !!session });
       syncTokenFromSession(session);
 
       if (!session?.user) {
-        const newState: AuthState = {
-          user: null,
-          session: null,
-          clientId: null,
-          businessName: null,
-          role: null,
-          isAuthenticated: false,
-          isLoading: false,
-        };
+        const newState = makeUnauthenticatedState();
         currentAuthState = newState;
         notifyListeners(newState);
         return;
       }
 
-      // Re-resolve business link from Worker on auth change
       let newClientId: string | null = null;
       let newBusinessName: string | null = null;
       let newRole: AuthState['role'] = null;
@@ -305,8 +318,8 @@ export async function initializeAuth(): Promise<AuthState> {
           newBusinessName = linkStatus.businessName;
           newRole = linkStatus.role;
         }
-      } catch {
-        // Worker unreachable — user will be redirected to onboarding
+      } catch (err) {
+        console.warn('[AUTH] onAuthStateChange checkClientLink() failed:', err);
       }
 
       const newState: AuthState = {
@@ -325,15 +338,9 @@ export async function initializeAuth(): Promise<AuthState> {
 
     return state;
   } catch (err) {
-    const errorState: AuthState = {
-      user: null,
-      session: null,
-      clientId: null,
-      businessName: null,
-      role: null,
-      isAuthenticated: false,
-      isLoading: false,
-    };
+    console.error('[AUTH] Error in _initializeAuthInner:', err);
+    const errorState = makeUnauthenticatedState();
+    currentAuthState = errorState;
     notifyListeners(errorState);
     return errorState;
   }

@@ -13,6 +13,7 @@
  */
 
 const BASE_URL = import.meta.env.VITE_WORKER_API_URL || '';
+const DEFAULT_FETCH_TIMEOUT_MS = 15_000;
 
 if (!BASE_URL) {
   console.warn('[API Client] VITE_WORKER_API_URL is not set. Worker calls will fail.');
@@ -25,11 +26,6 @@ const TOKEN_KEY = 'grafix_auth_token';
 export function getStoredToken(): string | null {
   try {
     const token = localStorage.getItem(TOKEN_KEY);
-    console.log('[API Client] getStoredToken()', {
-      found: token ? true : false,
-      length: token ? token.length : 0,
-      preview: token ? token.substring(0, 20) + '...' : null,
-    });
     return token;
   } catch {
     console.warn('[API Client] localStorage unavailable for getStoredToken');
@@ -40,10 +36,6 @@ export function getStoredToken(): string | null {
 export function storeToken(token: string): void {
   try {
     localStorage.setItem(TOKEN_KEY, token);
-    console.log('[API Client] Token stored:', {
-      length: token.length,
-      preview: token.substring(0, 20) + '...',
-    });
   } catch {
     console.warn('[API Client] localStorage unavailable for storeToken');
   }
@@ -147,6 +139,18 @@ function getAuthHeaders(): Record<string, string> {
   return {};
 }
 
+function createTimeoutSignal(existingSignal?: AbortSignal, timeoutMs: number = DEFAULT_FETCH_TIMEOUT_MS): { controller: AbortController; cleanup: () => void } {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
+  if (existingSignal) {
+    existingSignal.addEventListener('abort', () => controller.abort(), { once: true });
+  }
+  return {
+    controller,
+    cleanup: () => clearTimeout(timer),
+  };
+}
+
 async function handleResponse<T>(response: Response): Promise<ApiResponse<T>> {
   // Handle 204 No Content
   if (response.status === 204) {
@@ -198,31 +202,34 @@ export const api = {
     options?: { params?: Record<string, string>; signal?: AbortSignal }
   ): Promise<ApiResponse<T>> {
     const url = buildUrl(path, options?.params);
+    const { controller, cleanup } = createTimeoutSignal(options?.signal);
     try {
-      const headers = {
+      const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         ...getAuthHeaders(),
       };
       console.log(`[API Client] GET ${url}`, {
         headersKeys: Object.keys(headers),
-        hasAuth: !!headers.Authorization,
-        authPreview: headers.Authorization ? headers.Authorization.substring(0, 30) + '...' : null,
+        hasAuth: !!headers['Authorization'],
       });
       const response = await fetch(url, {
         method: 'GET',
         headers,
-        signal: options?.signal,
+        signal: controller.signal,
       });
+      cleanup();
       console.log(`[API Client] GET ${url} response:`, {
         status: response.status,
         statusText: response.statusText,
       });
       return handleResponse<T>(response);
     } catch (err: any) {
-      console.error(`[API Client] GET ${url} error:`, err?.message);
+      cleanup();
+      const isTimeout = err?.name === 'AbortError';
+      console.error(`[API Client] GET ${url} error:`, err?.message, isTimeout ? '(TIMEOUT)' : '');
       return {
         success: false,
-        error: err?.message || 'Network error',
+        error: isTimeout ? 'Request timed out' : (err?.message || 'Network error'),
       };
     }
   },
@@ -236,33 +243,35 @@ export const api = {
     options?: RequestOptions
   ): Promise<ApiResponse<T>> {
     const url = buildUrl(path, options?.params);
+    const { controller, cleanup } = createTimeoutSignal(options?.signal);
     try {
-      const headers = {
+      const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         ...getAuthHeaders(),
       };
       console.log(`[API Client] POST ${url}`, {
         headersKeys: Object.keys(headers),
-        hasAuth: !!headers.Authorization,
-        authPreview: headers.Authorization ? headers.Authorization.substring(0, 30) + '...' : null,
-        bodyPreview: body ? JSON.stringify(body).substring(0, 100) : null,
+        hasAuth: !!headers['Authorization'],
       });
       const response = await fetch(url, {
         method: 'POST',
         headers,
         body: body !== undefined ? JSON.stringify(body) : undefined,
-        signal: options?.signal,
+        signal: controller.signal,
       });
+      cleanup();
       console.log(`[API Client] POST ${url} response:`, {
         status: response.status,
         statusText: response.statusText,
       });
       return handleResponse<T>(response);
     } catch (err: any) {
-      console.error(`[API Client] POST ${url} error:`, err?.message);
+      cleanup();
+      const isTimeout = err?.name === 'AbortError';
+      console.error(`[API Client] POST ${url} error:`, err?.message, isTimeout ? '(TIMEOUT)' : '');
       return {
         success: false,
-        error: err?.message || 'Network error',
+        error: isTimeout ? 'Request timed out' : (err?.message || 'Network error'),
       };
     }
   },
@@ -276,34 +285,35 @@ export const api = {
     options?: RequestOptions
   ): Promise<ApiResponse<T>> {
     const url = buildUrl(path, options?.params);
+    const { controller, cleanup } = createTimeoutSignal(options?.signal);
     try {
-      const headers = {
+      const headers: Record<string, string> = {
         'Content-Type': 'application/json',
         ...getAuthHeaders(),
       };
       console.log(`[API Client] PUT ${url}`, {
         headersKeys: Object.keys(headers),
-        hasAuth: !!headers.Authorization,
-        bodyPreview: body ? JSON.stringify(body).substring(0, 100) : null,
+        hasAuth: !!headers['Authorization'],
       });
       const response = await fetch(url, {
         method: 'PUT',
         headers,
         body: body !== undefined ? JSON.stringify(body) : undefined,
-        signal: options?.signal,
+        signal: controller.signal,
       });
+      cleanup();
       console.log(`[API Client] PUT ${url} response:`, {
         status: response.status,
         statusText: response.statusText,
       });
-      const result = await handleResponse<T>(response);
-      console.log(`[API Client] PUT ${url} result:`, result);
-      return result;
+      return handleResponse<T>(response);
     } catch (err: any) {
-      console.error(`[API Client] PUT ${url} error:`, err?.message);
+      cleanup();
+      const isTimeout = err?.name === 'AbortError';
+      console.error(`[API Client] PUT ${url} error:`, err?.message, isTimeout ? '(TIMEOUT)' : '');
       return {
         success: false,
-        error: err?.message || 'Network error',
+        error: isTimeout ? 'Request timed out' : (err?.message || 'Network error'),
       };
     }
   },
@@ -327,6 +337,7 @@ export const api = {
     options?: { params?: Record<string, string>; signal?: AbortSignal }
   ): Promise<ApiResponse<T>> {
     const url = buildUrl(path, options?.params);
+    const { controller, cleanup } = createTimeoutSignal(options?.signal);
     try {
       const response = await fetch(url, {
         method: 'DELETE',
@@ -334,13 +345,16 @@ export const api = {
           'Content-Type': 'application/json',
           ...getAuthHeaders(),
         },
-        signal: options?.signal,
+        signal: controller.signal,
       });
+      cleanup();
       return handleResponse<T>(response);
     } catch (err: any) {
+      cleanup();
+      const isTimeout = err?.name === 'AbortError';
       return {
         success: false,
-        error: err?.message || 'Network error',
+        error: isTimeout ? 'Request timed out' : (err?.message || 'Network error'),
       };
     }
   },

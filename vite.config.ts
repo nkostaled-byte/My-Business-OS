@@ -19,6 +19,10 @@ export default defineConfig(() => {
           navigateFallback: '/index.html',
           runtimeCaching: [
             {
+              urlPattern: /^https:\/\/[^/]+\.supabase\.co\/.*/i,
+              handler: 'NetworkOnly',
+            },
+            {
               urlPattern: /^https:\/\/res\.cloudinary\.com\/.*/i,
               handler: 'CacheFirst',
               options: {
@@ -44,6 +48,8 @@ export default defineConfig(() => {
           navigateFallbackDenylist: [
             /^\/api\/.*/i,
             /^\/auth\/.*/i,
+            /^\/#access_token=.*/i,
+            /^\/#refresh_token=.*/i,
           ],
         },
       }),
