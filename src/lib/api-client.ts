@@ -131,8 +131,8 @@ function buildUrl(path: string, params?: Record<string, string>): string {
   return url.toString();
 }
 
-function getAuthHeaders(): Record<string, string> {
-  const token = getStoredToken();
+function getAuthHeaders(tokenOverride?: string): Record<string, string> {
+  const token = tokenOverride || getStoredToken();
   if (token) {
     return { Authorization: `Bearer ${token}` };
   }
@@ -199,14 +199,14 @@ export const api = {
    */
   async get<T = any>(
     path: string,
-    options?: { params?: Record<string, string>; signal?: AbortSignal }
+    options?: { params?: Record<string, string>; signal?: AbortSignal; authToken?: string }
   ): Promise<ApiResponse<T>> {
     const url = buildUrl(path, options?.params);
     const { controller, cleanup } = createTimeoutSignal(options?.signal);
     try {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
-        ...getAuthHeaders(),
+        ...getAuthHeaders(options?.authToken),
       };
       console.log(`[API Client] GET ${url}`, {
         headersKeys: Object.keys(headers),

@@ -75,6 +75,14 @@ function LoadingScreen({ message = 'Restoring session...' }: { message?: string 
   );
 }
 
+function AuthErrorScreen({ message }: { message: string }) {
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-slate-950 p-6">
+      <p className="max-w-md text-center text-sm text-slate-600 dark:text-slate-300">{message}</p>
+    </div>
+  );
+}
+
 // ─── Auth Guard ───────────────────────────────────────────────────
 
 function AuthGuard({ children, authState }: { children: React.ReactNode; authState: AuthState }) {
@@ -92,16 +100,30 @@ function AuthGuard({ children, authState }: { children: React.ReactNode; authSta
 // If no client_id, redirect to onboarding.
 
 function BusinessGuard({ children, authState }: { children: React.ReactNode; authState: AuthState }) {
+  console.log('[ROUTER] BusinessGuard', {
+    currentRoute: window.location.pathname,
+    isLoading: authState.isLoading,
+    authenticated: authState.isAuthenticated,
+    clientIdExists: !!authState.clientId,
+    authError: !!authState.authError,
+  });
   if (authState.isLoading) {
     return <LoadingScreen />;
   }
   if (!authState.isAuthenticated) {
+    console.log('[ROUTER] Redirecting to login:', true);
     return <Navigate to="/login" replace />;
+  }
+  if (authState.authError) {
+    console.error('[ROUTER] Client link resolution error:', authState.authError);
+    return <AuthErrorScreen message="We could not verify your business association. Check your connection and try again." />;
   }
   // If user is authenticated but has no client_id, send to onboarding
   if (!authState.clientId) {
+    console.log('[ROUTER] Redirecting to onboarding:', true);
     return <Navigate to="/onboarding" replace />;
   }
+  console.log('[ROUTER] Redirecting to onboarding:', false);
   return <>{children}</>;
 }
 

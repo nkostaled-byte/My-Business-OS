@@ -35,6 +35,7 @@ export interface AuthState {
   role: 'owner' | 'admin' | 'staff' | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  authError?: string | null;
 }
 
 export const DEFAULT_AUTH_STATE: AuthState = {
@@ -45,6 +46,7 @@ export const DEFAULT_AUTH_STATE: AuthState = {
   role: null,
   isAuthenticated: false,
   isLoading: true,
+  authError: null,
 };
 
 // ─── Auth Event Callbacks ─────────────────────────────────────────
@@ -111,40 +113,46 @@ function getPersistedClientLink(): { clientId: string | null; businessName: stri
   }
 }
 
-const CLIENT_LINK_TIMEOUT_MS = 10_000;
+export async function checkClientLink(accessToken?: string): Promise<{ linked: boolean; clientId: string | null; businessName: string | null; role: 'owner' | 'admin' | 'staff' | null }> {
+  for (let attempt = 1; attempt <= 2; attempt += 1) {
+    console.log('[AUTH] Checking client link...', { attempt });
+    const startTime = Date.now();
+    const result = await api.get<any>('/api/claim-account/status', { authToken: accessToken });
+    const elapsed = Date.now() - startTime;
+    console.log('[AUTH] Client link response received', {
+      elapsedMs: elapsed,
+      success: result.success,
+      hasAuthError: !!result.error,
+      hasDirectLinked: 'linked' in result,
+      hasDirectClientId: 'clientId' in result,
+      hasDataPayload: !!result.data,
+    });
 
-function withTimeout<T>(promise: Promise<T>, ms: number, label: string): Promise<T> {
-  return new Promise<T>((resolve, reject) => {
-    const timer = setTimeout(() => {
-      reject(new Error(`[AUTH] Timeout: ${label} did not resolve within ${ms}ms`));
-    }, ms);
-    promise.then(
-      (val) => { clearTimeout(timer); resolve(val); },
-      (err) => { clearTimeout(timer); reject(err); }
-    );
-  });
-}
-
-export async function checkClientLink(): Promise<{ linked: boolean; clientId: string | null; businessName: string | null; role: 'owner' | 'admin' | 'staff' | null }> {
-  console.log('[AUTH] checkClientLink() started');
-  const result = await withTimeout(
-    api.get<any>('/api/claim-account/status'),
-    CLIENT_LINK_TIMEOUT_MS,
-    'checkClientLink'
-  );
-  console.log('[AUTH] checkClientLink() response received', { success: result.success, error: result.error });
-  if (result.success) {
-    const linked = result.linked === true;
-    const clientId = result.clientId || null;
-    const businessName = result.businessName || null;
-    const role = result.role || null;
-    if (linked && clientId) {
-      persistClientLink(clientId, businessName);
+    if (result.success) {
+      const payload = result.data && typeof result.data === 'object' ? result.data : result;
+      const linked = payload.linked === true;
+      const clientId = payload.clientId || null;
+      const businessName = payload.businessName || null;
+      const role = payload.role || null;
+      console.log('[AUTH] Client link success:', true, {
+        clientIdReturned: !!clientId,
+        businessNameReturned: !!businessName,
+      });
+      if (linked && clientId) {
+        persistClientLink(clientId, businessName);
+      }
+      return { linked, clientId, businessName, role };
     }
-    console.log('[AUTH] checkClientLink() result', { linked, clientId, businessName, role });
-    return { linked, clientId, businessName, role };
+
+    console.warn('[AUTH] Client link request failed', { error: result.error, attempt });
+    if (attempt < 2) {
+      await new Promise((resolve) => setTimeout(resolve, 500));
+    } else {
+      throw new Error(result.error || 'Unable to verify business association.');
+    }
   }
-  return { linked: false, clientId: null, businessName: null, role: null };
+
+  throw new Error('Unable to verify business association.');
 }
 
 /**
@@ -197,6 +205,7 @@ function makeUnauthenticatedState(): AuthState {
     role: null,
     isAuthenticated: false,
     isLoading: false,
+    authError: null,
   };
 }
 
@@ -265,9 +274,10 @@ async function _initializeAuthInner(): Promise<AuthState> {
     let clientId: string | null = null;
     let businessName: string | null = null;
     let role: AuthState['role'] = null;
+    let authError: string | null = null;
 
     try {
-      const linkStatus = await checkClientLink();
+      const linkStatus = await checkClientLink(session.access_token);
       if (linkStatus.linked && linkStatus.clientId) {
         clientId = linkStatus.clientId;
         businessName = linkStatus.businessName;
@@ -276,6 +286,7 @@ async function _initializeAuthInner(): Promise<AuthState> {
       console.log('[AUTH] Client ID resolved', { clientId, businessName, role });
     } catch (linkErr) {
       console.warn('[AUTH] checkClientLink() failed:', linkErr);
+      authError = linkErr instanceof Error ? linkErr.message : 'Unable to verify business association.';
       const persisted = getPersistedClientLink();
       if (persisted.clientId) {
         console.log('[AUTH] Using persisted client link as fallback:', persisted);
@@ -292,6 +303,7 @@ async function _initializeAuthInner(): Promise<AuthState> {
       role,
       isAuthenticated: true,
       isLoading: false,
+      authError,
     };
 
     currentAuthState = state;
@@ -328,6 +340,7 @@ async function _initializeAuthInner(): Promise<AuthState> {
           role: existingRole,
           isAuthenticated: true,
           isLoading: false,
+          authError: null,
         };
         currentAuthState = newState;
         notifyListeners(newState);
@@ -337,8 +350,9 @@ async function _initializeAuthInner(): Promise<AuthState> {
       let newClientId: string | null = null;
       let newBusinessName: string | null = null;
       let newRole: AuthState['role'] = null;
+      let authError: string | null = null;
       try {
-        const linkStatus = await checkClientLink();
+        const linkStatus = await checkClientLink(session.access_token);
         if (linkStatus.linked && linkStatus.clientId) {
           newClientId = linkStatus.clientId;
           newBusinessName = linkStatus.businessName;
@@ -346,6 +360,7 @@ async function _initializeAuthInner(): Promise<AuthState> {
         }
       } catch (err) {
         console.warn('[AUTH] onAuthStateChange checkClientLink() failed:', err);
+        authError = err instanceof Error ? err.message : 'Unable to verify business association.';
         const persisted = getPersistedClientLink();
         if (persisted.clientId) {
           newClientId = persisted.clientId;
@@ -361,6 +376,7 @@ async function _initializeAuthInner(): Promise<AuthState> {
         role: newRole,
         isAuthenticated: true,
         isLoading: false,
+        authError,
       };
 
       currentAuthState = newState;
