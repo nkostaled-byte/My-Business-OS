@@ -90,7 +90,7 @@ function AuthGuard({ children, authState }: { children: React.ReactNode; authSta
     return <LoadingScreen />;
   }
   if (authState.authError) {
-    return <AuthErrorScreen message="We could not restore your session. Check your connection and try again." />;
+    return <AuthErrorScreen message={authState.authError} />;
   }
   if (!authState.isAuthenticated) {
     return <Navigate to="/login" replace />;
@@ -115,15 +115,11 @@ function BusinessGuard({ children, authState }: { children: React.ReactNode; aut
   }
   if (authState.authError) {
     console.error('[ROUTER] Authentication restoration error:', authState.authError);
-    return <AuthErrorScreen message="We could not restore your session. Check your connection and try again." />;
+    return <AuthErrorScreen message={authState.authError} />;
   }
   if (!authState.isAuthenticated) {
     console.log('[ROUTER] Redirecting to login:', true);
     return <Navigate to="/login" replace />;
-  }
-  if (authState.authError) {
-    console.error('[ROUTER] Client link resolution error:', authState.authError);
-    return <AuthErrorScreen message="We could not verify your business association. Check your connection and try again." />;
   }
   // If user is authenticated but has no client_id, send to onboarding
   if (!authState.clientId) {

@@ -215,6 +215,11 @@ function makeAuthErrorState(message: string): AuthState {
   };
 }
 
+function getAuthErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof Error && error.message) return error.message;
+  return fallback;
+}
+
 function registerSupabaseAuthListener(supabase: SupabaseClient): void {
   if (supabaseAuthListenerRegistered) return;
   supabaseAuthListenerRegistered = true;
@@ -310,7 +315,7 @@ export async function initializeAuth(): Promise<AuthState> {
   } catch (err) {
     clearTimeout(safetyTimer!);
     console.error('[AUTH] Unexpected error in initializeAuth race:', err);
-    const errorState = makeAuthErrorState('Unable to restore your session. Check your connection and try again.');
+    const errorState = makeAuthErrorState(getAuthErrorMessage(err, 'Unable to restore your session. Check your connection and try again.'));
     currentAuthState = errorState;
     notifyListeners(errorState);
     return errorState;
@@ -392,7 +397,7 @@ async function _initializeAuthInner(): Promise<AuthState> {
     return state;
   } catch (err) {
     console.error('[AUTH] Error in _initializeAuthInner:', err);
-    const errorState = makeAuthErrorState('Unable to restore your session. Check your connection and try again.');
+    const errorState = makeAuthErrorState(getAuthErrorMessage(err, 'Unable to restore your session. Check your connection and try again.'));
     currentAuthState = errorState;
     notifyListeners(errorState);
     return errorState;
