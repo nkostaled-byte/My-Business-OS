@@ -12,7 +12,7 @@
  * - Provides get, post, put, patch, del, upload helpers
  */
 
-const BASE_URL = import.meta.env.VITE_WORKER_API_URL || '';
+const BASE_URL = import.meta.env.VITE_WORKER_API_URL || import.meta.env.VITE_WORKER_URL || '';
 const DEFAULT_FETCH_TIMEOUT_MS = 15_000;
 
 if (!BASE_URL) {
@@ -122,6 +122,9 @@ type RequestOptions = Omit<RequestInit, 'body'> & {
 // ─── Helpers ──────────────────────────────────────────────────────
 
 function buildUrl(path: string, params?: Record<string, string>): string {
+  if (!BASE_URL) {
+    throw new Error('Worker API URL is not configured. Set VITE_WORKER_API_URL.');
+  }
   const base = BASE_URL.replace(/\/$/, '');
   const url = new URL(`${base}${path.startsWith('/') ? path : `/${path}`}`);
 
