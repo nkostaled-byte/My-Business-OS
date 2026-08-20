@@ -186,13 +186,6 @@
     color: rgb(226 232 240);
   }
 
-  /* PWA standalone mode: add safe area padding */
-  @media (display-mode: standalone) {
-    body {
-      padding-top: env(safe-area-inset-top);
-    }
-  }
-
   /* Mobile touch target improvements */
   @media (max-width: 640px) {
     button, a, [role="button"] {
