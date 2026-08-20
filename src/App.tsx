@@ -89,6 +89,9 @@ function AuthGuard({ children, authState }: { children: React.ReactNode; authSta
   if (authState.isLoading) {
     return <LoadingScreen />;
   }
+  if (authState.authError) {
+    return <AuthErrorScreen message="We could not restore your session. Check your connection and try again." />;
+  }
   if (!authState.isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
@@ -109,6 +112,10 @@ function BusinessGuard({ children, authState }: { children: React.ReactNode; aut
   });
   if (authState.isLoading) {
     return <LoadingScreen />;
+  }
+  if (authState.authError) {
+    console.error('[ROUTER] Authentication restoration error:', authState.authError);
+    return <AuthErrorScreen message="We could not restore your session. Check your connection and try again." />;
   }
   if (!authState.isAuthenticated) {
     console.log('[ROUTER] Redirecting to login:', true);

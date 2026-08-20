@@ -115,45 +115,37 @@ function getPersistedClientLink(): { clientId: string | null; businessName: stri
 }
 
 export async function checkClientLink(accessToken?: string): Promise<{ linked: boolean; clientId: string | null; businessName: string | null; role: 'owner' | 'admin' | 'staff' | null }> {
-  for (let attempt = 1; attempt <= 2; attempt += 1) {
-    console.log('[AUTH] Checking client link...', { attempt });
-    const startTime = Date.now();
-    const result = await api.get<any>('/api/claim-account/status', { authToken: accessToken });
-    const elapsed = Date.now() - startTime;
-    console.log('[AUTH] Client link response received', {
-      elapsedMs: elapsed,
-      success: result.success,
-      hasAuthError: !!result.error,
-      hasDirectLinked: 'linked' in result,
-      hasDirectClientId: 'clientId' in result,
-      hasDataPayload: !!result.data,
+  console.log('[AUTH] Checking client link...');
+  const startTime = Date.now();
+  const result = await api.get<any>('/api/claim-account/status', { authToken: accessToken });
+  const elapsed = Date.now() - startTime;
+  console.log('[AUTH] Client link response received', {
+    elapsedMs: elapsed,
+    success: result.success,
+    hasAuthError: !!result.error,
+    hasDirectLinked: 'linked' in result,
+    hasDirectClientId: 'clientId' in result,
+    hasDataPayload: !!result.data,
+  });
+
+  if (result.success) {
+    const payload = result.data && typeof result.data === 'object' ? result.data : result;
+    const linked = payload.linked === true;
+    const clientId = payload.clientId || null;
+    const businessName = payload.businessName || null;
+    const role = payload.role || null;
+    console.log('[AUTH] Client link success:', true, {
+      clientIdReturned: !!clientId,
+      businessNameReturned: !!businessName,
     });
-
-    if (result.success) {
-      const payload = result.data && typeof result.data === 'object' ? result.data : result;
-      const linked = payload.linked === true;
-      const clientId = payload.clientId || null;
-      const businessName = payload.businessName || null;
-      const role = payload.role || null;
-      console.log('[AUTH] Client link success:', true, {
-        clientIdReturned: !!clientId,
-        businessNameReturned: !!businessName,
-      });
-      if (linked && clientId) {
-        persistClientLink(clientId, businessName);
-      }
-      return { linked, clientId, businessName, role };
+    if (linked && clientId) {
+      persistClientLink(clientId, businessName);
     }
-
-    console.warn('[AUTH] Client link request failed', { error: result.error, attempt });
-    if (attempt < 2) {
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    } else {
-      throw new Error(result.error || 'Unable to verify business association.');
-    }
+    return { linked, clientId, businessName, role };
   }
 
-  throw new Error('Unable to verify business association.');
+  console.warn('[AUTH] Client link request failed', { error: result.error });
+  throw new Error(result.error || 'Unable to verify business association.');
 }
 
 /**
@@ -207,6 +199,19 @@ function makeUnauthenticatedState(): AuthState {
     isAuthenticated: false,
     isLoading: false,
     authError: null,
+  };
+}
+
+function makeAuthErrorState(message: string): AuthState {
+  return {
+    user: null,
+    session: null,
+    clientId: null,
+    businessName: null,
+    role: null,
+    isAuthenticated: false,
+    isLoading: false,
+    authError: message,
   };
 }
 
@@ -282,10 +287,11 @@ function registerSupabaseAuthListener(supabase: SupabaseClient): void {
 export async function initializeAuth(): Promise<AuthState> {
   console.log('[AUTH] App initialization started');
 
+  let safetyTimer: ReturnType<typeof setTimeout>;
   const safetyTimeout = new Promise<AuthState>((resolve) => {
-    setTimeout(() => {
+    safetyTimer = setTimeout(() => {
       console.error('[AUTH] SAFETY TIMEOUT: initializeAuth did not complete within', AUTH_INIT_TIMEOUT_MS, 'ms');
-      resolve(makeUnauthenticatedState());
+      resolve(makeAuthErrorState('Unable to restore your session. Check your connection and try again.'));
     }, AUTH_INIT_TIMEOUT_MS);
   });
 
@@ -293,6 +299,7 @@ export async function initializeAuth(): Promise<AuthState> {
 
   try {
     const result = await Promise.race([authInit, safetyTimeout]);
+    clearTimeout(safetyTimer!);
     console.log('[AUTH] Auth initialization completed', {
       isAuthenticated: result.isAuthenticated,
       isLoading: result.isLoading,
@@ -301,8 +308,9 @@ export async function initializeAuth(): Promise<AuthState> {
     });
     return result;
   } catch (err) {
+    clearTimeout(safetyTimer!);
     console.error('[AUTH] Unexpected error in initializeAuth race:', err);
-    const errorState = makeUnauthenticatedState();
+    const errorState = makeAuthErrorState('Unable to restore your session. Check your connection and try again.');
     currentAuthState = errorState;
     notifyListeners(errorState);
     return errorState;
@@ -319,6 +327,7 @@ async function _initializeAuthInner(): Promise<AuthState> {
 
     if (sessionError) {
       console.error('[AUTH] getSession() returned error:', sessionError.message);
+      throw sessionError;
     }
 
     console.log('[AUTH] getSession() resolved', {
@@ -383,7 +392,7 @@ async function _initializeAuthInner(): Promise<AuthState> {
     return state;
   } catch (err) {
     console.error('[AUTH] Error in _initializeAuthInner:', err);
-    const errorState = makeUnauthenticatedState();
+    const errorState = makeAuthErrorState('Unable to restore your session. Check your connection and try again.');
     currentAuthState = errorState;
     notifyListeners(errorState);
     return errorState;
