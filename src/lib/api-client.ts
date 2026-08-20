@@ -495,6 +495,40 @@ export const api = {
     return this.post('/api/paystack/cancel', { product });
   },
 
+  // ─── Notifications ───────────────────────────────────────────────
+
+  /**
+   * Get recent notifications
+   * GET /api/notifications
+   */
+  async getNotifications(limit: number = 50): Promise<ApiResponse<NotificationRecord[]>> {
+    return this.get<NotificationRecord[]>(`/api/notifications?limit=${limit}`);
+  },
+
+  /**
+   * Mark a notification as read
+   * PATCH /api/notifications/:id
+   */
+  async markNotificationRead(id: string): Promise<ApiResponse<{ id: string; read_at: string }>> {
+    return this.patch<{ id: string; read_at: string }>(`/api/notifications/${id}`);
+  },
+
+  /**
+   * Mark all notifications as read
+   * PATCH /api/notifications
+   */
+  async markAllNotificationsRead(): Promise<ApiResponse<{ marked_all_read: boolean }>> {
+    return this.patch<{ marked_all_read: boolean }>('/api/notifications');
+  },
+
+  /**
+   * Delete a notification
+   * DELETE /api/notifications/:id
+   */
+  async deleteNotification(id: string): Promise<ApiResponse<{ deleted: boolean; id: string }>> {
+    return this.del<{ deleted: boolean; id: string }>(`/api/notifications/${id}`);
+  },
+
   // ─── AI Chat ─────────────────────────────────────────────────────
 
   /**
@@ -548,6 +582,19 @@ export interface PendingAction {
   label: string;
   destructive: boolean;
   fields: Record<string, string | number>;
+}
+
+export interface NotificationRecord {
+  id: string;
+  client_id: string;
+  type: string;
+  title: string;
+  message: string;
+  entity_type: string | null;
+  entity_id: string | null;
+  read_at: string | null;
+  created_at: string;
+  metadata: Record<string, unknown>;
 }
 
 export default api;

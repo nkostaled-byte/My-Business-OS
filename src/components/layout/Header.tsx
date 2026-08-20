@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
 import { useData } from '../../context/DataContext';
+import { useNotifications } from '../../context/NotificationContext';
 import { signOut } from '../../lib/auth-client';
 
 interface HeaderProps {
@@ -28,53 +29,15 @@ interface SearchResult {
   subtitle: string;
 }
 
-interface NotificationItem {
-  id: string;
-  title: string;
-  time: string;
-  read: boolean;
-  route: string;
-  type: 'order' | 'booking' | 'form' | 'invoice';
-}
-
-interface NotificationPreferences {
-  emailNotifs: boolean;
-  bookingNotifs: boolean;
-  formNotifs: boolean;
-  invoiceNotifs: boolean;
-}
-
-const NOTIF_PREFS_KEY = 'notif_preferences';
-const NOTIF_READ_KEY = 'notif_read_ids';
-
-const defaultPrefs: NotificationPreferences = {
-  emailNotifs: true,
-  bookingNotifs: true,
-  formNotifs: true,
-  invoiceNotifs: true,
+const NOTIFICATION_ROUTES: Record<string, string> = {
+  order: '/app/orders',
+  booking: '/app/bookings',
+  booking_cancelled: '/app/bookings',
+  invoice: '/app/invoices',
+  invoice_paid: '/app/invoices',
+  form: '/app/forms',
+  customer: '/app/customers',
 };
-
-function loadNotifPrefs(): NotificationPreferences {
-  try {
-    const raw = localStorage.getItem(NOTIF_PREFS_KEY);
-    if (raw) return { ...defaultPrefs, ...JSON.parse(raw) };
-  } catch {}
-  return defaultPrefs;
-}
-
-function loadReadIds(): Set<string> {
-  try {
-    const raw = localStorage.getItem(NOTIF_READ_KEY);
-    if (raw) return new Set(JSON.parse(raw));
-  } catch {}
-  return new Set();
-}
-
-function saveReadIds(ids: Set<string>) {
-  try {
-    localStorage.setItem(NOTIF_READ_KEY, JSON.stringify([...ids]));
-  } catch {}
-}
 
 export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
   const { theme, toggleTheme } = useTheme();
@@ -89,12 +52,9 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
     invoices,
     forms,
   } = useData();
+  const { notifications, unreadCount, markAsRead, markAllAsRead } = useNotifications();
   const navigate = useNavigate();
 
-  const [notifications, setNotifications] = useState<NotificationItem[]>([]);
-  const [notifPrefs, setNotifPrefs] = useState<NotificationPreferences>(loadNotifPrefs);
-  const readIdsRef = useRef<Set<string>>(loadReadIds());
-  const unreadCount = notifications.filter((n) => !n.read).length;
   const [notificationsOpen, setNotificationsOpen] = useState(false);
   const notificationsRef = useRef<HTMLDivElement>(null);
   const [profileOpen, setProfileOpen] = useState(false);
@@ -129,74 +89,6 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, [profileOpen]);
-
-  // Generate notifications from local data, respecting preferences and persisting read state
-  useEffect(() => {
-    const notifs: NotificationItem[] = [];
-    const readIds = readIdsRef.current;
-
-    // Recent orders (last 3) - shown when emailNotifs is enabled
-    if (notifPrefs.emailNotifs) {
-      orders.slice(0, 3).forEach(o => {
-        const id = `order-${o.id}`;
-        notifs.push({
-          id,
-          title: `New order ${o.orderNumber} - R${o.totalAmount}`,
-          time: new Date(o.createdAt).toLocaleDateString(),
-          read: readIds.has(id),
-          route: '/app/orders',
-          type: 'order',
-        });
-      });
-    }
-
-    // Upcoming bookings (next 3) - shown when bookingNotifs is enabled
-    if (notifPrefs.bookingNotifs) {
-      bookings.filter(b => b.status === 'upcoming').slice(0, 3).forEach(b => {
-        const id = `booking-${b.id}`;
-        notifs.push({
-          id,
-          title: `Booking ${b.bookingCode} with ${b.clientName}`,
-          time: `${b.date} at ${b.time}`,
-          read: readIds.has(id),
-          route: '/app/bookings',
-          type: 'booking',
-        });
-      });
-    }
-
-    // Unread form submissions (last 2) - shown when formNotifs is enabled
-    if (notifPrefs.formNotifs) {
-      forms.filter(f => f.status === 'unread').slice(0, 2).forEach(f => {
-        const id = `form-${f.id}`;
-        notifs.push({
-          id,
-          title: `New form submission from ${f.senderName}`,
-          time: new Date(f.submittedAt).toLocaleDateString(),
-          read: readIds.has(id),
-          route: '/app/forms',
-          type: 'form',
-        });
-      });
-    }
-
-    // Paid invoices (last 2) - shown when invoiceNotifs is enabled
-    if (notifPrefs.invoiceNotifs) {
-      invoices.filter(inv => inv.status === 'paid').slice(0, 2).forEach(inv => {
-        const id = `invoice-${inv.id}`;
-        notifs.push({
-          id,
-          title: `Invoice ${inv.invoiceNumber} paid - R${inv.total || 0}`,
-          time: inv.issuedAt ? new Date(inv.issuedAt).toLocaleDateString() : 'Recently',
-          read: readIds.has(id),
-          route: '/app/invoices',
-          type: 'invoice',
-        });
-      });
-    }
-
-    setNotifications(notifs);
-  }, [orders, bookings, forms, invoices, notifPrefs]);
 
   // Global search with 300ms debounce
   const performSearch = useCallback((q: string) => {
@@ -328,21 +220,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
     navigate('/login', { replace: true });
   };
 
-  const handleNotificationClick = (n: { id: string; route: string }) => {
+  const handleNotificationClick = (n: { id: string; type: string }) => {
     setNotificationsOpen(false);
-    // Mark as read and persist
-    readIdsRef.current.add(n.id);
-    saveReadIds(readIdsRef.current);
-    setNotifications((prev) => prev.map((notif) => notif.id === n.id ? { ...notif, read: true } : notif));
-    navigate(n.route);
-  };
-
-  const markAllAsRead = () => {
-    const newReadIds = new Set(readIdsRef.current);
-    notifications.forEach(n => newReadIds.add(n.id));
-    readIdsRef.current = newReadIds;
-    saveReadIds(newReadIds);
-    setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));
+    markAsRead(n.id);
+    const route = NOTIFICATION_ROUTES[n.type] || '/app';
+    navigate(route);
   };
 
   return (
@@ -470,6 +352,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                       )}
                     </div>
                     <div className="divide-y divide-slate-100 dark:divide-slate-800/60 max-h-64 overflow-y-auto">
+                      {notifications.length === 0 && (
+                        <div className="px-4 py-6 text-center text-xs text-slate-400">
+                          No notifications yet
+                        </div>
+                      )}
                       {notifications.map((n) => (
                         <button
                           key={n.id}
@@ -477,7 +364,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                           className="w-full text-left p-3 hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors flex items-start gap-2 cursor-pointer"
                         >
                           <div className="flex items-center pt-1">
-                            {!n.read && (
+                            {!n.read_at && (
                               <span className="w-2 h-2 rounded-full bg-indigo-600 shrink-0" />
                             )}
                           </div>
@@ -485,8 +372,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                             <p className="text-xs font-medium text-slate-800 dark:text-slate-200 leading-snug">
                               {n.title}
                             </p>
+                            <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5 leading-snug">
+                              {n.message}
+                            </p>
                             <span className="text-[10px] text-slate-400 mt-1 block">
-                              {n.time}
+                              {new Date(n.created_at).toLocaleDateString()}
                             </span>
                           </div>
                         </button>
