@@ -20,6 +20,7 @@ export const Modal: React.FC<ModalProps> = ({
   maxWidth = 'max-w-xl',
 }) => {
   useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') onClose();
     };
@@ -28,7 +29,7 @@ export const Modal: React.FC<ModalProps> = ({
       window.addEventListener('keydown', handleKeyDown);
     }
     return () => {
-      document.body.style.overflow = 'unset';
+      document.body.style.overflow = previousOverflow;
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, [isOpen, onClose]);
@@ -84,4 +85,3 @@ export const Modal: React.FC<ModalProps> = ({
     </AnimatePresence>
   );
 };
-
