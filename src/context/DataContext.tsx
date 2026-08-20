@@ -16,7 +16,7 @@
 import React, { createContext, useContext, useState, useCallback, useRef, useEffect } from 'react';
 import api from '../lib/api-client';
 import { DashboardResource } from '../config/api';
-import { subscribeToAuth } from '../lib/auth-client';
+import { getCurrentAuthState, subscribeToAuth } from '../lib/auth-client';
 import { SubscriptionStatus } from '../lib/api-client';
 import { PLAN_TIERS, PLAN_NAMES, getPlanTier } from '../config/plans';
 import posthog from '../lib/posthog';
@@ -148,7 +148,16 @@ interface DataContextType {
 // ─── Resource Fetch Helpers ───────────────────────────────────────
 
 async function fetchResource<T>(resource: DashboardResource, signal?: AbortSignal): Promise<T[]> {
-  const result = await api.get<T[]>(`/api/dashboard/${resource}`, { signal });
+  const result = await api.get<T[]>(`/api/dashboard/${resource}`, {
+    signal,
+    authToken: getCurrentAuthState().session?.access_token,
+  });
+  console.log('[DATA] Resource fetch completed', {
+    resource,
+    success: result.success,
+    records: Array.isArray(result.data) ? result.data.length : 0,
+    error: result.error,
+  });
   if (result.success && result.data) {
     return result.data;
   }
@@ -159,7 +168,10 @@ async function fetchResource<T>(resource: DashboardResource, signal?: AbortSigna
 }
 
 async function fetchMetrics(signal?: AbortSignal) {
-  const result = await api.get<Record<string, unknown>>('/api/dashboard/metrics', { signal });
+  const result = await api.get<Record<string, unknown>>('/api/dashboard/metrics', {
+    signal,
+    authToken: getCurrentAuthState().session?.access_token,
+  });
   if (result.success && result.data) {
     return result.data;
   }
@@ -167,7 +179,10 @@ async function fetchMetrics(signal?: AbortSignal) {
 }
 
 async function fetchSubscription(signal?: AbortSignal) {
-  const result = await api.get<SubscriptionStatus>('/api/paystack/status', { signal });
+  const result = await api.get<SubscriptionStatus>('/api/paystack/status', {
+    signal,
+    authToken: getCurrentAuthState().session?.access_token,
+  });
   if (result.success && result.data) {
     return result.data;
   }
@@ -354,6 +369,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const controller = new AbortController();
     abortRef.current = controller;
     const signal = controller.signal;
+    const auth = getCurrentAuthState();
+    console.log('[DATA] Dashboard fetch started', {
+      authenticated: auth.isAuthenticated,
+      clientIdExists: !!auth.clientId,
+      sessionExists: !!auth.session,
+      accessTokenAvailable: !!auth.session?.access_token,
+    });
 
     setIsLoading(true);
 
@@ -383,6 +405,15 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         fetchResource<FormSubmission>('submissions', signal),
         fetchResource<Invoice>('invoices', signal),
       ]);
+
+      console.log('[DATA] Dashboard fetch responses received', {
+        metrics: !!metricsData,
+        products: productsData.length,
+        services: servicesData.length,
+        orders: ordersData.length,
+        bookings: bookingsData.length,
+        customers: customersData.length,
+      });
 
       if (signal.aborted) return;
 

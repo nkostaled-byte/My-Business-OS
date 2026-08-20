@@ -22,6 +22,7 @@ if (!BASE_URL) {
 // ─── Auth Token Management ────────────────────────────────────────
 
 const TOKEN_KEY = 'grafix_auth_token';
+let inMemoryToken: string | null = null;
 
 export function getStoredToken(): string | null {
   try {
@@ -34,6 +35,7 @@ export function getStoredToken(): string | null {
 }
 
 export function storeToken(token: string): void {
+  inMemoryToken = token;
   try {
     localStorage.setItem(TOKEN_KEY, token);
   } catch {
@@ -42,6 +44,7 @@ export function storeToken(token: string): void {
 }
 
 export function clearToken(): void {
+  inMemoryToken = null;
   try {
     localStorage.removeItem(TOKEN_KEY);
     console.log('[API Client] Token cleared from localStorage');
@@ -132,7 +135,7 @@ function buildUrl(path: string, params?: Record<string, string>): string {
 }
 
 function getAuthHeaders(tokenOverride?: string): Record<string, string> {
-  const token = tokenOverride || getStoredToken();
+  const token = tokenOverride || inMemoryToken || getStoredToken();
   if (token) {
     return { Authorization: `Bearer ${token}` };
   }
