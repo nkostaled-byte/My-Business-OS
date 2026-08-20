@@ -299,10 +299,36 @@ async function _initializeAuthInner(): Promise<AuthState> {
 
     supabase.auth.onAuthStateChange(async (_event: string, session: Session | null) => {
       console.log('[AUTH] onAuthStateChange fired', { event: _event, hasSession: !!session });
+
+      if (_event === 'INITIAL_SESSION') {
+        console.log('[AUTH] Skipping INITIAL_SESSION — handled by initializeAuth()');
+        return;
+      }
+
       syncTokenFromSession(session);
 
       if (!session?.user) {
         const newState = makeUnauthenticatedState();
+        currentAuthState = newState;
+        notifyListeners(newState);
+        return;
+      }
+
+      const existingClientId = currentAuthState.clientId;
+      const existingBusinessName = currentAuthState.businessName;
+      const existingRole = currentAuthState.role;
+
+      if (existingClientId) {
+        console.log('[AUTH] Preserving existing client info', { clientId: existingClientId });
+        const newState: AuthState = {
+          user: session.user,
+          session,
+          clientId: existingClientId,
+          businessName: existingBusinessName,
+          role: existingRole,
+          isAuthenticated: true,
+          isLoading: false,
+        };
         currentAuthState = newState;
         notifyListeners(newState);
         return;
@@ -320,6 +346,11 @@ async function _initializeAuthInner(): Promise<AuthState> {
         }
       } catch (err) {
         console.warn('[AUTH] onAuthStateChange checkClientLink() failed:', err);
+        const persisted = getPersistedClientLink();
+        if (persisted.clientId) {
+          newClientId = persisted.clientId;
+          newBusinessName = persisted.businessName;
+        }
       }
 
       const newState: AuthState = {
