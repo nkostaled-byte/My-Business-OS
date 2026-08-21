@@ -117,6 +117,7 @@ type RequestOptions = Omit<RequestInit, 'body'> & {
   body?: any;
   params?: Record<string, string>;
   signal?: AbortSignal;
+  timeoutMs?: number;
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────
@@ -205,10 +206,10 @@ export const api = {
    */
   async get<T = any>(
     path: string,
-    options?: { params?: Record<string, string>; signal?: AbortSignal; authToken?: string }
+    options?: { params?: Record<string, string>; signal?: AbortSignal; authToken?: string; timeoutMs?: number }
   ): Promise<ApiResponse<T>> {
     const url = buildUrl(path, options?.params);
-    const { controller, cleanup } = createTimeoutSignal(options?.signal);
+    const { controller, cleanup } = createTimeoutSignal(options?.signal, options?.timeoutMs);
     try {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
@@ -249,7 +250,7 @@ export const api = {
     options?: RequestOptions
   ): Promise<ApiResponse<T>> {
     const url = buildUrl(path, options?.params);
-    const { controller, cleanup } = createTimeoutSignal(options?.signal);
+    const { controller, cleanup } = createTimeoutSignal(options?.signal, options?.timeoutMs);
     try {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
@@ -291,7 +292,7 @@ export const api = {
     options?: RequestOptions
   ): Promise<ApiResponse<T>> {
     const url = buildUrl(path, options?.params);
-    const { controller, cleanup } = createTimeoutSignal(options?.signal);
+    const { controller, cleanup } = createTimeoutSignal(options?.signal, options?.timeoutMs);
     try {
       const headers: Record<string, string> = {
         'Content-Type': 'application/json',
@@ -340,10 +341,10 @@ export const api = {
    */
   async del<T = any>(
     path: string,
-    options?: { params?: Record<string, string>; signal?: AbortSignal }
+    options?: RequestOptions
   ): Promise<ApiResponse<T>> {
     const url = buildUrl(path, options?.params);
-    const { controller, cleanup } = createTimeoutSignal(options?.signal);
+    const { controller, cleanup } = createTimeoutSignal(options?.signal, options?.timeoutMs);
     try {
       const response = await fetch(url, {
         method: 'DELETE',

@@ -48,7 +48,7 @@ VITE_SUPABASE_URL=https://your-project.supabase.co
 VITE_SUPABASE_ANON_KEY=your-anon-key
 
 # Worker API (the deployed Cloudflare Worker URL)
-VITE_WORKER_URL=https://your-worker.your-subdomain.workers.dev
+VITE_WORKER_API_URL=https://mygrafix-dashboard-worker.mygrafix.workers.dev
 ```
 
 ## Quick Start

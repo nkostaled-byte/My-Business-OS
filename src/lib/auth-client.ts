@@ -117,7 +117,7 @@ function getPersistedClientLink(): { clientId: string | null; businessName: stri
 export async function checkClientLink(accessToken?: string): Promise<{ linked: boolean; clientId: string | null; businessName: string | null; role: 'owner' | 'admin' | 'staff' | null }> {
   console.log('[AUTH] Checking client link...');
   const startTime = Date.now();
-  const result = await api.get<any>('/api/claim-account/status', { authToken: accessToken });
+  const result = await api.get<any>('/api/claim-account/status', { authToken: accessToken, timeoutMs: 30_000 });
   const elapsed = Date.now() - startTime;
   console.log('[AUTH] Client link response received', {
     elapsedMs: elapsed,
@@ -187,7 +187,7 @@ export async function claimWithInviteCode(claimCode: string): Promise<{ status: 
   return result as unknown as { status: string; client?: any };
 }
 
-const AUTH_INIT_TIMEOUT_MS = 20_000;
+const AUTH_INIT_TIMEOUT_MS = 40_000;
 
 function makeUnauthenticatedState(): AuthState {
   return {
