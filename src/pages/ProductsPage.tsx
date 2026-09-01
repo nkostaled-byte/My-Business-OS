@@ -6,7 +6,7 @@ import { Modal } from '../components/common/Modal';
 import { EmptyState } from '../components/common/EmptyState';
 import { MotionCard } from '../components/common/MotionCard';
 import { ImageUploadInput } from '../components/common/ImageUploadInput';
-import { Package, Plus, Edit3, Trash2, Search, Hash } from 'lucide-react';
+import { Package, Plus, Edit3, Trash2, Search, Hash, Sparkles, Loader2 } from 'lucide-react';
 import api from '../lib/api-client';
 import type { Product } from '../types';
 
@@ -28,6 +28,14 @@ export const ProductsPage: React.FC = () => {
   const [stock, setStock] = useState('');
   const [imageUrl, setImageUrl] = useState('');
   const [displayOnWebsite, setDisplayOnWebsite] = useState(false);
+  const [isAiOpen, setIsAiOpen] = useState(false);
+  const [aiPrompt, setAiPrompt] = useState('');
+  const [aiStyle, setAiStyle] = useState('Clean studio product photography');
+  const [aiBackground, setAiBackground] = useState('White background');
+  const [aiAspectRatio, setAiAspectRatio] = useState('1:1');
+  const [aiPreview, setAiPreview] = useState<{ imageData: string; approvalToken: string } | null>(null);
+  const [aiLoading, setAiLoading] = useState(false);
+  const [aiError, setAiError] = useState('');
 
   const filteredProducts = products.filter(
     (p) =>
@@ -73,6 +81,59 @@ export const ProductsPage: React.FC = () => {
     setEditingProduct(null);
     resetForm();
     setIsModalOpen(true);
+  };
+
+  const openAiModal = () => {
+    setAiPrompt(name ? `${name}. ` : '');
+    setAiPreview(null);
+    setAiError('');
+    setIsAiOpen(true);
+  };
+
+  const closeAiModal = () => {
+    if (aiLoading) return;
+    setIsAiOpen(false);
+    setAiPreview(null);
+    setAiError('');
+  };
+
+  const generateProductImage = async () => {
+    if (!aiPrompt.trim() || aiLoading) return;
+    setAiLoading(true);
+    setAiError('');
+    try {
+      const result = await api.generateProductImage({
+        prompt: aiPrompt.trim(),
+        productName: name.trim() || undefined,
+        style: aiStyle,
+        background: aiBackground,
+        aspectRatio: aiAspectRatio,
+      });
+      if (!result.success || !result.data) throw new Error(result.error || 'The image could not be generated.');
+      setAiPreview({ imageData: result.data.imageData, approvalToken: result.data.approvalToken });
+    } catch (err: any) {
+      setAiError(err?.message || 'The image could not be generated. Please try again.');
+    } finally {
+      setAiLoading(false);
+    }
+  };
+
+  const useGeneratedImage = async () => {
+    if (!aiPreview || aiLoading) return;
+    setAiLoading(true);
+    setAiError('');
+    try {
+      const result = await api.saveProductImage(aiPreview);
+      if (!result.success || !result.data?.url) throw new Error(result.error || 'The image could not be saved.');
+      setImageUrl(result.data.url);
+      uploadedKeyRef.current = result.data.key;
+      setIsAiOpen(false);
+      setAiPreview(null);
+    } catch (err: any) {
+      setAiError(err?.message || 'The image could not be saved. Please try again.');
+    } finally {
+      setAiLoading(false);
+    }
   };
 
   const openEditModal = (product: Product) => {
@@ -371,6 +432,19 @@ export const ProductsPage: React.FC = () => {
             label="Product Image"
             placeholder="Upload file or enter product image link..."
           />
+          <div className="flex items-center gap-3">
+            <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
+            <span className="text-[10px] uppercase tracking-wider text-slate-400">or</span>
+            <div className="h-px flex-1 bg-slate-200 dark:bg-slate-700" />
+          </div>
+          <button
+            type="button"
+            onClick={openAiModal}
+            className="w-full inline-flex items-center justify-center gap-2 px-3 py-2.5 rounded-xl text-xs font-semibold text-indigo-700 dark:text-indigo-300 bg-indigo-50 dark:bg-indigo-950/40 hover:bg-indigo-100 dark:hover:bg-indigo-950/70 border border-indigo-100 dark:border-indigo-900/50 transition-colors cursor-pointer"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            Generate with AI
+          </button>
 
           <div className="flex items-center gap-2 p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
             <input
@@ -403,6 +477,48 @@ export const ProductsPage: React.FC = () => {
             </motion.button>
           </div>
         </form>
+      </Modal>
+
+      <Modal
+        isOpen={isAiOpen}
+        onClose={closeAiModal}
+        title="Generate Product Image"
+        subtitle="Describe your product and AI will create a professional product image for you."
+        maxWidth="max-w-2xl"
+      >
+        {aiLoading ? (
+          <div className="py-16 text-center">
+            <Loader2 className="w-7 h-7 animate-spin text-indigo-600 mx-auto mb-3" />
+            <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">Creating your product image...</p>
+            <p className="text-xs text-slate-400 mt-1">This can take a moment.</p>
+          </div>
+        ) : aiPreview ? (
+          <div className="space-y-4">
+            <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800">
+              <img src={aiPreview.imageData} alt="Generated product preview" className="w-full max-h-[55vh] object-contain" />
+            </div>
+            <div className="flex flex-col-reverse sm:flex-row justify-end gap-2">
+              <button type="button" onClick={closeAiModal} className="px-4 py-2 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer">Cancel</button>
+              <button type="button" onClick={generateProductImage} className="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer">Generate Again</button>
+              <button type="button" onClick={useGeneratedImage} className="px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 cursor-pointer">Use This Image</button>
+            </div>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Product Description</label>
+              <textarea value={aiPrompt} onChange={(e) => setAiPrompt(e.target.value)} maxLength={1200} rows={5} placeholder="A premium black leather men's wallet with a minimalist design..." className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 resize-y" />
+              <p className="text-[10px] text-slate-400 text-right mt-1">{aiPrompt.length}/1200</p>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Style<select value={aiStyle} onChange={(e) => setAiStyle(e.target.value)} className="mt-1 w-full px-2.5 py-2 rounded-xl glass-subtle text-xs font-normal"><option>Clean studio product photography</option><option>Luxury editorial photography</option><option>Natural lifestyle photography</option></select></label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Background<select value={aiBackground} onChange={(e) => setAiBackground(e.target.value)} className="mt-1 w-full px-2.5 py-2 rounded-xl glass-subtle text-xs font-normal"><option>White background</option><option>Soft neutral background</option><option>Dark studio background</option></select></label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Aspect ratio<select value={aiAspectRatio} onChange={(e) => setAiAspectRatio(e.target.value)} className="mt-1 w-full px-2.5 py-2 rounded-xl glass-subtle text-xs font-normal"><option value="1:1">Square (1:1)</option><option value="4:5">Portrait (4:5)</option><option value="16:9">Landscape (16:9)</option></select></label>
+            </div>
+            <button type="button" onClick={generateProductImage} disabled={!aiPrompt.trim()} className="w-full px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed">Generate Image</button>
+          </div>
+        )}
+        {aiError && <p className="mt-3 text-xs font-semibold text-rose-600 dark:text-rose-400">{aiError}</p>}
       </Modal>
     </div>
   );

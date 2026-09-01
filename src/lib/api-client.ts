@@ -12,6 +12,8 @@
  * - Provides get, post, put, patch, del, upload helpers
  */
 
+import { API } from '../config/api';
+
 const BASE_URL = import.meta.env.VITE_WORKER_API_URL || import.meta.env.VITE_WORKER_URL || '';
 const DEFAULT_FETCH_TIMEOUT_MS = 15_000;
 
@@ -399,6 +401,20 @@ export const api = {
    */
   async deleteUploadedImage(key: string): Promise<ApiResponse<void>> {
     return this.del('/api/upload', { params: { key } });
+  },
+
+  async generateProductImage(data: {
+    prompt: string;
+    productName?: string;
+    style?: string;
+    background?: string;
+    aspectRatio?: string;
+  }): Promise<ApiResponse<{ imageData: string; approvalToken: string; expiresIn: number }>> {
+    return this.post(API.ai.generateProductImage, data, { timeoutMs: 120_000 });
+  },
+
+  async saveProductImage(data: { imageData: string; approvalToken: string }): Promise<ApiResponse<{ url: string; key: string }>> {
+    return this.post(API.ai.saveProductImage, data, { timeoutMs: 30_000 });
   },
 
   /**

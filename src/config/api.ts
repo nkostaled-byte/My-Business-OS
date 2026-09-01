@@ -36,6 +36,10 @@ export const API = {
 
   // Upload
   upload: '/api/upload',
+  ai: {
+    generateProductImage: '/api/ai/generate-product-image',
+    saveProductImage: '/api/ai/save-product-image',
+  },
 
   // Orders (public checkout)
   orders: '/api/orders',
