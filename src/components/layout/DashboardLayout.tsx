@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, useLocation, Navigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { Sidebar, STAFF_RESTRICTED_PATHS } from './Sidebar';
@@ -15,6 +15,21 @@ export const DashboardLayout: React.FC<{ role?: 'owner' | 'admin' | 'staff' | nu
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const { planTier } = useData();
+
+  // Lock background scroll and allow Escape to dismiss the mobile drawer.
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setMobileOpen(false);
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [mobileOpen]);
 
   // Staff cannot access admin/settings areas — bounce them back to Overview
   if (role === 'staff' && STAFF_RESTRICTED_PATHS.includes(location.pathname)) {
@@ -39,7 +54,7 @@ export const DashboardLayout: React.FC<{ role?: 'owner' | 'admin' | 'staff' | nu
         <div className="relative z-10 lg:pl-64 flex flex-col min-h-screen min-h-dvh">
           <Header onOpenMobileMenu={() => setMobileOpen(true)} />
           
-          <main className="flex-1 pt-20 sm:pt-16 lg:pt-24 px-3 sm:px-6 lg:px-8 pb-24 sm:pb-8 max-w-7xl w-full mx-auto overflow-x-hidden" style={{ paddingTop: 'max(5rem, calc(env(safe-area-inset-top, 0px) + 4rem))' }}>
+          <main className="flex-1 pt-[max(5rem,calc(env(safe-area-inset-top,0px)+4rem))] sm:pt-16 lg:pt-24 px-3 sm:px-6 lg:px-8 pb-24 sm:pb-8 max-w-7xl w-full mx-auto overflow-x-hidden">
             <AnimatePresence mode="wait">
               <motion.div
                 key={location.pathname}

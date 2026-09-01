@@ -246,6 +246,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
             <input
               type="text"
               placeholder="Search anything..."
+              aria-label="Search anything"
               value={searchQuery}
               onChange={(e) => handleSearchChange(e.target.value)}
               onFocus={() => { if (searchResults.length > 0) setSearchOpen(true); }}
@@ -425,7 +426,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
                       <p className="text-xs font-semibold text-slate-900 dark:text-slate-100">
                         {profileName}
                       </p>
-                      <p className="text-[11px] text-slate-400">{profileEmail}</p>
+                      <p className="text-[11px] text-slate-400 truncate">{profileEmail}</p>
                     </div>
 
                     <div className="py-1">

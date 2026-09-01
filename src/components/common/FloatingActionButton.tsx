@@ -105,6 +105,8 @@ export const FloatingActionButton: React.FC = () => {
             : 'bg-indigo-600 hover:bg-indigo-500'
         }`}
         title="Quick Actions"
+        aria-label="Quick actions"
+        aria-expanded={isOpen}
       >
         <motion.div
           animate={{ rotate: isOpen ? 135 : 0 }}

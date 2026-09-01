@@ -37,7 +37,7 @@ export const ImageUploadInput: React.FC<ImageUploadInputProps> = ({
   const handleFileChange = async (file: File | undefined) => {
     if (!file) return;
     if (!file.type.startsWith('image/')) {
-      alert('Please select a valid image file (PNG, JPG, WEBP, etc.).');
+      setUploadError('Please select a valid image file (PNG, JPG, WEBP, etc.).');
       return;
     }
 

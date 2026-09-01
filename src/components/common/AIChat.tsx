@@ -314,7 +314,7 @@ export const AIChat: React.FC = () => {
               exit={{ opacity: 0, y: 12, scale: 0.97 }}
               transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
               className="fixed bottom-[4.5rem] right-2 sm:bottom-[5rem] sm:right-6 z-50 w-[calc(100vw-1rem)] max-w-sm sm:w-[22rem] rounded-xl flex flex-col overflow-hidden shadow-2xl border border-slate-200/60 dark:border-slate-700/60 bg-white dark:bg-slate-900"
-              style={{ maxHeight: 'min(65vh, 560px)', marginBottom: 'env(safe-area-inset-bottom, 0px)' }}
+              style={{ maxHeight: 'min(65dvh, 560px)', marginBottom: 'env(safe-area-inset-bottom, 0px)' }}
             >
               {/* Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-slate-100 dark:border-slate-800 shrink-0">

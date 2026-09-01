@@ -194,6 +194,54 @@
   }
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Mobile engineering
+   Unlayered so these win over Tailwind utilities without !important.
+   ───────────────────────────────────────────────────────────── */
+
+/* Prevent iOS Safari auto-zoom: focused inputs below 16px trigger page zoom.
+   Mobile only — desktop typography is untouched. */
+@media (max-width: 640px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+/* Explicit scrollbar utilities referenced across the app
+   (scrollbar-none / scrollbar-thin were previously undefined no-ops). */
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+.scrollbar-thin {
+  scrollbar-width: thin;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgb(148 163 184 / 0.3);
+}
+
+/* Lighter GPU load for the animated backdrop on small devices */
+@media (max-width: 640px) {
+  .app-backdrop__blob {
+    filter: blur(60px);
+  }
+}
+
+/* Respect reduced-motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .app-backdrop__blob {
+    animation: none;
+  }
+}
+
 @media print {
   body * {
     visibility: hidden;
