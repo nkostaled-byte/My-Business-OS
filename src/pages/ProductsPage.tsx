@@ -6,6 +6,7 @@ import { Modal } from '../components/common/Modal';
 import { EmptyState } from '../components/common/EmptyState';
 import { MotionCard } from '../components/common/MotionCard';
 import { ImageUploadInput } from '../components/common/ImageUploadInput';
+import { prepareReferenceImage } from '../lib/image-utils';
 import { Package, Plus, Edit3, Trash2, Search, Hash, Sparkles, Loader2 } from 'lucide-react';
 import api from '../lib/api-client';
 import type { Product } from '../types';
@@ -36,6 +37,7 @@ export const ProductsPage: React.FC = () => {
   const [aiPreview, setAiPreview] = useState<{ imageData: string; approvalToken: string } | null>(null);
   const [aiLoading, setAiLoading] = useState(false);
   const [aiError, setAiError] = useState('');
+  const [aiReferenceImage, setAiReferenceImage] = useState('');
 
   const filteredProducts = products.filter(
     (p) =>
@@ -86,6 +88,7 @@ export const ProductsPage: React.FC = () => {
   const openAiModal = () => {
     setAiPrompt(name ? `${name}. ` : '');
     setAiPreview(null);
+    setAiReferenceImage('');
     setAiError('');
     setIsAiOpen(true);
   };
@@ -108,9 +111,11 @@ export const ProductsPage: React.FC = () => {
         style: aiStyle,
         background: aiBackground,
         aspectRatio: aiAspectRatio,
+        referenceImageData: aiReferenceImage || undefined,
       });
       if (!result.success || !result.data) throw new Error(result.error || 'The image could not be generated.');
       setAiPreview({ imageData: result.data.imageData, approvalToken: result.data.approvalToken });
+      setAiReferenceImage(result.data.imageData);
     } catch (err: any) {
       setAiError(err?.message || 'The image could not be generated. Please try again.');
     } finally {
@@ -506,6 +511,13 @@ export const ProductsPage: React.FC = () => {
           </div>
         ) : (
           <div className="space-y-4">
+            <div className="p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+              <div className="flex items-center justify-between gap-3 mb-2">
+                <div><p className="text-xs font-semibold text-slate-700 dark:text-slate-300">Reference image <span className="font-normal text-slate-400">(optional)</span></p><p className="text-[10px] text-slate-400 mt-0.5">Upload an image or edit the generated image in the next round.</p></div>
+                {aiReferenceImage && <button type="button" onClick={() => setAiReferenceImage('')} className="text-[10px] font-semibold text-rose-500 cursor-pointer">Remove</button>}
+              </div>
+              {aiReferenceImage ? <img src={aiReferenceImage} alt="Reference preview" className="h-20 w-20 rounded-lg object-cover border border-slate-200 dark:border-slate-700" /> : <label className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg border border-dashed border-slate-300 dark:border-slate-600 text-xs text-slate-500 cursor-pointer hover:border-indigo-400"><Sparkles className="w-3.5 h-3.5" /><span>Upload reference image</span><input type="file" accept="image/png,image/jpeg,image/webp" className="hidden" onChange={async (e) => { const file = e.target.files?.[0]; if (!file) return; try { setAiReferenceImage(await prepareReferenceImage(file)); setAiError(''); } catch (err: any) { setAiError(err?.message || 'Could not read the reference image.'); } }} /></label>}
+            </div>
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">Product Description</label>
               <textarea value={aiPrompt} onChange={(e) => setAiPrompt(e.target.value)} maxLength={1200} rows={5} placeholder="A premium black leather men's wallet with a minimalist design..." className="w-full px-3.5 py-2.5 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 resize-y" />

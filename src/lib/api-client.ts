@@ -409,6 +409,7 @@ export const api = {
     style?: string;
     background?: string;
     aspectRatio?: string;
+    referenceImageData?: string;
   }): Promise<ApiResponse<{ imageData: string; approvalToken: string; expiresIn: number }>> {
     return this.post(API.ai.generateProductImage, data, { timeoutMs: 120_000 });
   },
