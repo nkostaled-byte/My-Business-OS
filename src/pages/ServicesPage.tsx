@@ -90,6 +90,7 @@ export const ServicesPage: React.FC = () => {
         background: aiBackground,
         aspectRatio: aiAspectRatio,
         referenceImageData: aiReferenceImage || undefined,
+        assetType: 'service',
       });
       if (!result.success || !result.data) throw new Error(result.error || 'The image could not be generated.');
       setAiPreview({ imageData: result.data.imageData, approvalToken: result.data.approvalToken });
@@ -471,8 +472,8 @@ export const ServicesPage: React.FC = () => {
               <p className="text-[10px] text-slate-400 text-right mt-1">{aiPrompt.length}/1200</p>
             </div>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Style<select value={aiStyle} onChange={(e) => setAiStyle(e.target.value)} className="mt-1 w-full px-2.5 py-2 rounded-xl glass-subtle text-xs font-normal"><option>Clean studio product photography</option><option>Luxury editorial photography</option><option>Natural lifestyle photography</option></select></label>
-              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Background<select value={aiBackground} onChange={(e) => setAiBackground(e.target.value)} className="mt-1 w-full px-2.5 py-2 rounded-xl glass-subtle text-xs font-normal"><option>White background</option><option>Soft neutral background</option><option>Dark studio background</option></select></label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Style<select value={aiStyle} onChange={(e) => setAiStyle(e.target.value)} className="mt-1 w-full px-2.5 py-2 rounded-xl glass-subtle text-xs font-normal"><option>Professional lifestyle photography</option><option>Clean service showcase</option><option>Warm welcoming customer experience</option><option>Luxury editorial photography</option></select></label>
+              <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Background<select value={aiBackground} onChange={(e) => setAiBackground(e.target.value)} className="mt-1 w-full px-2.5 py-2 rounded-xl glass-subtle text-xs font-normal"><option>Relevant real-world setting</option><option>Clean neutral background</option><option>No background / isolated subject</option></select></label>
               <label className="text-xs font-semibold text-slate-700 dark:text-slate-300">Aspect ratio<select value={aiAspectRatio} onChange={(e) => setAiAspectRatio(e.target.value)} className="mt-1 w-full px-2.5 py-2 rounded-xl glass-subtle text-xs font-normal"><option value="1:1">Square (1:1)</option><option value="4:5">Portrait (4:5)</option><option value="16:9">Landscape (16:9)</option></select></label>
             </div>
             <button type="button" onClick={generateServiceImage} disabled={!aiPrompt.trim()} className="w-full px-4 py-2.5 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed">Generate Image</button>
