@@ -7,6 +7,7 @@ import { NotificationProvider } from './context/NotificationContext';
 import { AIProvider } from './context/AIContext';
 import { ToastProvider } from './context/ToastContext';
 import { initializeAuth, subscribeToAuth, AuthState, DEFAULT_AUTH_STATE } from './lib/auth-client';
+import { usePageMeta } from './lib/seo';
 import { PageViewTracker } from './components/analytics/PageViewTracker';
 
 import { PublicLayout } from './components/layout/PublicLayout';
@@ -98,6 +99,15 @@ function AuthGuard({ children, authState }: { children: React.ReactNode; authSta
   return <>{children}</>;
 }
 
+// ─── SEO ──────────────────────────────────────────────────────────
+
+/** Keeps document title, meta description, canonical, Open Graph and robots
+    directives in sync with the active route. Renders nothing. */
+function SeoManager(): null {
+  usePageMeta();
+  return null;
+}
+
 // ─── Business Guard ───────────────────────────────────────────────
 // Ensures the user has a client_id before accessing the dashboard.
 // If no client_id, redirect to onboarding.
@@ -175,6 +185,7 @@ export default function App() {
           <AIProvider>
             <ToastProvider>
               <BrowserRouter>
+                <SeoManager />
                 <PageViewTracker />
                 <UserIdentifier authState={authState} />
                 <Routes>

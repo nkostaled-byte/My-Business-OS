@@ -3,7 +3,28 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
-    <meta name="description" content="Business management dashboard for bookings, orders, inventory, and more." />
+    <title>My Business OS — Bookings, POS, Orders & Inventory in One Platform</title>
+    <meta name="description" content="My Business OS helps you manage bookings, orders, point of sale, inventory, and analytics — all in one platform designed for growth." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://dashboard.mygrafixmedia.com/" />
+
+    <!-- Open Graph -->
+    <meta property="og:site_name" content="My Business OS" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="My Business OS — Bookings, POS, Orders & Inventory in One Platform" />
+    <meta property="og:description" content="My Business OS helps you manage bookings, orders, point of sale, inventory, and analytics — all in one platform designed for growth." />
+    <meta property="og:url" content="https://dashboard.mygrafixmedia.com/" />
+    <meta property="og:image" content="https://res.cloudinary.com/dvvugpu04/image/upload/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png" />
+
+    <!-- Twitter / X -->
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="My Business OS — Bookings, POS, Orders & Inventory in One Platform" />
+    <meta name="twitter:description" content="My Business OS helps you manage bookings, orders, point of sale, inventory, and analytics — all in one platform designed for growth." />
+    <meta name="twitter:image" content="https://res.cloudinary.com/dvvugpu04/image/upload/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png" />
+
+    <meta name="theme-color" media="(prefers-color-scheme: light)" content="#f7f8fa" />
+    <meta name="theme-color" media="(prefers-color-scheme: dark)" content="#0a0c0f" />
+
     <meta name="format-detection" content="telephone=no" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -16,7 +37,45 @@
       type="image/png"
       href="https://res.cloudinary.com/dvvugpu04/image/upload/w_32,h_32,c_fill/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png"
     />
-    <title>My Business OS</title>
+
+    <!-- Structured data: Organization, WebSite, WebApplication (factual only) -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "Organization",
+          "@id": "https://dashboard.mygrafixmedia.com/#organization",
+          "name": "My Grafix Media",
+          "url": "https://dashboard.mygrafixmedia.com/",
+          "logo": "https://res.cloudinary.com/dvvugpu04/image/upload/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png"
+        },
+        {
+          "@type": "WebSite",
+          "@id": "https://dashboard.mygrafixmedia.com/#website",
+          "url": "https://dashboard.mygrafixmedia.com/",
+          "name": "My Business OS",
+          "publisher": { "@id": "https://dashboard.mygrafixmedia.com/#organization" }
+        },
+        {
+          "@type": "WebApplication",
+          "@id": "https://dashboard.mygrafixmedia.com/#application",
+          "name": "My Business OS",
+          "url": "https://dashboard.mygrafixmedia.com/",
+          "applicationCategory": "BusinessApplication",
+          "operatingSystem": "Web",
+          "description": "My Business OS helps you manage bookings, orders, point of sale, inventory, and analytics — all in one platform designed for growth.",
+          "publisher": { "@id": "https://dashboard.mygrafixmedia.com/#organization" },
+          "offers": [
+            { "@type": "Offer", "name": "Free", "price": "0", "priceCurrency": "ZAR", "url": "https://dashboard.mygrafixmedia.com/pricing" },
+            { "@type": "Offer", "name": "Starter", "price": "99", "priceCurrency": "ZAR", "url": "https://dashboard.mygrafixmedia.com/pricing" },
+            { "@type": "Offer", "name": "Business", "price": "249", "priceCurrency": "ZAR", "url": "https://dashboard.mygrafixmedia.com/pricing" },
+            { "@type": "Offer", "name": "Professional", "price": "549", "priceCurrency": "ZAR", "url": "https://dashboard.mygrafixmedia.com/pricing" }
+          ]
+        }
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
