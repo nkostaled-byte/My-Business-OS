@@ -64,7 +64,7 @@ export const PublicHeader: React.FC = () => {
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-4">
           <button
             onClick={toggleTheme}
-            className="relative w-11 h-7 sm:w-16 sm:h-8 rounded-full bg-slate-200 dark:bg-slate-700 transition-colors cursor-pointer flex items-center p-1"
+            className="relative w-11 h-7 sm:w-16 sm:h-8 shrink-0 rounded-full bg-slate-200 dark:bg-slate-700 transition-colors cursor-pointer flex items-center p-1"
             aria-label="Toggle dark mode"
           >
             <span className="absolute left-1.5 text-slate-400">

@@ -296,11 +296,11 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
         </div>
 
         {/* Right Side: Theme Toggle, Notifications, Profile */}
-        <div className="flex items-center gap-2 sm:gap-3">
+        <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {/* Theme Toggle Button */}
           <button
             onClick={toggleTheme}
-            className="relative w-16 h-8 rounded-full bg-slate-200 dark:bg-slate-700 transition-colors cursor-pointer flex items-center p-1"
+            className="relative w-16 h-8 shrink-0 rounded-full bg-slate-200 dark:bg-slate-700 transition-colors cursor-pointer flex items-center p-1"
             aria-label="Toggle light and dark mode"
           >
             <span className="absolute left-1.5 text-slate-400">
