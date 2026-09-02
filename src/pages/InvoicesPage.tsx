@@ -397,7 +397,10 @@ export const InvoicesPage: React.FC = () => {
             </div>
             <div className="space-y-2 max-h-72 overflow-y-auto pr-1 -webkit-overflow-scrolling-touch">
               {lineItems.map((item, idx) => (
-                <div key={idx} className="flex items-center gap-1.5 flex-wrap sm:flex-nowrap">
+                <div
+                  key={idx}
+                  className="flex flex-wrap items-center gap-1.5 gap-y-2 rounded-xl border border-slate-200/70 dark:border-white/5 p-2 sm:flex-nowrap sm:rounded-none sm:border-0 sm:p-0"
+                >
                   {/* Source type toggle */}
                   <div className="flex gap-px border border-slate-200 dark:border-slate-700 rounded-lg overflow-hidden flex-shrink-0">
                     <button
@@ -433,13 +436,15 @@ export const InvoicesPage: React.FC = () => {
                       value={item.description}
                       onChange={(e) => updateLineItem(idx, 'description', e.target.value)}
                       placeholder="Item description"
-                      className="flex-1 min-w-0 px-3 py-1.5 rounded-lg glass-subtle text-xs text-slate-900 dark:text-slate-100"
+                      aria-label={`Line item ${idx + 1} description`}
+                      className="flex-1 min-w-[8rem] px-3 py-1.5 rounded-lg glass-subtle text-xs text-slate-900 dark:text-slate-100"
                     />
                   ) : item.source === 'product' ? (
                     <select
                       value={item.sourceId || ''}
                       onChange={(e) => pickProduct(idx, e.target.value)}
-                      className="flex-1 min-w-0 px-3 py-1.5 rounded-lg glass-subtle text-xs text-slate-900 dark:text-slate-100"
+                      aria-label={`Line item ${idx + 1} product`}
+                      className="flex-1 min-w-[8rem] px-3 py-1.5 rounded-lg glass-subtle text-xs text-slate-900 dark:text-slate-100"
                     >
                       <option value="">Select product...</option>
                       {products
@@ -454,7 +459,8 @@ export const InvoicesPage: React.FC = () => {
                     <select
                       value={item.sourceId || ''}
                       onChange={(e) => pickService(idx, e.target.value)}
-                      className="flex-1 min-w-0 px-3 py-1.5 rounded-lg glass-subtle text-xs text-slate-900 dark:text-slate-100"
+                      aria-label={`Line item ${idx + 1} service`}
+                      className="flex-1 min-w-[8rem] px-3 py-1.5 rounded-lg glass-subtle text-xs text-slate-900 dark:text-slate-100"
                     >
                       <option value="">Select service...</option>
                       {services
@@ -472,6 +478,7 @@ export const InvoicesPage: React.FC = () => {
                     min={1}
                     value={item.quantity}
                     onChange={(e) => updateLineItem(idx, 'quantity', Math.max(1, parseInt(e.target.value) || 1))}
+                    aria-label={`Line item ${idx + 1} quantity`}
                     className="w-14 px-2 py-1.5 rounded-lg glass-subtle text-xs text-center text-slate-900 dark:text-slate-100"
                     title="Qty"
                   />
@@ -479,12 +486,14 @@ export const InvoicesPage: React.FC = () => {
                     type="number"
                     min={0}
                     step={0.01}
+                    inputMode="decimal"
                     value={item.price}
                     onChange={(e) => updateLineItem(idx, 'price', parseFloat(e.target.value) || 0)}
+                    aria-label={`Line item ${idx + 1} unit price`}
                     className="w-20 px-2 py-1.5 rounded-lg glass-subtle text-xs text-right text-slate-900 dark:text-slate-100"
                     title="Price"
                   />
-                  <span className="text-[11px] font-semibold text-slate-500 w-14 text-right flex-shrink-0">
+                  <span className="text-[11px] font-semibold text-slate-500 w-14 text-right flex-shrink-0" aria-label={`Line item ${idx + 1} amount`}>
                     R{(item.quantity * item.price).toFixed(2)}
                   </span>
                   <button
@@ -528,7 +537,7 @@ export const InvoicesPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
                 Status
@@ -552,8 +561,10 @@ export const InvoicesPage: React.FC = () => {
                 required
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full px-3.5 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
+                aria-label="Due date"
+                className="w-full min-w-0 px-3.5 py-2 rounded-xl glass-subtle text-xs text-slate-900 dark:text-slate-100"
               />
+              <p className="text-[10px] text-slate-400 mt-1">Tap the field to choose the due date</p>
             </div>
           </div>
 
