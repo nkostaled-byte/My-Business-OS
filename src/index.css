@@ -207,6 +207,18 @@
   textarea {
     font-size: 16px;
   }
+
+  /* iOS Safari gives native date inputs a large intrinsic width that wins over
+     width: 100% (used width = max(width, min-width)), overflowing containers.
+     Strip the UA chrome so the input respects its container — tapping still
+     opens the native iOS date picker. */
+  input[type="date"] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 100%;
+    min-width: 0;
+    max-width: 100%;
+  }
 }
 
 /* Explicit scrollbar utilities referenced across the app
