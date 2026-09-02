@@ -16,6 +16,7 @@ export const ProductsPage: React.FC = () => {
   const { addToast } = useToast();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
+  const [viewingProduct, setViewingProduct] = useState<Product | null>(null);
   const [search, setSearch] = useState('');
   const [deleting, setDeleting] = useState<string | null>(null);
   const uploadedKeyRef = useRef<string | null>(null);
@@ -272,7 +273,12 @@ export const ProductsPage: React.FC = () => {
               <MotionCard
                 key={p.id}
                 delay={index * 0.05}
-                className="p-5 flex flex-col justify-between group"
+                onClick={() => setViewingProduct(p)}
+                role="button"
+                tabIndex={0}
+                aria-label={`View details for ${p.name}`}
+                onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setViewingProduct(p); } }}
+                className="p-5 flex flex-col justify-between group cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-500"
               >
                 <div>
                   {p.imageUrl && (
@@ -312,19 +318,21 @@ export const ProductsPage: React.FC = () => {
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => openEditModal(p)}
+                        onClick={(e) => { e.stopPropagation(); openEditModal(p); }}
                         className="p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 dark:hover:bg-indigo-950/50 transition-colors cursor-pointer"
                         title="Edit product"
+                        aria-label={`Edit ${p.name}`}
                       >
                         <Edit3 className="w-3.5 h-3.5" />
                       </motion.button>
                       <motion.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
-                        onClick={() => handleDelete(p.id, p.name)}
+                        onClick={(e) => { e.stopPropagation(); handleDelete(p.id, p.name); }}
                         disabled={deleting === p.id}
                         className="p-1.5 rounded-lg text-slate-400 hover:text-rose-600 hover:bg-rose-50 dark:hover:bg-rose-950/50 transition-colors cursor-pointer disabled:opacity-50"
                         title="Delete product"
+                        aria-label={`Delete ${p.name}`}
                       >
                         <Trash2 className="w-3.5 h-3.5" />
                       </motion.button>
@@ -533,6 +541,74 @@ export const ProductsPage: React.FC = () => {
         )}
         {aiError && <p className="mt-3 text-xs font-semibold text-rose-600 dark:text-rose-400">{aiError}</p>}
       </Modal>
-    </div>
-  );
-};
+
+      {/* Product Details Modal */}
+      <Modal
+        isOpen={!!viewingProduct}
+        onClose={() => setViewingProduct(null)}
+        title={viewingProduct?.name || 'Product Details'}
+        subtitle={viewingProduct ? `${viewingProduct.category} • SKU ${viewingProduct.sku}` : undefined}
+        maxWidth="max-w-lg"
+      >
+        {viewingProduct && (
+          <div className="space-y-5">
+            <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800">
+              {viewingProduct.imageUrl ? (
+                <img src={viewingProduct.imageUrl} alt={viewingProduct.name} className="w-full h-64 object-contain" />
+              ) : (
+                <div className="h-40 flex flex-col items-center justify-center gap-2 text-slate-400">
+                  <Package className="w-8 h-8" />
+                  <span className="text-xs font-medium">No image yet</span>
+                </div>
+              )}
+            </div>
+
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">Price</p>
+                <p className="text-2xl font-extrabold text-slate-900 dark:text-slate-100">
+                  R{viewingProduct.price.toLocaleString()}
+                </p>
+                {viewingProduct.costPrice != null && viewingProduct.costPrice > 0 && (
+                  <p className="text-[11px] text-slate-400 mt-0.5">Unit cost: R{viewingProduct.costPrice.toLocaleString()}</p>
+                )}
+              </div>
+              <span className={`text-[11px] font-bold px-2.5 py-1 rounded-md ${getStockLabel(viewingProduct.stock).class}`}>
+                {getStockLabel(viewingProduct.stock).label}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400">
+                {viewingProduct.category}
+              </span>
+              {viewingProduct.displayOnWebsite && (
+                <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/60 text-emerald-600 dark:text-emerald-400">
+                  Displayed on website
+                </span>
+              )}
+            </div>
+
+            <div className="pt-4 flex flex-col-reverse sm:flex-row justify-end gap-2 border-t border-slate-200/50 dark:border-white/5">
+              <button
+                type="button"
+                onClick={() => setViewingProduct(null)}
+                className="px-4 py-2 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer"
+              >
+                Close
+              </button>
+              <button
+                type="button"
+                onClick={() => { const product = viewingProduct; setViewingProduct(null); if (product) openEditModal(product); }}
+                className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold text-white bg-indigo-600 hover:bg-indigo-500 cursor-pointer"
+              >
+                <Edit3 className="w-3.5 h-3.5" />
+                Edit Product
+              </button>
+            </div>
+          </div>
+        )}
+      </Modal>
+     </div>
+   );
+ };
