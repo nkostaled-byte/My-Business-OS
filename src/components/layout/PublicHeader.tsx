@@ -75,7 +75,7 @@ export const PublicHeader: React.FC = () => {
             </span>
             <span
               className={`absolute top-1 w-5 h-5 sm:w-6 sm:h-6 rounded-full bg-white shadow-md transition-transform duration-200 ${
-                theme === 'dark' ? 'translate-x-5 sm:translate-x-8' : 'translate-x-0'
+                theme === 'dark' ? 'translate-x-4 sm:translate-x-8' : 'translate-x-0'
               }`}
             />
           </button>
