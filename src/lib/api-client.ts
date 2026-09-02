@@ -14,7 +14,26 @@
 
 import { API } from '../config/api';
 
-const BASE_URL = import.meta.env.VITE_WORKER_API_URL || import.meta.env.VITE_WORKER_URL || '';
+/**
+ * Resolve the Worker API base URL defensively.
+ * Vite inlines VITE_* values at build time; a dashboard value missing the
+ * protocol (e.g. "api.mygrafixmedia.com") or containing stray whitespace or
+ * quotes would otherwise produce "Failed to construct 'URL': Invalid URL" at
+ * runtime. Normalize once, here, so every consumer receives a valid absolute
+ * URL or an empty string (which surfaces the explicit configuration error).
+ */
+export function resolveWorkerApiBaseUrl(): string {
+  const raw =
+    import.meta.env.VITE_WORKER_API_URL ||
+    import.meta.env.VITE_WORKER_BASE_URL ||
+    import.meta.env.VITE_WORKER_URL ||
+    '';
+  const cleaned = raw.trim().replace(/^['"]|['"]$/g, '');
+  if (!cleaned) return '';
+  return /^[a-z][a-z0-9+.-]*:\/\//i.test(cleaned) ? cleaned : `https://${cleaned}`;
+}
+
+const BASE_URL = resolveWorkerApiBaseUrl();
 const DEFAULT_FETCH_TIMEOUT_MS = 15_000;
 
 if (!BASE_URL) {

@@ -1,6 +1,6 @@
-import { getStoredToken } from './api-client';
+import { getStoredToken, resolveWorkerApiBaseUrl } from './api-client';
 
-const BASE_URL = import.meta.env.VITE_WORKER_API_URL || '';
+const BASE_URL = resolveWorkerApiBaseUrl();
 
 function buildFullUrl(path: string): string {
   const base = BASE_URL.replace(/\/$/, '');
