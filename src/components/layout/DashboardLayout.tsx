@@ -67,10 +67,12 @@ export const DashboardLayout: React.FC<{ role?: 'owner' | 'admin' | 'staff' | nu
               </motion.div>
             </AnimatePresence>
           </main>
-        </div>
 
-        {!locked && <FloatingActionButton />}
-        {!locked && <AIChat />}
+          {/* FAB + AI launcher live in the same stacking context as page
+              content so open modals (z-50) correctly cover them (z-40). */}
+          {!locked && <FloatingActionButton />}
+          {!locked && <AIChat />}
+        </div>
       </div>
     </ToastProvider>
   );

@@ -6,12 +6,14 @@ import { EmptyState } from '../components/common/EmptyState';
 import { ImageUploadInput } from '../components/common/ImageUploadInput';
 import { prepareReferenceImage } from '../lib/image-utils';
 import api from '../lib/api-client';
+import type { GalleryItem } from '../types';
 import { Images as ImageIcon, Upload, Sparkles, Loader2 } from 'lucide-react';
 
 export const GalleryPage: React.FC = () => {
   const { gallery, addGalleryItem } = useData();
   const { addToast } = useToast();
   const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [viewingItem, setViewingItem] = useState<GalleryItem | null>(null);
   const uploadedKeyRef = useRef<string | null>(null);
 
   // Form State
@@ -157,7 +159,12 @@ export const GalleryPage: React.FC = () => {
           {gallery.map((item) => (
             <div
               key={item.id}
-              className="group relative rounded-2xl overflow-hidden bg-slate-900 shadow-xs border border-slate-200 dark:border-slate-800"
+              onClick={() => setViewingItem(item)}
+              role="button"
+              tabIndex={0}
+              aria-label={`View ${item.title}`}
+              onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setViewingItem(item); } }}
+              className="group relative rounded-2xl overflow-hidden bg-slate-900 shadow-xs border border-slate-200 dark:border-slate-800 cursor-pointer focus:outline-hidden focus-visible:ring-2 focus-visible:ring-indigo-500"
             >
               {item.imageUrl ? (
                 <img
@@ -313,6 +320,37 @@ export const GalleryPage: React.FC = () => {
           </div>
         )}
         {aiError && <p className="mt-3 text-xs font-semibold text-rose-600 dark:text-rose-400">{aiError}</p>}
+      </Modal>
+
+      {/* Gallery Image Lightbox */}
+      <Modal
+        isOpen={!!viewingItem}
+        onClose={() => setViewingItem(null)}
+        title={viewingItem?.title || 'Gallery Image'}
+        subtitle={viewingItem?.category || undefined}
+        maxWidth="max-w-3xl"
+      >
+        {viewingItem && (
+          <div className="space-y-4">
+            <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-slate-700 bg-slate-100 dark:bg-slate-800">
+              <img src={viewingItem.imageUrl} alt={viewingItem.title} className="w-full max-h-[65dvh] object-contain" />
+            </div>
+            <div className="flex items-center justify-between gap-3">
+              <span className="text-[11px] text-slate-400">
+                {viewingItem.createdAt || viewingItem.uploadedAt
+                  ? `Uploaded ${new Date((viewingItem.createdAt || viewingItem.uploadedAt)!).toLocaleDateString(undefined, { day: 'numeric', month: 'long', year: 'numeric' })}`
+                  : ''}
+              </span>
+              <button
+                type="button"
+                onClick={() => setViewingItem(null)}
+                className="px-4 py-2 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
       </Modal>
     </div>
   );

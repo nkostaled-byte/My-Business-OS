@@ -3,7 +3,7 @@
  * (score, opportunity, recommended services, AI brief) when creating a lead
  * straight from the audit centre (e.g. off a scanned website).
  */
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'motion/react';
 import { Modal } from '../common/Modal';
 import { useToast } from '../../context/ToastContext';
@@ -18,6 +18,10 @@ interface Props {
   audit?: AuditFullResponse | null;
   /** Prefilled website from an audit scan. */
   website?: string;
+  /** Prefills from a Google Places search result. */
+  prefillName?: string;
+  prefillPhone?: string;
+  prefillSource?: string;
 }
 
 const PRIORITIES: LeadPriority[] = ['low', 'medium', 'high', 'urgent'];
@@ -26,18 +30,31 @@ const inputCls =
   'w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all';
 const labelCls = 'block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1';
 
-export const LeadForm: React.FC<Props> = ({ isOpen, onClose, onSaved, audit, website }) => {
+export const LeadForm: React.FC<Props> = ({ isOpen, onClose, onSaved, audit, website, prefillName, prefillPhone, prefillSource }) => {
   const { success, error } = useToast();
   const [saving, setSaving] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const [name, setName] = useState(audit?.audit.businessName || '');
-  const [url, setUrl] = useState(website || audit?.audit.url || '');
+  const [name, setName] = useState('');
+  const [url, setUrl] = useState('');
   const [source, setSource] = useState('scan');
   const [priority, setPriority] = useState<LeadPriority>('medium');
-  const [email, setEmail] = useState(audit?.audit.emails?.[0] || '');
-  const [phone, setPhone] = useState(audit?.audit.phones?.[0] || '');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
   const [notes, setNotes] = useState('');
+
+  // Re-sync fields each time the modal opens — state must never be captured
+  // from the first mount (when audit/prefill props were still empty).
+  useEffect(() => {
+    if (!isOpen) return;
+    setName(audit?.audit.businessName || prefillName || '');
+    setUrl(website || audit?.audit.url || '');
+    setSource(prefillSource || 'scan');
+    setEmail(audit?.audit.emails?.[0] || '');
+    setPhone(audit?.audit.phones?.[0] || prefillPhone || '');
+    setNotes('');
+    setSubmitted(false);
+  }, [isOpen, audit, website, prefillName, prefillPhone, prefillSource]);
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();

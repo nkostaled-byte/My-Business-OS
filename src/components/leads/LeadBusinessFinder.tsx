@@ -15,7 +15,7 @@ import {
 import type { PlaceBusiness } from '../../types';
 
 interface Props {
-  onOpenAudit: (website: string) => void;
+  onOpenAudit: (website: string, business: PlaceBusiness) => void;
   onLeadSaved: () => void;
 }
 
@@ -178,7 +178,7 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
               <div className="mt-3 pt-3 flex items-center justify-between gap-2 border-t border-slate-200/50 dark:border-white/5">
                 {b.website ? (
                   <button
-                    onClick={() => onOpenAudit(b.website!)}
+                    onClick={() => onOpenAudit(b.website!, b)}
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 cursor-pointer"
                   >
                     <SearchCheck className="w-3.5 h-3.5" /> Audit site

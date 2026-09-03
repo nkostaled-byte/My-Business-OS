@@ -19,12 +19,15 @@ interface Props {
   onLeadSaved: (lead: Lead) => void;
   /** Prefill the audit URL field (e.g. from Google Places). */
   initialUrl?: string;
+  /** Prefills from a Google Places search result. */
+  initialBusinessName?: string;
+  initialPhone?: string;
 }
 
 const inputCls =
   'w-full px-3.5 py-2 rounded-xl glass-subtle text-xs sm:text-sm text-slate-900 dark:text-slate-100 placeholder:text-slate-400 focus:outline-hidden focus:ring-2 focus:ring-indigo-500/30 transition-all';
 
-export const LeadAuditCenter: React.FC<Props> = ({ isOpen, onClose, onLeadSaved, initialUrl }) => {
+export const LeadAuditCenter: React.FC<Props> = ({ isOpen, onClose, onLeadSaved, initialUrl, initialBusinessName, initialPhone }) => {
   const { error } = useToast();
   const [url, setUrl] = useState('');
   const [businessName, setBusinessName] = useState('');
@@ -33,8 +36,10 @@ export const LeadAuditCenter: React.FC<Props> = ({ isOpen, onClose, onLeadSaved,
   const [showLeadForm, setShowLeadForm] = useState(false);
 
   useEffect(() => {
-    if (isOpen && initialUrl && !url) setUrl(initialUrl);
-  }, [isOpen, initialUrl, url]);
+    if (!isOpen) return;
+    setUrl(initialUrl || '');
+    setBusinessName(initialBusinessName || '');
+  }, [isOpen, initialUrl, initialBusinessName]);
 
   const reset = () => {
     setResult(null);
@@ -106,7 +111,16 @@ export const LeadAuditCenter: React.FC<Props> = ({ isOpen, onClose, onLeadSaved,
         )}
       </Modal>
 
-      <LeadForm isOpen={showLeadForm} onClose={() => setShowLeadForm(false)} onSaved={handleSaved} audit={result} website={url} />
+      <LeadForm
+        isOpen={showLeadForm}
+        onClose={() => setShowLeadForm(false)}
+        onSaved={handleSaved}
+        audit={result}
+        website={url}
+        prefillName={businessName || initialBusinessName || undefined}
+        prefillPhone={initialPhone || undefined}
+        prefillSource={initialBusinessName ? 'Google Places' : undefined}
+      />
     </>
   );
 };

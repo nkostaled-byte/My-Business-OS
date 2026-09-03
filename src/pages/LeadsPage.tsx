@@ -45,6 +45,7 @@ export const LeadsPage: React.FC = () => {
 
   const [auditOpen, setAuditOpen] = useState(false);
   const [auditInitialUrl, setAuditInitialUrl] = useState('');
+  const [auditInitialBusiness, setAuditInitialBusiness] = useState<{ name: string; phone: string } | null>(null);
   const [createOpen, setCreateOpen] = useState(false);
   const [detailId, setDetailId] = useState<string | null>(null);
   const [exporting, setExporting] = useState(false);
@@ -195,7 +196,11 @@ export const LeadsPage: React.FC = () => {
 
       {tab === 'find' && (
         <LeadBusinessFinder
-          onOpenAudit={(website) => { setAuditInitialUrl(website); setAuditOpen(true); }}
+          onOpenAudit={(website, business) => {
+            setAuditInitialUrl(website);
+            setAuditInitialBusiness({ name: business.name, phone: business.phone || '' });
+            setAuditOpen(true);
+          }}
           onLeadSaved={loadAll}
         />
       )}
@@ -203,7 +208,14 @@ export const LeadsPage: React.FC = () => {
       {tab === 'overview' && <OverviewTab leads={leads} totals={totals} />}
 
       {/* Modals */}
-      <LeadAuditCenter isOpen={auditOpen} onClose={() => setAuditOpen(false)} onLeadSaved={() => { loadAll(); }} initialUrl={auditInitialUrl} />
+      <LeadAuditCenter
+        isOpen={auditOpen}
+        onClose={() => setAuditOpen(false)}
+        onLeadSaved={() => { loadAll(); }}
+        initialUrl={auditInitialUrl}
+        initialBusinessName={auditInitialBusiness?.name}
+        initialPhone={auditInitialBusiness?.phone}
+      />
       <LeadForm isOpen={createOpen} onClose={() => setCreateOpen(false)} onSaved={() => { loadAll(); success('Lead created'); }} />
       <LeadDetailView leadId={detailId} onClose={() => setDetailId(null)} onUpdated={loadAll} />
     </div>
