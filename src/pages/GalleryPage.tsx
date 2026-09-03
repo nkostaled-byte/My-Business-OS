@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useData } from '../context/DataContext';
+import { useToast } from '../context/ToastContext';
 import { Modal } from '../components/common/Modal';
 import { EmptyState } from '../components/common/EmptyState';
 import { ImageUploadInput } from '../components/common/ImageUploadInput';
@@ -9,6 +10,7 @@ import { Images as ImageIcon, Upload, Sparkles, Loader2 } from 'lucide-react';
 
 export const GalleryPage: React.FC = () => {
   const { gallery, addGalleryItem } = useData();
+  const { addToast } = useToast();
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const uploadedKeyRef = useRef<string | null>(null);
 
@@ -44,13 +46,18 @@ export const GalleryPage: React.FC = () => {
     resetForm();
   };
 
-  const handleUpload = (e: React.FormEvent) => {
+  const handleUpload = async (e: React.FormEvent) => {
     e.preventDefault();
-    addGalleryItem({
+    const created = await addGalleryItem({
       title,
       category,
       imageUrl: imageUrl || 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=600&auto=format&fit=crop&q=80',
     });
+    if (!created) {
+      addToast({ title: 'Upload Failed', message: 'Could not add the image to your gallery. Please try again.', type: 'error' });
+      return;
+    }
+    addToast({ title: 'Added to Gallery', message: `"${title}" is now in your gallery.`, type: 'success' });
     uploadedKeyRef.current = null;
     setIsUploadOpen(false);
     resetForm();
@@ -106,6 +113,7 @@ export const GalleryPage: React.FC = () => {
       uploadedKeyRef.current = result.data.key;
       setIsAiOpen(false);
       setAiPreview(null);
+      addToast({ title: 'Image Ready', message: 'Now add a title and category, then press Upload Photo to add it to your gallery.', type: 'info' });
     } catch (err: any) {
       setAiError(err?.message || 'The image could not be saved. Please try again.');
     } finally {
@@ -151,17 +159,28 @@ export const GalleryPage: React.FC = () => {
               key={item.id}
               className="group relative rounded-2xl overflow-hidden bg-slate-900 shadow-xs border border-slate-200 dark:border-slate-800"
             >
-              <img
-                src={item.imageUrl}
-                alt={item.title}
-                className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
-              />
+              {item.imageUrl ? (
+                <img
+                  src={item.imageUrl}
+                  alt={item.title}
+                  className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                />
+              ) : (
+                <div className="w-full h-48 flex flex-col items-center justify-center gap-2 text-slate-500">
+                  <ImageIcon className="w-8 h-8" />
+                  <span className="text-xs font-medium">No image</span>
+                </div>
+              )}
               <div className="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent p-4 flex flex-col justify-end text-white opacity-90 group-hover:opacity-100 transition-opacity">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-300">
-                  {item.category}
-                </span>
+                {item.category && (
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-300">
+                    {item.category}
+                  </span>
+                )}
                 <h4 className="text-xs font-bold leading-tight mt-0.5">{item.title}</h4>
-                <span className="text-[10px] text-slate-300 mt-1">Uploaded {item.uploadedAt}</span>
+                <span className="text-[10px] text-slate-300 mt-1">
+                  Uploaded {item.createdAt || item.uploadedAt ? new Date((item.createdAt || item.uploadedAt)!).toLocaleDateString() : ''}
+                </span>
               </div>
             </div>
           ))}

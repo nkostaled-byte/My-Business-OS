@@ -128,9 +128,10 @@ export interface StaffMember {
 export interface GalleryItem {
   id: string;
   title: string;
-  category: string;
+  category?: string;
   imageUrl: string;
-  uploadedAt: string;
+  uploadedAt?: string;
+  createdAt?: string;
   fileSizeMb?: number;
 }
 
