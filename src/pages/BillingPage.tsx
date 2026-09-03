@@ -8,8 +8,6 @@ import {
   Check,
   Minus,
   ChevronDown,
-  ShieldCheck,
-  Loader2,
   CreditCard,
   RefreshCw,
   Globe2,
@@ -149,26 +147,15 @@ export const BillingPage: React.FC = () => {
     <div className="space-y-12 py-4">
       {/* Current Workspace Plan Banner */}
       <div className="p-6 sm:p-8 rounded-[28px] bg-gradient-to-br from-indigo-600 via-indigo-600 to-sky-600 text-white shadow-xl flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border border-indigo-700/50">
-        <div className="flex items-start gap-4">
+        <div>
           {statusLoading ? (
-            <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center">
-              <Loader2 className="w-5 h-5 animate-spin text-indigo-300" />
-            </div>
+            <>
+              <div className="h-4 w-40 bg-white/20 rounded animate-pulse" />
+              <div className="h-3 w-64 bg-white/10 rounded animate-pulse mt-3" />
+            </>
           ) : (
-            <div className="w-10 h-10 rounded-2xl bg-white/10 flex items-center justify-center shrink-0">
-              <ShieldCheck className="w-5 h-5 text-indigo-300" />
-            </div>
-          )}
-
-          <div>
-            {statusLoading ? (
-              <>
-                <div className="h-4 w-40 bg-white/20 rounded animate-pulse" />
-                <div className="h-3 w-64 bg-white/10 rounded animate-pulse mt-3" />
-              </>
-            ) : (
-              <>
-                <h2 className="text-xl sm:text-2xl font-extrabold mt-3">My Business OS Workspace</h2>
+            <>
+              <h2 className="text-xl sm:text-2xl font-extrabold">My Business OS Workspace</h2>
                 <p className="text-xs sm:text-sm text-indigo-200 mt-1 max-w-xl">
                   {status?.subscription_active
                     ? `Your plan renews automatically on ${status.plan_expires_at
@@ -182,7 +169,6 @@ export const BillingPage: React.FC = () => {
                 </p>
               </>
             )}
-          </div>
         </div>
 
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 shrink-0">

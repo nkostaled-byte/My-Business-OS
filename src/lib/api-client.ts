@@ -393,7 +393,7 @@ export const api = {
    */
   async upload(
     file: File | Blob,
-    folder: 'logos' | 'profile' | 'products' = 'products'
+    folder: 'logos' | 'profile' | 'products' | 'gallery' = 'products'
   ): Promise<ApiResponse<{ url: string; key: string }>> {
     const url = buildUrl('/api/upload', { folder });
     try {
@@ -430,11 +430,12 @@ export const api = {
     aspectRatio?: string;
     referenceImageData?: string;
     assetType?: 'product' | 'service';
+    purpose?: 'product' | 'service' | 'gallery';
   }): Promise<ApiResponse<{ imageData: string; approvalToken: string; expiresIn: number }>> {
     return this.post(API.ai.generateProductImage, data, { timeoutMs: 120_000 });
   },
 
-  async saveProductImage(data: { imageData: string; approvalToken: string }): Promise<ApiResponse<{ url: string; key: string }>> {
+  async saveProductImage(data: { imageData: string; approvalToken: string; purpose?: 'product' | 'service' | 'gallery' }): Promise<ApiResponse<{ url: string; key: string }>> {
     return this.post(API.ai.saveProductImage, data, { timeoutMs: 30_000 });
   },
 

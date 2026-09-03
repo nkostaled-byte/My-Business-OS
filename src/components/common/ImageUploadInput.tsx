@@ -13,7 +13,7 @@ interface ImageUploadInputProps {
   label?: string;
   presets?: ImagePreset[];
   placeholder?: string;
-  folder?: 'logos' | 'profile' | 'products';
+  folder?: 'logos' | 'profile' | 'products' | 'gallery';
   onImageKeyChange?: (key: string | null) => void;
 }
 

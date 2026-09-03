@@ -146,8 +146,9 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
               initial={{ opacity: 0, y: 6 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.18 }}
-              className="glass-panel rounded-xl p-4 flex flex-col"
+              className="glass-panel rounded-xl p-4 flex flex-col overflow-hidden"
             >
+
               <div className="flex items-start gap-3">
                 <div className="w-10 h-10 rounded-lg bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 flex items-center justify-center shrink-0">
                   <Building2 className="w-5 h-5" />
@@ -164,17 +165,16 @@ export const LeadBusinessFinder: React.FC<Props> = ({ onOpenAudit, onLeadSaved }
                     )}
                     {b.category && <span className="truncate">{b.category}</span>}
                   </div>
-                  <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400 truncate inline-flex items-center gap-1">
-                    <MapPin className="w-3 h-3 shrink-0" />{b.address || '—'}
+                  <p className="mt-1 text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 min-w-0">
+                    <MapPin className="w-3 h-3 shrink-0" /><span className="truncate">{b.address || '—'}</span>
                   </p>
                   {b.phone && (
-                    <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400 inline-flex items-center gap-1">
-                      <Phone className="w-3 h-3 shrink-0" />{b.phone}
+                    <p className="mt-0.5 text-[11px] text-slate-500 dark:text-slate-400 flex items-center gap-1 min-w-0">
+                      <Phone className="w-3 h-3 shrink-0" /><span className="truncate">{b.phone}</span>
                     </p>
                   )}
                 </div>
               </div>
-
               <div className="mt-3 pt-3 flex items-center justify-between gap-2 border-t border-slate-200/50 dark:border-white/5">
                 {b.website ? (
                   <button
