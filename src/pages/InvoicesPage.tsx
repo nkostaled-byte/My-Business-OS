@@ -464,7 +464,7 @@ export const InvoicesPage: React.FC = () => {
                     >
                       <option value="">Select service...</option>
                       {services
-                        .filter((s) => s.isActive)
+                        .filter((s) => s.active !== false)
                         .map((s) => (
                           <option key={s.id} value={s.id}>
                             {s.name} — R{s.price.toFixed(2)} ({s.durationMinutes}min)

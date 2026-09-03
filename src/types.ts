@@ -83,7 +83,7 @@ export interface Service {
   durationMinutes: number;
   price: number;
   description?: string;
-  isActive: boolean;
+  active?: boolean;
   imageUrl?: string;
   displayOnWebsite?: boolean;
 }

@@ -152,7 +152,7 @@ export const sampleServices: Service[] = [
     durationMinutes: 45,
     price: 350,
     description: 'Precision cut, hot towel finish, and beard styling.',
-    isActive: true,
+    active: true,
     imageUrl: 'https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=400&auto=format&fit=crop&q=80',
   },
   {
@@ -162,7 +162,7 @@ export const sampleServices: Service[] = [
     durationMinutes: 60,
     price: 520,
     description: 'Deep cleansing, scalp massage, and essential oil therapy.',
-    isActive: true,
+    active: true,
     imageUrl: 'https://images.unsplash.com/photo-1560066984-138dadb4c035?w=400&auto=format&fit=crop&q=80',
   },
   {
@@ -172,7 +172,7 @@ export const sampleServices: Service[] = [
     durationMinutes: 90,
     price: 850,
     description: 'Full shine gloss treatment and custom blowout finish.',
-    isActive: true,
+    active: true,
     imageUrl: 'https://images.unsplash.com/photo-1522337360788-8b13dee7a37e?w=400&auto=format&fit=crop&q=80',
   },
   {
@@ -182,7 +182,7 @@ export const sampleServices: Service[] = [
     durationMinutes: 20,
     price: 180,
     description: 'Quick lineup, beard oil application, and trim.',
-    isActive: true,
+    active: true,
     imageUrl: 'https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=400&auto=format&fit=crop&q=80',
   },
 ];
