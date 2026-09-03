@@ -220,6 +220,8 @@ export const SettingsPage: React.FC = () => {
         primaryColor,
         secondaryColor,
         logoUrl,
+        profileName: draftProfileName,
+        profileAvatarUrl: profileAvatar,
       };
 
       const result = await api.put('/api/client-settings', payload);
@@ -237,17 +239,23 @@ export const SettingsPage: React.FC = () => {
     setSaving(false);
   };
 
-  const handleAvatarUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAvatarUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const result = reader.result as string;
-        setProfileAvatar(result);
-        addToast('Profile picture updated', 'success');
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    // Upload to the R2 bucket ('profile' folder) and persist the URL —
+    // base64 data URLs would bloat localStorage and the auth JWT.
+    if (file.size > 5 * 1024 * 1024) {
+      addToast({ title: 'Image Too Large', message: 'Please choose an image under 5MB.', type: 'error' });
+      return;
     }
+    const result = await api.upload(file, 'profile');
+    const url = result.data?.url || (result as any).url;
+    if (!result.success || !url) {
+      addToast({ title: 'Upload Failed', message: result.error || 'Could not upload the profile picture.', type: 'error' });
+      return;
+    }
+    setProfileAvatar(url);
+    addToast({ title: 'Profile Picture Updated', message: 'Saved to your account.', type: 'success' });
   };
 
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {

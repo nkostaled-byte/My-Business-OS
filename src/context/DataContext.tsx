@@ -296,6 +296,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const setProfileName = (val: string) => {
     setProfileNameState(val);
     localStorage.setItem('my_profile_name', val);
+    // Persisted to Supabase (clients.profile_name) via /api/client-settings —
+    // SettingsPage includes it in the save payload. localStorage is the cache.
   };
   const setProfileEmail = (val: string) => {
     setProfileEmailState(val);
@@ -304,6 +306,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const setProfileAvatar = (val: string) => {
     setProfileAvatarState(val);
     localStorage.setItem('my_profile_avatar', val);
+    // Avatar file lives in R2 ('profile' folder); the URL is persisted to
+    // clients.profile_avatar_url via /api/client-settings.
   };
 
   // Website settings (cached until logout/refresh)
@@ -314,6 +318,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     openingHours: string;
     ownerEmail: string;
     websiteUrl: string;
+    profileName: string;
+    profileAvatarUrl: string;
   } | null>(null);
   const [websiteSettingsLoading, setWebsiteSettingsLoading] = useState(false);
 
@@ -330,7 +336,14 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
           openingHours: s.openingHours ?? '',
           ownerEmail: s.ownerEmail ?? '',
           websiteUrl: s.websiteUrl ?? '',
+          profileName: s.profileName ?? '',
+          profileAvatarUrl: s.profileAvatarUrl ?? '',
         });
+        // Hydrate the personal profile from the clients row (Supabase is the
+        // source of truth; localStorage is only the instant cache). Only seed
+        // when the server has a value so defaults/local edits aren't wiped.
+        if (s.profileName) setProfileNameState(s.profileName);
+        if (s.profileAvatarUrl) setProfileAvatarState(s.profileAvatarUrl);
       }
     } catch (err) {
       console.error('[DataContext] Failed to load website settings:', err);
