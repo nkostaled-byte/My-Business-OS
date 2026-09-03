@@ -8,9 +8,10 @@ import { motion } from 'motion/react';
 import { Modal } from '../common/Modal';
 import { useToast } from '../../context/ToastContext';
 import { leadsApi } from '../../lib/leads-api';
+import { downloadPdf } from '../../lib/pdf-download';
 import { ScoreBadge, OpportunityBadge, recommendedLabel } from './LeadBase';
 import { LeadForm } from './LeadForm';
-import { BrainCircuit, AlertTriangle, Shield, ShieldCheck, ExternalLink, Mail, Phone, Building2, Target, ClipboardCheck } from 'lucide-react';
+import { BrainCircuit, AlertTriangle, Shield, ShieldCheck, ExternalLink, Mail, Phone, Building2, Target, ClipboardCheck, Download, Copy, Check, Loader2 } from 'lucide-react';
 import type { AuditFullResponse, Lead } from '../../types';
 
 interface Props {
@@ -132,7 +133,32 @@ const AuditResultView = ({ result, onCreateLead, onNew, onClose, businessName }:
   onClose: () => void;
   businessName: string;
 }) => {
+  const { success, error } = useToast();
+  const [downloading, setDownloading] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { audit, score, ai } = result;
+
+  const reportName = businessName || audit.businessName || audit.domain || 'lead';
+  const reportPath = `/api/leads/audit/report?url=${encodeURIComponent(audit.url || '')}&businessName=${encodeURIComponent(businessName || audit.businessName || '')}`;
+
+  const downloadReport = async () => {
+    if (downloading) return;
+    setDownloading(true);
+    await downloadPdf(reportPath, `audit-report-${reportName.replace(/[^a-z0-9]+/gi, '-').toLowerCase()}.pdf`);
+    setDownloading(false);
+  };
+
+  const copySalesMessage = async () => {
+    if (!ai?.salesMessage) return;
+    try {
+      await navigator.clipboard.writeText(ai.salesMessage);
+      setCopied(true);
+      success('Copied', 'The sales message is on your clipboard — paste it into WhatsApp or email.');
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      error('Copy failed', 'Select the message text and copy it manually.');
+    }
+  };
   const findings: { label: string; present?: boolean }[] = [
     { label: 'Mobile-responsive / modern design', present: true },
     { label: 'SSL / HTTPS in place', present: audit.hasSsl },
@@ -237,9 +263,26 @@ const AuditResultView = ({ result, onCreateLead, onNew, onClose, businessName }:
       </div>
 
       <div className="pt-2 flex flex-col sm:flex-row justify-between gap-2 border-t border-slate-200/50 dark:border-white/5">
-        <div className="flex gap-2">
+        <div className="flex flex-wrap gap-2">
           <button onClick={onNew} className="px-4 py-2 rounded-xl text-xs font-medium bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 cursor-pointer">New audit</button>
           <button onClick={onClose} className="px-4 py-2 rounded-xl text-xs font-medium text-slate-500 cursor-pointer">Close</button>
+          <button
+            onClick={downloadReport}
+            disabled={downloading}
+            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold text-white bg-indigo-600 hover:bg-indigo-500 disabled:opacity-60 cursor-pointer"
+          >
+            {downloading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Download className="w-3.5 h-3.5" />}
+            {downloading ? 'Preparing…' : 'Download report'}
+          </button>
+          {ai?.salesMessage && (
+            <button
+              onClick={copySalesMessage}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700 text-slate-700 dark:text-slate-300 cursor-pointer"
+            >
+              {copied ? <Check className="w-3.5 h-3.5 text-emerald-500" /> : <Copy className="w-3.5 h-3.5" />}
+              {copied ? 'Copied' : 'Copy sales message'}
+            </button>
+          )}
         </div>
         <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} onClick={onCreateLead} className="inline-flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-white bg-slate-900 dark:bg-white dark:text-slate-900 hover:bg-slate-700 dark:hover:bg-slate-200 cursor-pointer">
           <ExternalLink className="w-4 h-4" /> Save as lead
