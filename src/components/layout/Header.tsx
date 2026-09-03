@@ -310,7 +310,7 @@ export const Header: React.FC<HeaderProps> = ({ onOpenMobileMenu }) => {
               <Moon className="w-4 h-4" />
             </span>
             <span
-              className={`absolute top-1.5 w-6 h-6 rounded-full bg-white shadow-md transition-transform duration-200 ${
+              className={`absolute top-1/2 left-1 w-6 h-6 -translate-y-1/2 rounded-full bg-white shadow-md transition-transform duration-200 ${
                 theme === 'dark' ? 'translate-x-8' : 'translate-x-0'
               }`}
             />
