@@ -10,8 +10,11 @@ import {
   Wand2,
   AlertTriangle,
   Check,
+  ImagePlus,
+  X,
 } from 'lucide-react';
 import api from '../lib/api-client';
+import { prepareReferenceImage } from '../lib/image-utils';
 import { useToast } from '../context/ToastContext';
 import { Modal } from '../components/common/Modal';
 import { EmptyState } from '../components/common/EmptyState';
@@ -84,6 +87,9 @@ export const ImageStudioPage: React.FC = () => {
   const [prompt, setPrompt] = useState('');
   const [style, setStyle] = useState('photorealistic');
   const [aspectRatio, setAspectRatio] = useState('1:1');
+  const [referenceImage, setReferenceImage] = useState('');
+  const [referenceError, setReferenceError] = useState<string | null>(null);
+  const [referenceDragging, setReferenceDragging] = useState(false);
 
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -92,6 +98,7 @@ export const ImageStudioPage: React.FC = () => {
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   const promptRef = useRef<HTMLTextAreaElement | null>(null);
+  const referenceInputRef = useRef<HTMLInputElement | null>(null);
 
   const loadUsage = useCallback(async () => {
     const result = await api.getImageStudioUsage();
@@ -135,6 +142,30 @@ export const ImageStudioPage: React.FC = () => {
   const exhausted = !usageLoading && !!usage && remaining <= 0;
   const progress = limit > 0 ? Math.max(0, Math.min(100, (remaining / limit) * 100)) : 0;
 
+  const handleReferenceFile = async (file: File | undefined) => {
+    if (!file) return;
+    if (file.type && !['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+      setReferenceError('Please select a PNG, JPG or WEBP image.');
+      return;
+    }
+    if (file.size > 15 * 1024 * 1024) {
+      setReferenceError('Reference images must be 15 MB or smaller.');
+      return;
+    }
+    try {
+      setReferenceError(null);
+      setReferenceImage(await prepareReferenceImage(file));
+    } catch (err: any) {
+      setReferenceError(err?.message || 'Could not read the reference image.');
+    }
+  };
+
+  const clearReference = () => {
+    setReferenceImage('');
+    setReferenceError(null);
+    if (referenceInputRef.current) referenceInputRef.current.value = '';
+  };
+
   const handleGenerate = async () => {
     if (generating) return;
     if (exhausted) {
@@ -159,6 +190,7 @@ export const ImageStudioPage: React.FC = () => {
         style,
         aspectRatio,
         requestId,
+        referenceImageData: referenceImage || undefined,
       });
 
       if (!result.success || !result.data) {
@@ -324,6 +356,99 @@ export const ImageStudioPage: React.FC = () => {
                   {idea.length > 42 ? `${idea.slice(0, 42)}…` : idea}
                 </button>
               ))}
+            </div>
+
+            <div className="mt-5">
+              <div className="flex items-start justify-between gap-3">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate-400 dark:text-slate-500">
+                    Reference image
+                  </p>
+                  <p className="mt-0.5 text-[10px] text-slate-400 dark:text-slate-500">
+                    Optional — upload a product or logo to create a mockup.
+                  </p>
+                </div>
+                {referenceImage && (
+                  <button
+                    type="button"
+                    onClick={clearReference}
+                    className="shrink-0 text-[10px] font-semibold text-rose-500 hover:text-rose-600 cursor-pointer"
+                  >
+                    Remove
+                  </button>
+                )}
+              </div>
+
+              <input
+                ref={referenceInputRef}
+                type="file"
+                accept="image/png,image/jpeg,image/webp"
+                className="hidden"
+                onChange={(event) => {
+                  void handleReferenceFile(event.target.files?.[0]);
+                  event.target.value = '';
+                }}
+              />
+
+              {referenceImage ? (
+                <div className="mt-2 flex items-center gap-3 rounded-2xl border border-slate-200/80 dark:border-white/10 bg-white/40 dark:bg-white/[0.02] p-2.5">
+                  <img
+                    src={referenceImage}
+                    alt="Reference preview"
+                    className="h-16 w-16 shrink-0 rounded-xl border border-slate-200/80 dark:border-white/10 object-cover"
+                  />
+                  <div className="min-w-0 flex-1">
+                    <p className="text-xs font-semibold text-slate-800 dark:text-slate-200">Reference ready</p>
+                    <p className="mt-0.5 text-[10px] leading-relaxed text-slate-400 dark:text-slate-500">
+                      The subject will be placed into the scene you describe.
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={clearReference}
+                    aria-label="Remove reference image"
+                    className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-xl text-slate-400 hover:bg-rose-50 hover:text-rose-500 dark:hover:bg-rose-950/40 dark:hover:text-rose-400 transition-colors cursor-pointer"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  type="button"
+                  onClick={() => referenceInputRef.current?.click()}
+                  onDragOver={(event) => {
+                    event.preventDefault();
+                    setReferenceDragging(true);
+                  }}
+                  onDragLeave={() => setReferenceDragging(false)}
+                  onDrop={(event) => {
+                    event.preventDefault();
+                    setReferenceDragging(false);
+                    void handleReferenceFile(event.dataTransfer.files?.[0]);
+                  }}
+                  className={`mt-2 flex w-full items-center justify-center gap-2 rounded-2xl border border-dashed px-3 py-3 text-left transition-colors cursor-pointer ${
+                    referenceDragging
+                      ? 'border-indigo-500 bg-indigo-50/70 dark:bg-indigo-500/10'
+                      : 'border-slate-200/80 dark:border-white/10 bg-white/40 dark:bg-white/[0.02] hover:border-indigo-300 dark:hover:border-indigo-500/60'
+                  }`}
+                >
+                  <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-indigo-50 dark:bg-indigo-500/10 text-indigo-600 dark:text-indigo-400">
+                    <ImagePlus className="h-4 w-4" />
+                  </span>
+                  <span className="min-w-0">
+                    <span className="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+                      Click or drop an image
+                    </span>
+                    <span className="mt-0.5 block text-[10px] text-slate-400 dark:text-slate-500">
+                      PNG, JPG or WEBP · resized automatically
+                    </span>
+                  </span>
+                </button>
+              )}
+
+              {referenceError && (
+                <p className="mt-2 text-[10px] font-medium text-rose-500 dark:text-rose-400">{referenceError}</p>
+              )}
             </div>
 
             <div className="mt-5">

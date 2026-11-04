@@ -460,6 +460,7 @@ export const api = {
     style: string;
     aspectRatio: string;
     requestId: string;
+    referenceImageData?: string;
   }): Promise<ApiResponse<{ generation: ImageStudioGeneration; usage: ImageStudioUsage }>> {
     return this.post(API.imageStudio.generate, data, { timeoutMs: 120_000 });
   },
