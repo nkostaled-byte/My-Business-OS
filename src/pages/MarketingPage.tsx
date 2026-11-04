@@ -14,6 +14,10 @@ import {
   Plus,
   TrendingUp,
   UserRoundPlus,
+  Sparkles,
+  ImagePlus,
+  Wand2,
+  Download,
 } from 'lucide-react';
 
 export const MarketingPage: React.FC = () => {
@@ -300,6 +304,163 @@ export const MarketingPage: React.FC = () => {
                 </div>
               );
             })}
+          </div>
+        </div>
+      </section>
+
+      {/* AI Image Studio Section */}
+      <section id="image-studio" className="relative py-20 lg:py-24 overflow-hidden border-t border-slate-200/60 dark:border-slate-800">
+        <div className="absolute top-1/3 left-0 h-80 w-80 -translate-x-1/2 rounded-full bg-indigo-400/15 blur-3xl -z-10" />
+        <div className="absolute bottom-0 right-0 h-96 w-96 translate-x-1/3 rounded-full bg-sky-400/15 blur-3xl -z-10" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-10 items-center">
+            <div className="lg:col-span-5 space-y-6">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-200/80 dark:border-indigo-500/30 bg-indigo-50/80 dark:bg-indigo-500/10 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.14em] text-indigo-700 dark:text-indigo-300">
+                <Sparkles className="h-3 w-3" />
+                New · AI Image Studio
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 leading-[1.1]">
+                Campaign visuals{' '}
+                <span className="bg-gradient-to-r from-indigo-600 via-indigo-500 to-sky-500 bg-clip-text text-transparent">
+                  without the photoshoot
+                </span>
+              </h2>
+              <p className="text-sm sm:text-base text-slate-600 dark:text-slate-300 leading-relaxed max-w-xl">
+                Describe the shot you need, or upload a product photo as a reference. Image Studio turns it into polished product imagery and mockups in seconds.
+              </p>
+              <ul className="space-y-3 text-sm text-slate-600 dark:text-slate-300">
+                {[
+                  '10 free generations every day',
+                  'Reference images for product mockups',
+                  'Private history and instant downloads',
+                ].map((item) => (
+                  <li key={item} className="flex items-center gap-2.5">
+                    <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500" />
+                    <span>{item}</span>
+                  </li>
+                ))}
+              </ul>
+              <div className="flex flex-wrap items-center gap-3 pt-1">
+                <NavLink
+                  to="/login"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-indigo-600 px-6 py-3.5 text-sm font-bold text-white shadow-xl shadow-indigo-500/25 transition-all hover:bg-indigo-500 active:scale-[0.98]"
+                >
+                  <Wand2 className="h-4 w-4" />
+                  <span>Generate Image</span>
+                  <ArrowRight className="h-4 w-4" />
+                </NavLink>
+                <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                  Sign in or claim your account to start.
+                </span>
+              </div>
+            </div>
+
+            <div className="lg:col-span-7">
+              <div className="relative mx-auto max-w-xl lg:max-w-none transform lg:-rotate-1 lg:hover:rotate-0 transition-transform duration-500">
+                <div className="glass-panel rounded-3xl p-2.5 sm:p-3">
+                  <div className="rounded-2xl bg-slate-50 dark:bg-slate-950 p-3 sm:p-4">
+                    <div className="flex items-center justify-between border-b border-slate-200/70 dark:border-white/10 pb-3">
+                      <div className="flex items-center gap-2">
+                        <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-100 dark:bg-indigo-500/15 text-indigo-600 dark:text-indigo-400">
+                          <Sparkles className="h-3.5 w-3.5" />
+                        </span>
+                        <div>
+                          <p className="text-xs font-bold text-slate-900 dark:text-slate-100">Image Studio</p>
+                          <p className="text-[9px] text-slate-400">Prompt to campaign-ready visual</p>
+                        </div>
+                      </div>
+                      <span className="rounded-full bg-emerald-50 dark:bg-emerald-500/10 px-2 py-0.5 text-[8px] font-bold text-emerald-600 dark:text-emerald-400">
+                        10 free / day
+                      </span>
+                    </div>
+
+                    <div className="mt-3 grid grid-cols-1 sm:grid-cols-5 gap-3">
+                      <div className="sm:col-span-2 space-y-2.5 rounded-xl border border-slate-200/70 dark:border-white/10 bg-white/70 dark:bg-white/[0.03] p-2.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[8px] font-bold uppercase tracking-[0.14em] text-slate-400">Prompt</span>
+                          <span className="text-[8px] text-slate-300">1200</span>
+                        </div>
+                        <p className="text-[10px] leading-relaxed text-slate-600 dark:text-slate-300">
+                          A matte black skincare bottle on a sunlit travertine plinth, soft shadows, luxury editorial calm.
+                        </p>
+                        <div className="flex flex-wrap gap-1">
+                          <span className="rounded-full bg-slate-900 px-2 py-1 text-[8px] font-semibold text-white dark:bg-white dark:text-slate-900">Photorealistic</span>
+                          <span className="rounded-full border border-slate-200/80 dark:border-white/10 px-2 py-1 text-[8px] font-medium text-slate-500 dark:text-slate-400">Product</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-1">
+                          {['1:1', '4:5', '16:9'].map((ratio) => (
+                            <span
+                              key={ratio}
+                              className={`rounded-md border py-1 text-center text-[8px] font-semibold ${
+                                ratio === '4:5'
+                                  ? 'border-indigo-400 bg-indigo-50 text-indigo-600 dark:border-indigo-500/50 dark:bg-indigo-500/10 dark:text-indigo-300'
+                                  : 'border-slate-200/80 text-slate-400 dark:border-white/10'
+                              }`}
+                            >
+                              {ratio}
+                            </span>
+                          ))}
+                        </div>
+                        <div className="flex items-center gap-2 rounded-lg border border-dashed border-slate-300/80 dark:border-white/15 p-1.5">
+                          <span className="flex h-7 w-7 items-center justify-center rounded-md bg-gradient-to-br from-indigo-100 to-sky-100 text-indigo-500 dark:from-indigo-500/20 dark:to-sky-500/20 dark:text-indigo-300">
+                            <ImagePlus className="h-3.5 w-3.5" />
+                          </span>
+                          <div className="min-w-0">
+                            <p className="text-[8px] font-semibold text-slate-700 dark:text-slate-300">Reference image</p>
+                            <p className="text-[7px] text-slate-400">Product or logo</p>
+                          </div>
+                        </div>
+                        <NavLink
+                          to="/login"
+                          aria-label="Generate an image — sign in or claim your account"
+                          className="flex items-center justify-center gap-1.5 rounded-lg bg-indigo-600 py-1.5 text-[9px] font-bold text-white transition-colors hover:bg-indigo-500"
+                        >
+                          <Wand2 className="h-3 w-3" />
+                          Generate image
+                        </NavLink>
+                      </div>
+
+                      <div className="sm:col-span-3 grid grid-cols-2 gap-2">
+                        <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-gradient-to-br from-[#f3e9df] via-[#e4d0bd] to-[#cfb49b]">
+                          <div className="absolute inset-x-0 bottom-0 h-1/3 bg-white/25 blur-xl" />
+                          <div className="absolute left-1/2 top-1/2 h-16 w-9 -translate-x-1/2 -translate-y-1/2 rounded-t-2xl rounded-b-md bg-slate-900/85 shadow-2xl" />
+                          <div className="absolute left-1/2 top-[calc(50%-2.5rem)] h-2.5 w-5 -translate-x-1/2 rounded-full bg-slate-700" />
+                          <span className="absolute left-1.5 top-1.5 rounded-full bg-white/70 px-1.5 py-0.5 text-[7px] font-bold text-slate-700">Product</span>
+                        </div>
+                        <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-gradient-to-br from-slate-900 via-slate-800 to-indigo-950">
+                          <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_20%,rgba(129,140,248,0.35),transparent_55%)]" />
+                          <div className="absolute left-1/2 top-1/2 h-14 w-14 -translate-x-1/2 -translate-y-1/2 rounded-xl border border-white/20 bg-white/10 backdrop-blur-sm" />
+                          <div className="absolute left-1/2 top-1/2 h-6 w-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-indigo-300 to-sky-400" />
+                          <span className="absolute left-1.5 top-1.5 rounded-full bg-white/15 px-1.5 py-0.5 text-[7px] font-bold text-white">Mockup</span>
+                        </div>
+                        <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-gradient-to-br from-emerald-100 via-teal-100 to-cyan-100">
+                          <div className="absolute -right-4 -top-4 h-20 w-20 rounded-full bg-white/50 blur-md" />
+                          <div className="absolute left-1/2 top-1/2 h-16 w-11 -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white/80 shadow-lg" />
+                          <div className="absolute left-1/2 top-[calc(50%-0.25rem)] h-1 w-6 -translate-x-1/2 rounded-full bg-emerald-600/60" />
+                          <div className="absolute left-1/2 top-1/2 mt-2 h-1 w-5 -translate-x-1/2 rounded-full bg-slate-300" />
+                          <span className="absolute left-1.5 top-1.5 rounded-full bg-white/70 px-1.5 py-0.5 text-[7px] font-bold text-emerald-700">Editorial</span>
+                        </div>
+                        <div className="relative aspect-[4/5] overflow-hidden rounded-xl bg-gradient-to-br from-rose-100 via-orange-100 to-amber-100">
+                          <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(255,255,255,0.8),transparent_55%)]" />
+                          <div className="absolute left-1/2 top-1/2 h-12 w-12 -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-rose-400 to-orange-400 shadow-xl" />
+                          <div className="absolute left-1/2 top-[calc(50%+1.75rem)] h-1.5 w-10 -translate-x-1/2 rounded-full bg-white/60" />
+                          <span className="absolute left-1.5 top-1.5 rounded-full bg-white/70 px-1.5 py-0.5 text-[7px] font-bold text-rose-700">Social</span>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="mt-3 flex items-center justify-between rounded-xl border border-slate-200/70 dark:border-white/10 bg-white/60 dark:bg-white/[0.03] px-3 py-2">
+                      <span className="flex items-center gap-1.5 text-[9px] font-medium text-slate-500 dark:text-slate-400">
+                        <Download className="h-3 w-3" />
+                        Download in one click
+                      </span>
+                      <span className="text-[9px] font-bold text-indigo-600 dark:text-indigo-400">Ready in seconds</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
