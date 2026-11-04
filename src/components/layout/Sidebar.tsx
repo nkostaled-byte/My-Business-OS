@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { useData } from '../../context/DataContext';
+import { MY_BUSINESS_OS_ICON } from '../../constants';
 import { getPageMinPlan, getPlanTier, PLAN_NAMES } from '../../config/plans';
 import {
   LayoutDashboard,
@@ -14,6 +15,7 @@ import {
   Boxes,
   UserRoundCog,
   Images,
+  Sparkles,
   Star,
   FileText,
   ReceiptText,
@@ -49,6 +51,7 @@ export const navItems = [
   { label: 'Inventory', path: '/app/inventory', icon: Boxes },
   { label: 'Staff', path: '/app/staff', icon: UserRoundCog },
   { label: 'Gallery', path: '/app/gallery', icon: Images },
+  { label: 'Image Studio', path: '/app/image-studio', icon: Sparkles },
   { label: 'Reviews', path: '/app/reviews', icon: Star },
   { label: 'Forms', path: '/app/forms', icon: FileText },
   { label: 'Invoices', path: '/app/invoices', icon: ReceiptText },
@@ -116,7 +119,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ mobileOpen, onCloseMobile, rol
         <div className="p-5 flex items-center justify-between border-b border-slate-100 dark:border-slate-800">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 flex items-center justify-center">
-                <img src="https://res.cloudinary.com/dvvugpu04/image/upload/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png" alt={businessName} className="w-full h-full object-contain" />
+                <img src={MY_BUSINESS_OS_ICON} alt="My Business OS" className="w-full h-full object-contain" />
             </div>
             <div>
               <h1 className="text-base font-bold tracking-tight text-slate-900 dark:text-slate-100 leading-none">

@@ -1,5 +1,6 @@
 node_modules/
 build/
+.render/
 dist/
 coverage/
 .DS_Store

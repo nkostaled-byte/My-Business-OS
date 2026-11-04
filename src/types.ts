@@ -415,6 +415,26 @@ export interface AuditFullResponse {
   ai: AiBrief;
 }
 
+// ─── Image Studio ───────────────────────────────────────────────────────
+
+export interface ImageStudioUsage {
+  limit: number;
+  used: number;
+  remaining: number;
+  usageDate: string | null;
+  resetAt: string | null;
+}
+
+export interface ImageStudioGeneration {
+  id: string;
+  prompt: string;
+  style: string;
+  aspectRatio: string;
+  createdAt: string;
+  fileUrl: string;
+  downloadUrl: string;
+}
+
 export interface PlaceBusiness {
   placeId: string;
   name: string;

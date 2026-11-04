@@ -40,6 +40,7 @@ import {
   signInWithGoogle,
 } from '../lib/auth-client';
 import posthog from '../lib/posthog';
+import { MY_BUSINESS_OS_ICON } from '../constants';
 
 // ─── Business Types ───────────────────────────────────────────────
 
@@ -254,8 +255,8 @@ export const OnboardingPage: React.FC = () => {
             className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 p-2 flex items-center justify-center shadow-lg shadow-indigo-500/10 border border-slate-100 dark:border-slate-800"
           >
             <img
-              src="https://res.cloudinary.com/dvvugpu04/image/upload/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png"
-              alt="My Grafix OS Logo"
+              src={MY_BUSINESS_OS_ICON}
+                            alt="My Business OS logo"
               className="w-full h-full object-contain"
             />
           </motion.div>
@@ -273,7 +274,7 @@ export const OnboardingPage: React.FC = () => {
             >
               <div className="text-center mb-8">
                 <h1 className="text-3xl sm:text-4xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
-                  Welcome to My Grafix OS
+                  Welcome to My Business OS
                 </h1>
                 <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 max-w-md mx-auto">
                   Let's get you set up. Choose how you'd like to get started.

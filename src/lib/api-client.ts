@@ -13,6 +13,7 @@
  */
 
 import { API } from '../config/api';
+import type { ImageStudioGeneration, ImageStudioUsage } from '../types';
 
 /**
  * Resolve the Worker API base URL defensively.
@@ -437,6 +438,30 @@ export const api = {
 
   async saveProductImage(data: { imageData: string; approvalToken: string; purpose?: 'product' | 'service' | 'gallery' }): Promise<ApiResponse<{ url: string; key: string }>> {
     return this.post(API.ai.saveProductImage, data, { timeoutMs: 30_000 });
+  },
+
+  // ── Image Studio ─────────────────────────────────────────────────────
+
+  /** Backend-authoritative daily quota for the signed-in user. */
+  async getImageStudioUsage(): Promise<ApiResponse<ImageStudioUsage>> {
+    return this.get<ImageStudioUsage>(API.imageStudio.usage);
+  },
+
+  /** Private generation history for the signed-in user. */
+  async getImageStudioHistory(limit: number = 24): Promise<ApiResponse<{ items: ImageStudioGeneration[] }>> {
+    return this.get<{ items: ImageStudioGeneration[] }>(API.imageStudio.history, {
+      params: { limit: String(limit) },
+    });
+  },
+
+  /** Reserve quota, generate an image, store it in R2 and return signed URLs. */
+  async generateImageStudioImage(data: {
+    prompt: string;
+    style: string;
+    aspectRatio: string;
+    requestId: string;
+  }): Promise<ApiResponse<{ generation: ImageStudioGeneration; usage: ImageStudioUsage }>> {
+    return this.post(API.imageStudio.generate, data, { timeoutMs: 120_000 });
   },
 
   /**

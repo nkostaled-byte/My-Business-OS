@@ -38,6 +38,7 @@ export const PAGE_MIN_PLAN: Record<string, string> = {
   '/app/inventory': 'professional', // Inventory Tracking
   '/app/staff': 'business', // Team Members & Staff Access
   '/app/gallery': 'business', // Gallery & Reviews
+  '/app/image-studio': 'free', // AI Image Studio (10 generations/day on every plan)
   '/app/reviews': 'business',
   '/app/website': 'business', // Website Manager
   '/app/invoices': 'business', // Invoices & PDFs
@@ -47,7 +48,7 @@ export const PAGE_MIN_PLAN: Record<string, string> = {
 };
 
 export function getPlanTier(plan: string | null | undefined): number {
-  return (plan && PLAN_TIERS[plan]) ?? 0;
+  return (plan ? PLAN_TIERS[plan] : 0) ?? 0;
 }
 
 export function getPageMinPlan(path: string): string {

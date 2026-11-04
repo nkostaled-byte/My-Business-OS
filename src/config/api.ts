@@ -41,6 +41,15 @@ export const API = {
     saveProductImage: '/api/ai/save-product-image',
   },
 
+  // Image Studio
+  imageStudio: {
+    usage: '/api/image-studio/usage',
+    history: '/api/image-studio/history',
+    generate: '/api/image-studio/generate',
+    imageFile: (id: string) => `/api/image-studio/images/${id}/file`,
+    imageDownload: (id: string) => `/api/image-studio/images/${id}/download`,
+  },
+
   // Orders (public checkout)
   orders: '/api/orders',
 

@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { useTheme } from '../../context/ThemeContext';
-import { MY_GRAFIX_LOGO } from '../../constants';
+import { MY_BUSINESS_OS_ICON } from '../../constants';
 import { Sun, Moon } from 'lucide-react';
 
 const PLATFORM_NAME = 'My Business OS';
@@ -22,7 +22,7 @@ export const PublicHeader: React.FC = () => {
         {/* Logo */}
         <NavLink to="/" className="flex min-w-0 items-center gap-2 sm:gap-3 group">
           <div className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center shrink-0">
-            <img src={MY_GRAFIX_LOGO} alt={PLATFORM_NAME} className="w-full h-full object-contain" />
+            <img src={MY_BUSINESS_OS_ICON} alt={PLATFORM_NAME} className="w-full h-full object-contain" />
           </div>
           <div className="min-w-0">
             <span className="text-base sm:text-xl font-extrabold tracking-tight text-slate-900 dark:text-slate-100 block leading-none truncate">

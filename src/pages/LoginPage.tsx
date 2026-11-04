@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { motion } from 'motion/react';
 import { ArrowLeft, KeyRound, UserPlus, Mail, Lock, Loader2, AlertCircle, CheckCircle } from 'lucide-react';
+import { MY_BUSINESS_OS_ICON } from '../constants';
 import {
   signInWithGoogle,
   signInWithEmail,
@@ -139,8 +140,8 @@ export const LoginPage: React.FC = () => {
           <div className="text-center mb-6">
             <div className="w-14 h-14 rounded-2xl bg-white dark:bg-slate-800 p-2 flex items-center justify-center mx-auto mb-3 shadow-lg shadow-indigo-500/10 border border-slate-100 dark:border-slate-800">
               <img
-                src="https://res.cloudinary.com/dvvugpu04/image/upload/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png"
-                alt="My Grafix OS Logo"
+                src={MY_BUSINESS_OS_ICON}
+                alt="My Business OS logo"
                 className="w-full h-full object-contain"
               />
             </div>

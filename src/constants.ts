@@ -1,4 +1,3 @@
-export const MY_GRAFIX_LOGO =
-  'https://res.cloudinary.com/dvvugpu04/image/upload/v1784904453/My_Grafix_Media_logo_160px_edlkgm.png';
-
-export const MY_GRAFIX_BUSINESS_NAME = 'My Grafix Media';
+export const MY_BUSINESS_OS_ICON = '/icons/icon-192.svg';
+export const MY_BUSINESS_OS_WORDMARK = '/brand/my-business-os.svg';
+export const MY_BUSINESS_OS_WORDMARK_DARK = '/brand/my-business-os-dark.svg';

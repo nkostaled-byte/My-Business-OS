@@ -39,6 +39,7 @@ import { LeadsPage } from './pages/LeadsPage';
 import { InventoryPage } from './pages/InventoryPage';
 import { StaffPage } from './pages/StaffPage';
 import { GalleryPage } from './pages/GalleryPage';
+import { ImageStudioPage } from './pages/ImageStudioPage';
 import { ReviewsPage } from './pages/ReviewsPage';
 import { FormsPage } from './pages/FormsPage';
 import { InvoicesPage } from './pages/InvoicesPage';
@@ -246,6 +247,7 @@ export default function App() {
                     <Route path="inventory" element={<InventoryPage />} />
                     <Route path="staff" element={<StaffPage />} />
                     <Route path="gallery" element={<GalleryPage />} />
+                    <Route path="image-studio" element={<ImageStudioPage />} />
                     <Route path="reviews" element={<ReviewsPage />} />
                     <Route path="forms" element={<FormsPage />} />
                     <Route path="website" element={<WebsiteManagerPage />} />

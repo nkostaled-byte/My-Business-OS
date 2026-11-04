@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { MY_GRAFIX_LOGO } from '../../constants';
+import { MY_BUSINESS_OS_ICON } from '../../constants';
 
 const PLATFORM_NAME = 'My Business OS';
 
@@ -11,7 +11,7 @@ export const PublicFooter: React.FC = () => {
         <div className="space-y-4">
           <div className="flex items-center gap-3">
             <div className="w-8 h-8 flex items-center justify-center text-white font-bold">
-              <img src={MY_GRAFIX_LOGO} alt={PLATFORM_NAME} className="w-full h-full object-contain" />
+              <img src={MY_BUSINESS_OS_ICON} alt={PLATFORM_NAME} className="w-full h-full object-contain" />
             </div>
             <span className="text-lg font-bold text-white">{PLATFORM_NAME}</span>
           </div>
